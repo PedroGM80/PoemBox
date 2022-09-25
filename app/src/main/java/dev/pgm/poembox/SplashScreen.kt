@@ -6,7 +6,10 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,13 +27,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
 
-    val scaleAnimation: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
+    val scaleAnimation: Animatable<Float, AnimationVector1D> =
+        remember { Animatable(initialValue = 0f) }
 
     AnimationSplashContent(
         scaleAnimation = scaleAnimation,
@@ -96,15 +99,15 @@ fun DesignSplashScreen(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = imagePainter,
-                contentDescription = "Logotipo Splash Screen",
+                painter = painterResource(id = R.mipmap.Logo_round),
+                contentDescription = "PoemBox",
                 modifier = modifier
                     .size(400.dp)
                     .scale(scale = scaleAnimation.value),
             )
 
             Text(
-                text = "Aquí va el logotipo de su preferencia",
+                text = "PoemBox",
                 color = Color.White,
                 fontSize = 40.sp,
                 fontWeight = FontWeight.ExtraBold,
