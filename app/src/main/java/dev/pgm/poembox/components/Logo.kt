@@ -15,13 +15,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.R
 
 @Composable
 fun Logo() {
-    val animateAlpha = remember { Animatable(28f) }
+    val animateAlpha = remember { Animatable(0.1f) }
     LaunchedEffect(animateAlpha) {
         animateAlpha.animateTo(
             targetValue = 2f,
@@ -64,4 +65,10 @@ fun Logo() {
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PrevLogo(){
+    Logo()
 }

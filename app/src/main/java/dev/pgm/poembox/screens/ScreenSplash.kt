@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ScreenSplash (navController: NavController){
+
     LaunchedEffect(key1=true){
         delay(1500)
         navController.navigate(ScreensRouteList.RouteScreenTabs.route){

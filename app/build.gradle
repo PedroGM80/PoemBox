@@ -72,6 +72,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:0.25.0" // Pager
     implementation "com.google.accompanist:accompanist-pager-indicators:0.25.0" // Pager Indicators
     def nav_version = "2.5.2"
-
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.4-beta"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 }

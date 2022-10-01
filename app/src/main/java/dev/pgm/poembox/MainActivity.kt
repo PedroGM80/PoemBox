@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     //set up nav controller
+                    ShowBars(flag = false)
                     SetUpNavController(rememberNavController())
                 }
             }
