@@ -1,10 +1,14 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.gms.google-services'
 }
 
 android {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        }
+    }
     namespace 'dev.pgm.poembox'
     compileSdk 33
 
@@ -45,14 +49,12 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    buildToolsVersion '33.0.0'
+    ndkVersion '23.1.7779620'
 }
 
 dependencies {
-    def nav_version = "2.5.2"
-    implementation platform('com.google.firebase:firebase-bom:30.5.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation "androidx.navigation:navigation-compose:$nav_version"
+
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.0'
@@ -66,4 +68,10 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    // Accompanist
+    implementation "com.google.accompanist:accompanist-pager:0.25.0" // Pager
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.25.0" // Pager Indicators
+    def nav_version = "2.5.2"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 }
