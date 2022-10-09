@@ -1,9 +1,7 @@
 package dev.pgm.poembox.content
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -41,14 +39,26 @@ fun EditScreen() {
             textAlign = TextAlign.Center,
             fontSize = 25.sp
         )
-        var text by remember { mutableStateOf(TextFieldValue("")) }
+
+        var textTitle by remember { mutableStateOf(TextFieldValue("")) }
+        var textContent by remember { mutableStateOf(TextFieldValue("")) }
+
         TextField(
-            value = text,
-            label = { Text(text = "Number Input Type") },
+            value = textTitle,
+            label = { Text(text = "Title") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onValueChange = { it ->
-                text = it
+                textTitle = it
             })
+        TextField(
+
+            value = textContent,
+            label = { Text(text = "") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            onValueChange = { it ->
+                textContent = it
+            }
+        )
     }
 }
 
