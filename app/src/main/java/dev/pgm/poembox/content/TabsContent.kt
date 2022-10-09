@@ -4,14 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.TextField
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -37,8 +41,17 @@ fun EditScreen() {
             textAlign = TextAlign.Center,
             fontSize = 25.sp
         )
+        var text by remember { mutableStateOf(TextFieldValue("")) }
+        TextField(
+            value = text,
+            label = { Text(text = "Number Input Type") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            onValueChange = { it ->
+                text = it
+            })
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -98,6 +111,7 @@ internal fun TabsContent(tabs: List<TabItem>, pagerState: PagerState) {
         tabs[page].screen()
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun ManagerScreenPreview() {
