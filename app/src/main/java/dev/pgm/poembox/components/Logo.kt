@@ -53,7 +53,7 @@ fun Logo() {
             )
             Text(
                 text = "PoemBox",
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colors.primary,
                 fontSize = 40.sp,
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily.Serif,

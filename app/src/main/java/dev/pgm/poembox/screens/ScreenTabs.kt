@@ -1,4 +1,3 @@
-
 package dev.pgm.poembox.screens
 
 import androidx.compose.foundation.layout.Column
@@ -6,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import dev.pgm.poembox.components.TabItem
@@ -22,14 +22,20 @@ fun ScreenTabs() {
     Scaffold(
         topBar = { TopBar() },
     ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
+        Column(modifier = Modifier
+            .padding(padding)
+        ) {
             Tabs(tabs = tabs, pagerState = pagerState)
             TabsContent(tabs = tabs, pagerState = pagerState)
         }
     }
 }
 
-
+@Preview(showBackground = true)
+@Composable
+fun PrevScreenTabs() {
+    ScreenTabs()
+}
 
 
 
