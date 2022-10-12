@@ -2,7 +2,6 @@ package dev.pgm.poembox.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,13 +24,15 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import dev.pgm.poembox.R
 import dev.pgm.poembox.components.TabItem
+import dev.pgm.poembox.ui.theme.ColorPoemTitleField
+import dev.pgm.poembox.ui.theme.Shapes
+import dev.pgm.poembox.ui.theme.Typography
 
 @Composable
 fun EditScreen() {
-    Modifier.fillMaxSize()
+
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
@@ -50,24 +51,31 @@ fun EditScreen() {
         TextField(
             value = textTitle,
             label = { Text(text = "Title") },
+
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onValueChange = {
                 textTitle = it
-            })
-        TextField(
+            },
+            colors = ColorPoemTitleField,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            shape = Shapes.medium
 
+        )
+        TextField(
             value = textContent,
             label = { Text(text = "") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onValueChange = {
                 textContent = it
             },
-            textStyle = TextStyle(fontSize = 20.sp),
+            textStyle = TextStyle(fontSize = Typography.body2.fontSize),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding( 10.dp)
-                .height(45.dp), // Here I have decreased the height
-            shape = RoundedCornerShape(20.dp),
+                .padding(10.dp)
+                .fillMaxHeight(), // Here I have decreased the height
+            shape = Shapes.medium,
         )
     }
 }
@@ -127,7 +135,7 @@ fun ManagerScreen() {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 internal fun TabsContent(tabs: List<TabItem>, pagerState: PagerState) {
-    HorizontalPager(state = pagerState, count = tabs.size ) { page ->
+    HorizontalPager(state = pagerState, count = tabs.size) { page ->
         tabs[page].screen()
     }
 }
