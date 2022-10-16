@@ -23,8 +23,8 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState) {
         // Our selected tab is our current page
         selectedTabIndex = pagerState.currentPage,
         // Override the indicator, using the provided pagerTabIndicatorOffset modifier
-        backgroundColor = colorResource(id = R.color.black),
-        contentColor = Color.White,
+        backgroundColor =MaterialTheme.colors.background,
+        contentColor =  MaterialTheme.colors.onSecondary,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)

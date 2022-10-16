@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "163224593745",
+    "project_id": "poembox-3e95e",
+    "storage_bucket": "poembox-3e95e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163224593745:android:446a72f68a577764939f70",
+        "android_client_info": {
+          "package_name": "dev.pgm.poembox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163224593745-djcmvnab917si31jj4u4uva6hu86t4ar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaGCrChYeiIijDaJQlVm7zUhmtKV6eE58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163224593745-djcmvnab917si31jj4u4uva6hu86t4ar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
