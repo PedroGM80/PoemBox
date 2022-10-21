@@ -25,6 +25,9 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    fun createUserTable(){
+
+    }
 }
 
 @Preview(showBackground = true)
