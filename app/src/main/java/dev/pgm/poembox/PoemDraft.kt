@@ -6,6 +6,6 @@ data class PoemDraft(
     val id: Int,
     val title: String,
     val draftContent: List<String>,
-    val editDate: Date,
+    val editDate: String,
     val validDate: Date?
 )
