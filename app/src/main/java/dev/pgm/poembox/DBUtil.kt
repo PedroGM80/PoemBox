@@ -6,23 +6,8 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DBUtil(context: Context, factory: SQLiteDatabase.CursorFactory?) :
-    SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
-    companion object {
-
-        private const val DATABASE_NAME = "POEM_BOX"
-
-        private const val DATABASE_VERSION = 1
-
-        const val TABLE_NAME = "DRAFT"
-        const val ID_COL = "ID_DRAFT"
-        const val TITLE_COl = "poemTitle"
-        const val CONTENT_COL = "draftContent"
-        const val ANNOTATION_COL = "draftAnnotation"
-        const val WRITER_NAME_COL = "writerName"
-        const val WRITER_DATE_COL = "writerDate"
-        const val DATE_VALIDATION_COL = "dateValidation"
-    }
+class DBUtil  // creating a constructor for our database handler.
+    (context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     // below is the method for creating a database by a sqlite query
     override fun onCreate(db: SQLiteDatabase) {
@@ -54,11 +39,9 @@ class DBUtil(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val db = this.writableDatabase
         val values = ContentValues()
-        val separator = "\n"
-        val poemText = draft.draftContent.joinToString(separator)
 
         values.put(TITLE_COl, draft.title)
-        values.put(CONTENT_COL, poemText)
+        values.put(CONTENT_COL,draft.draftContent)
         values.put(ANNOTATION_COL, draft.draftAnnotation)
         values.put(WRITER_NAME_COL, draft.writer.userName)
 
@@ -79,5 +62,20 @@ class DBUtil(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
+    companion object {
+
+        private const val DATABASE_NAME = "POEM_BOX"
+
+        private const val DATABASE_VERSION = 1
+
+        const val TABLE_NAME = "DRAFT"
+        const val ID_COL = "ID_DRAFT"
+        const val TITLE_COl = "poemTitle"
+        const val CONTENT_COL = "draftContent"
+        const val ANNOTATION_COL = "draftAnnotation"
+        const val WRITER_NAME_COL = "writerName"
+        const val WRITER_DATE_COL = "writerDate"
+        const val DATE_VALIDATION_COL = "dateValidation"
+    }
 
 }
