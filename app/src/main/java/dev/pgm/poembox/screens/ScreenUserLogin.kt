@@ -7,10 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -28,7 +25,23 @@ import dev.pgm.poembox.ui.theme.Purple700
 import kotlinx.coroutines.delay
 
 @Composable
+fun GoScreenTab(navController: NavController) {
+    LaunchedEffect(key1 = true) {
+        delay(0)
+        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
+            popUpTo(0)
+        }
+    }
+}
+
+
+@Composable
 fun UserLogin(navController: NavController) {
+    var next: Boolean by remember { mutableStateOf(false) }
+    if (next) {
+        GoScreenTab(navController)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
             text = AnnotatedString("Sign up here"),
@@ -71,14 +84,7 @@ fun UserLogin(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
-                onClick = {
-                suspend {
-                        delay(100)
-                        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-                            popUpTo(0)
-                        }
-                    }
-                },
+                onClick = { next = true },
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()
