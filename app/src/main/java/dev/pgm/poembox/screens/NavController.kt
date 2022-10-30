@@ -7,13 +7,20 @@ import androidx.navigation.compose.composable
 
 @Composable
 fun SetUpNavController(controller: NavHostController) {
-    NavHost(navController = controller, startDestination = ScreensRouteList.RouteScreenSplash.route) {
+    NavHost(
+        navController = controller,
+        startDestination = ScreensRouteList.RouteScreenSplash.route
+    ) {
 
         composable(ScreensRouteList.RouteScreenSplash.route) {
             ScreenSplash(navController = controller)
         }
         composable(ScreensRouteList.RouteScreenTabs.route) {
             ScreenTabs()
+        }
+        composable(ScreensRouteList.RouteScreenLogin.route) {
+            PrevScreenUserLogin()
+
         }
     }
 }

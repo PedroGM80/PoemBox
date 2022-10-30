@@ -9,18 +9,19 @@ import dev.pgm.poembox.components.Logo
 import kotlinx.coroutines.delay
 
 @Composable
-fun ScreenSplash (navController: NavController){
+fun ScreenSplash(navController: NavController) {
 
-    LaunchedEffect(key1=true){
+    LaunchedEffect(key1 = true) {
         delay(1500)
-        navController.navigate(ScreensRouteList.RouteScreenTabs.route){
+        navController.navigate(ScreensRouteList.RouteScreenLogin.route) {
             popUpTo(0)
         }
     }
- Logo()
+    Logo()
 }
+
 @Preview(showBackground = true)
 @Composable
-private fun ShowSplash(){
-   ScreenSplash(rememberNavController( ))
+private fun ShowSplash() {
+    ScreenSplash(rememberNavController())
 }
