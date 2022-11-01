@@ -17,3 +17,6 @@
  
 - https://videlcloud.wordpress.com/2017/03/05/buenas-practicas-para-el-diseno-de-base-de-datos/ 22/10/2022
 - https://www.geeksforgeeks.org/android-sqlite-database-in-kotlin/ 22/10/2022
+- https://devexperto.com/room-la-libreria-de-base-de-datos-de-android/ 01/11/2022
+
+
