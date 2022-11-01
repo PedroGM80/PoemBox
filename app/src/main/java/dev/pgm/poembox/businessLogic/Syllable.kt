@@ -83,7 +83,8 @@ class Syllable private constructor(word: CharSequence) {
 
                         val endLetter = toLower(wordLength - 1)
                         if (!isConsonant(wordLength - 1) || endLetter == 'y' || endLetter == 'n' || endLetter == 's' && !isConsonant(
-                                wordLength - 2)
+                                wordLength - 2
+                            )
                         ) numSyl - 1 // Stressed penultimate syllable
                         else numSyl // Stressed last syllable
                     }

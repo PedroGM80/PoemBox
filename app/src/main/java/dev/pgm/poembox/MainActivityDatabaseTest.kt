@@ -13,6 +13,8 @@ class MainActivityDatabaseTest : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_database_test)
+/*
+
         val draftTitle: EditText? = findViewById(R.id.editTextTextTiTle)
         val draftUserWrote: EditText? = findViewById(R.id.editTextUserName)
         val draftContent: EditText? = findViewById(R.id.editTextDraftContent)
@@ -54,5 +56,6 @@ class MainActivityDatabaseTest : AppCompatActivity() {
             draftAnnotation?.setText("")
             draftContent?.setText("")
         }
+*/
     }
 }
