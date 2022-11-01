@@ -1,3 +1,4 @@
 package dev.pgm.poembox
 
-open class User(val userName: String, val mail: String)
+
+class User(val id: String, val userName: String, val mail: String)
