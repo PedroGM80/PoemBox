@@ -4,7 +4,7 @@ import java.util.Locale
 import java.util.regex.Pattern
 
 class UtilitySyllables {
-    private var conversions = arrayOf(
+    private val conversions = arrayOf(
         arrayOf("ch", "@"),
         arrayOf("ll", "#"),
         arrayOf("gue", "%e"),
@@ -19,12 +19,12 @@ class UtilitySyllables {
         arrayOf("yo", "|o"),
         arrayOf("yu", "|u")
     )
-    private var openVowels = charArrayOf('a', 'á', 'e', 'é', 'o', 'ó')
-    private var closeVowels = charArrayOf('i', 'u', 'ü', 'y')
-    private var closeVowelsAccent = charArrayOf('í', 'ú')
-    private var patternAccent: Pattern = Pattern.compile(".*([áéíóú]).*")
-    private var patternVowelsCaseNCaseS: Pattern = Pattern.compile(".*([áéíóúaeiouns])")
-    private var enye = 'ñ'
+    private val openVowels = charArrayOf('a', 'á', 'e', 'é', 'o', 'ó')
+    private val closeVowels = charArrayOf('i', 'u', 'ü', 'y')
+    private val closeVowelsAccent = charArrayOf('í', 'ú')
+    private val patternAccent: Pattern = Pattern.compile(".*([áéíóú]).*")
+    private val patternVowelsCaseNCaseS: Pattern = Pattern.compile(".*([áéíóúaeiouns])")
+    private val enye = 'ñ'
     private val vowels: CharArray
         get() {
             val size = openVowels.size + closeVowels.size + closeVowelsAccent.size
