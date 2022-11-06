@@ -56,7 +56,7 @@ android {
 dependencies {
     // Room
     implementation 'androidx.room:room-runtime:2.4.3'
-    implementation 'androidx.room:room-compiler:2.4.3'
+    annotationProcessor 'androidx.room:room-compiler:2.4.3'
     implementation 'androidx.room:room-ktx:2.4.3' // Kotlin Extensions and Coroutines support for Room
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1' // LifecycleScope
 
