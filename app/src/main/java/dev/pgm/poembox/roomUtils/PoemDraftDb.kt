@@ -20,7 +20,7 @@ abstract class PoemDraftDb : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context,
                     PoemDraftDb::class.java,
-                    "app_database"
+                    "poem_draft"
                 )
                     .createFromAsset("sqlite.db")
                     .build()

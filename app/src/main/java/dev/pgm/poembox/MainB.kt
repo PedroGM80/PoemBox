@@ -45,36 +45,18 @@ class MainB :ComponentActivity()  {
                     .show()
             }
             val userText = User("1","pet", "Test@gmail.es")
-            val room: PoemDraftDb = Room
-                .databaseBuilder(this@MainB, PoemDraftDb::class.java, "poemDraft")
-                .build()
 
             val draft = PoemDraft(
                 1,
-                draftTitleText,
-                draftLines,
-                draftUserNOTE,
-                userText,
-                "20/02/2022"
+                "titulo",
+                "una linea",
+                "una nota",
+                "pedro"
             )
             GlobalScope.launch {
-                allPoemDraft = room.poemDraftDao().getAll()
+                allPoemDraft = PoemDraftDb.getDatabase(applicationContext).poemDraftDao().getAll()
                 allPoemDraft!!.add(draft)
             }
-
-
-
-
-
-            Toast.makeText(
-                baseContext,
-                "Draft has been added.",
-                Toast.LENGTH_SHORT
-            ).show()
-            draftTitle?.setText("")
-            draftUserWrote?.setText("")
-            draftAnnotation?.setText("")
-            draftContent?.setText("")
         }
 
     }
