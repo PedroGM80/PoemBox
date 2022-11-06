@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     android:orientation="vertical"
-    tools:context=".MainActivityDatabaseTest">
+    tools:context=".MainB">
 
     <EditText
         android:id="@+id/editTextUserName"
@@ -26,8 +26,8 @@
 
     <EditText
         android:id="@+id/editTextDraftContent"
-        android:layout_width="match_parent"
-        android:layout_height="284dp"
+        android:layout_width="328dp"
+        android:layout_height="118dp"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine" />
@@ -35,7 +35,7 @@
     <EditText
         android:id="@+id/editTextNotes"
         android:layout_width="match_parent"
-        android:layout_height="284dp"
+        android:layout_height="94dp"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine" />

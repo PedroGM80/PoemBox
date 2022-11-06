@@ -1,7 +1,8 @@
-package dev.pgm.poembox
+package dev.pgm.poembox.roomUtils
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import dev.pgm.poembox.User
 
 @Entity
 data class PoemDraft(
