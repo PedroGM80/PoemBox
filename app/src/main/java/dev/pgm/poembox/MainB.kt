@@ -49,10 +49,7 @@ class MainB :ComponentActivity()  {
             val draft = PoemDraft(
                 1,
                 "titulo",
-                "una linea",
-                "una nota",
-                "pedro"
-            )
+                "una linea","ANOTACIÓN")
             GlobalScope.launch {
                 allPoemDraft = PoemDraftDb.getDatabase(applicationContext).poemDraftDao().getAll()
                 allPoemDraft!!.add(draft)
