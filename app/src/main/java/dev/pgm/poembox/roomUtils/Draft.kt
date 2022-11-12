@@ -12,6 +12,6 @@ data class Draft(
     @ColumnInfo(name = "draftContent") val draftContent: String?,
     @ColumnInfo(name = "draftAnnotation") val draftAnnotation: String?,
     @ColumnInfo(name = "writerName") val writerName: String,
-    @ColumnInfo(name = "writtenDate") val writtenDate: Date,
-    @ColumnInfo(name = "dateValidation") val dateValidation: Date?
+    @ColumnInfo(name = "writtenDate") val writtenDate:String,
+    @ColumnInfo(name = "dateValidation") val dateValidation: String?
 )

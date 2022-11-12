@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "498c7968f457bb0aa54efeb57d3fd8b1",
+    "identityHash": "83d1b4840f2457db1e7cb5ea181de905",
     "entities": [
       {
         "tableName": "drafts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `draftContent` TEXT, `draftAnnotation` TEXT, `writerName` TEXT NOT NULL, `writtenDate` INTEGER NOT NULL, `dateValidation` INTEGER, PRIMARY KEY(`title`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `draftContent` TEXT, `draftAnnotation` TEXT, `writerName` TEXT NOT NULL, `writtenDate` TEXT NOT NULL, `dateValidation` TEXT, PRIMARY KEY(`title`))",
         "fields": [
           {
             "fieldPath": "title",
@@ -35,13 +35,13 @@
           {
             "fieldPath": "writtenDate",
             "columnName": "writtenDate",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "dateValidation",
             "columnName": "dateValidation",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -58,7 +58,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '498c7968f457bb0aa54efeb57d3fd8b1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '83d1b4840f2457db1e7cb5ea181de905')"
     ]
   }
 }
