@@ -10,13 +10,15 @@ import dev.pgm.poembox.roomUtils.PoemBoxDatabase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 var allPoemDraft: MutableList<Draft>? = null
 
 class MainB :ComponentActivity()  {
     // creating variables for our edittext, button and dbhandler
-
+    private val poemBoxDatabase by lazy { PoemBoxDatabase.getDatabase(this).draftDao() }
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +44,13 @@ class MainB :ComponentActivity()  {
                     .show()
             }
             val userText = User("1","pet", "Test@gmail.es")
-
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val date = Date()
+            val current = formatter.format(date)
             val draft = Draft(
-                "titulo","contenido","4","5", Date(),null)
+                "titulo","contenido","anotación","pedro", current,null)
             GlobalScope.launch {
-                allPoemDraft = PoemBoxDatabase.getDatabase(applicationContext).draftDao().getAllDrafts()
-                allPoemDraft!!.add(draft)
+                poemBoxDatabase.addDraft(draft)
             }
         }
     }
