@@ -5,15 +5,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
-import dev.pgm.poembox.roomUtils.PoemDraft
-import dev.pgm.poembox.roomUtils.PoemDraftDb
+import dev.pgm.poembox.roomUtils.Draft
+import dev.pgm.poembox.roomUtils.PoemBoxDatabase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
-var allPoemDraft: MutableList<PoemDraft>? = null
+var allPoemDraft: MutableList<Draft>? = null
 
 class MainB :ComponentActivity()  {
     // creating variables for our edittext, button and dbhandler
@@ -22,8 +21,6 @@ class MainB :ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_database_test)
-
-
         val draftTitle: EditText? = findViewById(R.id.editTextTextTiTle)
         val draftUserWrote: EditText? = findViewById(R.id.editTextUserName)
         val draftContent: EditText? = findViewById(R.id.editTextDraftContent)
@@ -46,15 +43,12 @@ class MainB :ComponentActivity()  {
             }
             val userText = User("1","pet", "Test@gmail.es")
 
-            val draft = PoemDraft(
-                1,
-                "titulo",
-                "una linea","ANOTACIÓN")
+            val draft = Draft(
+                "titulo","contenido","4","5", Date(),null)
             GlobalScope.launch {
-                allPoemDraft = PoemDraftDb.getDatabase(applicationContext).poemDraftDao().getAll()
+                allPoemDraft = PoemBoxDatabase.getDatabase(applicationContext).draftDao().getAllDrafts()
                 allPoemDraft!!.add(draft)
             }
         }
-
     }
 }
