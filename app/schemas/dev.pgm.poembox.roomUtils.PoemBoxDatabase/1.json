@@ -1,0 +1,64 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "498c7968f457bb0aa54efeb57d3fd8b1",
+    "entities": [
+      {
+        "tableName": "drafts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `draftContent` TEXT, `draftAnnotation` TEXT, `writerName` TEXT NOT NULL, `writtenDate` INTEGER NOT NULL, `dateValidation` INTEGER, PRIMARY KEY(`title`))",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "draftContent",
+            "columnName": "draftContent",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "draftAnnotation",
+            "columnName": "draftAnnotation",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "writerName",
+            "columnName": "writerName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "writtenDate",
+            "columnName": "writtenDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateValidation",
+            "columnName": "dateValidation",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "title"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '498c7968f457bb0aa54efeb57d3fd8b1')"
+    ]
+  }
+}
