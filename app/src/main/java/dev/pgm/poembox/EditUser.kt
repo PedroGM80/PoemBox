@@ -1,11 +1,5 @@
 package dev.pgm.poembox
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.room.Entity
-import dev.pgm.poembox.roomUtils.PoemDraft
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 /*
 
 @Entity
