@@ -16,7 +16,7 @@ import androidx.room.*
     version = 2,
     exportSchema = true
 )*/
-@TypeConverters(DraftConverters::class)
+
 abstract class PoemBoxDatabase : RoomDatabase() {
 
     abstract fun draftDao(): DraftDao
