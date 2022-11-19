@@ -20,4 +20,11 @@
 - https://devexperto.com/room-la-libreria-de-base-de-datos-de-android/ 01/11/2022
 - https://johncodeos.com/how-to-use-room-in-android-using-kotlin/ 10/11/2022
 
+### Lectura de materiaal de investigación
 
+- https://blogsaverroes.juntadeandalucia.es/molinilloviejo/files/2016/01/Tipos-de-poemas-y-estrofas.pdf
+- https://www.espoesia.com/encabalgamiento-figuras-literarias/
+- https://blocs.xtec.cat/elpoderdelaspalabrascuarto/files/2010/10/metrica-resumen.pdf
+- https://vtpbloglengua.wordpress.com/2011/02/17/comentario-de-la-paloma-de-rafael-alberti/
+- https://www.cinconoticias.com/analisis-metrico/
+- https://foro.editorialalaire.es/viewtopic.php?p=567069
