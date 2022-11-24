@@ -69,6 +69,6 @@ fun Logo() {
 
 @Preview(showBackground = true)
 @Composable
-fun PrevLogo(){
+fun PrevLogo() {
     Logo()
 }

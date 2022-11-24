@@ -22,8 +22,9 @@ fun ScreenTabs() {
     Scaffold(
         topBar = { TopBar() },
     ) { padding ->
-        Column(modifier = Modifier
-            .padding(padding)
+        Column(
+            modifier = Modifier
+                .padding(padding)
         ) {
             Tabs(tabs = tabs, pagerState = pagerState)
             TabsContent(tabs = tabs, pagerState = pagerState)
@@ -36,10 +37,3 @@ fun ScreenTabs() {
 fun PrevScreenTabs() {
     ScreenTabs()
 }
-
-
-
-
-
-
-

@@ -1,7 +1,7 @@
 package dev.pgm.poembox.components
 
 import androidx.compose.runtime.Composable
-import dev.pgm.poembox.*
+import dev.pgm.poembox.R
 import dev.pgm.poembox.content.EditScreen
 import dev.pgm.poembox.content.ManagerScreen
 import dev.pgm.poembox.content.MonitoringScreen
