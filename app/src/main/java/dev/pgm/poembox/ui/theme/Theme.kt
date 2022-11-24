@@ -25,7 +25,7 @@ internal val LightColorPalette = lightColors(
     onSurface = Color.Black,
 
 
-)
+    )
 
 @Composable
 fun PoemBoxTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {

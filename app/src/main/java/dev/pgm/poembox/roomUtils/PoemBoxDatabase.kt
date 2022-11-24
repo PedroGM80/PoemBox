@@ -1,7 +1,10 @@
 package dev.pgm.poembox.roomUtils
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+
 @Database(
     entities = [Draft::class],
     version = 1,
@@ -37,6 +40,7 @@ abstract class PoemBoxDatabase : RoomDatabase() {
             // Return database.
             return INSTANCE!!
         }
+
         private fun buildDatabase(context: Context): PoemBoxDatabase {
             return Room.databaseBuilder(
                 context.applicationContext,
