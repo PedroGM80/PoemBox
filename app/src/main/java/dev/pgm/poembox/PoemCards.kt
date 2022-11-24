@@ -2,7 +2,7 @@ package dev.pgm.poembox
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.util.*
 
 @Entity
 data class PoemCard(
@@ -10,5 +10,5 @@ data class PoemCard(
     val id: Int,
     val descriptiveName: String,
     val createdDate: Date,
-    val validateDraftRef:String
+    val validateDraftRef: String
 )

@@ -16,4 +16,5 @@ val ColorPoemTitleField: TextFieldColors
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
-        backgroundColor = Color.LightGray,)
+        backgroundColor = Color.LightGray,
+    )

@@ -1,6 +1,6 @@
 package dev.pgm.poembox.businessLogic
 
-import java.util.Locale
+import java.util.*
 import java.util.regex.Pattern
 
 class UtilitySyllables {
@@ -54,7 +54,7 @@ class UtilitySyllables {
             otherCase[size] = enye
             return otherCase
         }
-    val pattern : Pattern
+    val pattern: Pattern
         get() {
             val regex = StringBuffer(otherCase[0].code)
             for (i in 1 until otherCase.size) {
@@ -104,7 +104,11 @@ class UtilitySyllables {
 
         if (lastLetter + 1 == charsWord.size) {
 
-            return if (isVowel(charsWord[lastLetter]) && isHiatus(charsWord[vowel], charsWord[lastLetter])) {
+            return if (isVowel(charsWord[lastLetter]) && isHiatus(
+                    charsWord[vowel],
+                    charsWord[lastLetter]
+                )
+            ) {
                 vowel
             } else {
 
@@ -121,7 +125,8 @@ class UtilitySyllables {
             return vowel
         } else if (isConsonant(charsWord[lastLetter]) && isConsonant(charsWord[lastLetterSecondCase])) // VCC
         {
-            val groupDoubleConsonant = arrayOf("tr", "gr", "pr", "br", "bl", "fr", "fl", "cl", "dr", "pl")
+            val groupDoubleConsonant =
+                arrayOf("tr", "gr", "pr", "br", "bl", "fr", "fl", "cl", "dr", "pl")
             val tokenChar = charArrayOf(charsWord[lastLetter], charsWord[lastLetterSecondCase])
             val token = String(tokenChar).lowercase(Locale.getDefault())
             for (aString in groupDoubleConsonant) {
@@ -175,7 +180,7 @@ class UtilitySyllables {
         return false
     }
 
-    private fun isConsonant(letter: Char)= !isVowel(letter)
+    private fun isConsonant(letter: Char) = !isVowel(letter)
 
 
     private fun format(aWord: String?): String {
@@ -204,11 +209,14 @@ class UtilitySyllables {
         if (syllables.size == 1) return 0
 
         for (index in syllables.indices) {
-            if (patternAccent.matcher(syllables[index].toString()).matches()) return index//have accent is tonic
+            if (patternAccent.matcher(syllables[index].toString())
+                    .matches()
+            ) return index//have accent is tonic
         }
         val last = syllables[syllables.size - 1]
         return when {
-            patternVowelsCaseNCaseS.matcher(last.toString()).matches() -> syllables.size - 2 // plain
+            patternVowelsCaseNCaseS.matcher(last.toString())
+                .matches() -> syllables.size - 2 // plain
             else -> syllables.size - 1//acute
         }
     }

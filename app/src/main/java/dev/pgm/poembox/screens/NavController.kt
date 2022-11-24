@@ -19,7 +19,7 @@ fun SetUpNavController(controller: NavHostController) {
             ScreenTabs()
         }
         composable(ScreensRouteList.RouteScreenLogin.route) {
-           UserLogin(navController = controller)
+            UserLogin(navController = controller)
 
         }
     }

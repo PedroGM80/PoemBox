@@ -13,7 +13,7 @@ import dev.pgm.poembox.R
 fun TopBar() {
     TopAppBar(
         title = { Text(text = stringResource(R.string.app_name), fontSize = 18.sp) },
-        backgroundColor =  MaterialTheme.colors.primary,
+        backgroundColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary
     )
 }
