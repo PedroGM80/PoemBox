@@ -1,3 +1,4 @@
+/*
 package dev.pgm.poembox
 
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import dev.pgm.poembox.roomUtils.Draft
 import dev.pgm.poembox.roomUtils.PoemBoxDatabase
+import dev.pgm.poembox.roomUtils.User
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -56,3 +58,4 @@ class MainB : ComponentActivity() {
         }
     }
 }
+*/

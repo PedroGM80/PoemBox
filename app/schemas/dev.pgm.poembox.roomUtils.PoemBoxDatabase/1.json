@@ -2,12 +2,18 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "83d1b4840f2457db1e7cb5ea181de905",
+    "identityHash": "7bddf87aa30074fa71a469822d657016",
     "entities": [
       {
         "tableName": "drafts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `draftContent` TEXT, `draftAnnotation` TEXT, `writerName` TEXT NOT NULL, `writtenDate` TEXT NOT NULL, `dateValidation` TEXT, PRIMARY KEY(`title`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `draftContent` TEXT NOT NULL, `writerName` TEXT NOT NULL, `draftAnnotation` TEXT NOT NULL, `writtenDate` TEXT NOT NULL, `dateValidation` TEXT)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "Id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "title",
             "columnName": "title",
@@ -18,17 +24,17 @@
             "fieldPath": "draftContent",
             "columnName": "draftContent",
             "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "draftAnnotation",
-            "columnName": "draftAnnotation",
-            "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "writerName",
             "columnName": "writerName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "draftAnnotation",
+            "columnName": "draftAnnotation",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -47,9 +53,9 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "title"
+            "Id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
@@ -58,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '83d1b4840f2457db1e7cb5ea181de905')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7bddf87aa30074fa71a469822d657016')"
     ]
   }
 }
