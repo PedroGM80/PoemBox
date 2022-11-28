@@ -12,8 +12,9 @@ import java.io.FileOutputStream
 
 
 class User(var userName: String?, var mail: String?, var register: Boolean) : Activity() {
+    @RequiresApi(Build.VERSION_CODES.M)
     val encryptedFile = getEncryptedFile()
-    val dataModel = buildString {
+    private val dataModel = buildString {
         append(userName)
         append("#")
         append(mail)
@@ -26,6 +27,7 @@ class User(var userName: String?, var mail: String?, var register: Boolean) : Ac
     val mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
     val file = File(context.cacheDir, "my-secret-file")
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.register = false
@@ -39,11 +41,13 @@ class User(var userName: String?, var mail: String?, var register: Boolean) : Ac
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun isUserRegister(): Boolean {
         val dataReader: String = getFileEncryptUser()
         return dataReader.contains("#")
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @JvmName("getEncryptedFile1")
     private fun getEncryptedFile() = EncryptedFile.Builder(
         file,
@@ -53,6 +57,7 @@ class User(var userName: String?, var mail: String?, var register: Boolean) : Ac
     ).build()
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun writeFileEncrypt(): FileOutputStream {
         return encryptedFile.openFileOutput().apply {
             write(dataBytes)
@@ -62,6 +67,7 @@ class User(var userName: String?, var mail: String?, var register: Boolean) : Ac
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun getFileEncryptUser(): String {
         encryptedFile.openFileInput().apply {
             val decryptedBytes = readBytes()
