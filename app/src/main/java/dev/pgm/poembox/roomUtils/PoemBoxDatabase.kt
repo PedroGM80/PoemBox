@@ -28,7 +28,7 @@ abstract class PoemBoxDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: PoemBoxDatabase? = null
 
-        fun getDatabase(context: Context): PoemBoxDatabase {
+        fun getDatabase(context: Context): PoemBoxDatabase? {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             if (INSTANCE == null) {
@@ -38,7 +38,7 @@ abstract class PoemBoxDatabase : RoomDatabase() {
                 }
             }
             // Return database.
-            return INSTANCE!!
+            return INSTANCE
         }
 
         private fun buildDatabase(context: Context): PoemBoxDatabase {
