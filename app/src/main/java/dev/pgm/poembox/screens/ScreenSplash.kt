@@ -15,10 +15,16 @@ fun ScreenSplash(navController: NavController) {
 
     LaunchedEffect(key1 = true) {
         delay(1500)
-        val loadedUserData=USER_DATA
-        Log.i(":::USER_DATA",loadedUserData)
-        navController.navigate(ScreensRouteList.RouteScreenLogin.route) {
-            popUpTo(0)
+        val loadedUserData = USER_DATA
+        Log.i(":::USER_DATA", loadedUserData.length.toString())
+        if (loadedUserData.isEmpty()) {
+            navController.navigate(ScreensRouteList.RouteScreenCreateAccount.route) {
+                popUpTo(0)
+            }
+        } else {
+            navController.navigate(ScreensRouteList.RouteScreenLogin.route) {
+                popUpTo(0)
+            }
         }
     }
     Logo()

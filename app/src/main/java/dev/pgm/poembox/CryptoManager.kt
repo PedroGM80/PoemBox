@@ -4,8 +4,6 @@ import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
-import java.io.File
-import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.KeyStore
@@ -59,7 +57,7 @@ class CryptoManager {
         }.generateKey()
     }
 
-     fun encrypt(byteArray: ByteArray, outputStream: OutputStream): ByteArray {
+    fun encrypt(byteArray: ByteArray, outputStream: OutputStream): ByteArray {
 
         val encryptBytes = encryptCipher.doFinal(byteArray)
         outputStream.use { stream ->
@@ -71,17 +69,22 @@ class CryptoManager {
         return encryptBytes
     }
 
-     fun decrypt(inputStream: InputStream): ByteArray {
+    fun decrypt(inputStream: InputStream): ByteArray {
         return inputStream.use { stream ->
             val ivSize = stream.read()
-            val iv = ByteArray(ivSize)
-            stream.read(iv)
 
-            val encryptedByteSize = stream.read()
-            val encryptedBytes = ByteArray(encryptedByteSize)
-            stream.read(encryptedBytes)
+            if (ivSize == -1) {
+                return "".toByteArray()
+            } else {
+                val iv = ByteArray(ivSize)
+                stream.read(iv)
 
-            getDecryptCipherForIv(iv).doFinal(encryptedBytes)
+                val encryptedByteSize = stream.read()
+                val encryptedBytes = ByteArray(encryptedByteSize)
+                stream.read(encryptedBytes)
+
+                getDecryptCipherForIv(iv).doFinal(encryptedBytes)
+            }
         }
     }
 }
