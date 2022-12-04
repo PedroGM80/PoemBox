@@ -3,6 +3,7 @@ package dev.pgm.poembox
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -26,8 +27,10 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     val cryptoManager = CryptoManager()
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        USER_DATA = getUser()
         setContent {
             PoemBoxTheme {
                 // A surface container using the 'background' color from the theme
@@ -40,11 +43,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        USER_DATA = getUser()
-    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun saveUser(user: User) {
@@ -61,7 +59,9 @@ class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun getUser(): String {
+        val newFile = File(filesDir, "$ALIAS.txt").createNewFile()
         val file = File(filesDir, "$ALIAS.txt")
+        Log.i(":::ISTREAM",FileInputStream(file).toString())
         return cryptoManager.decrypt(FileInputStream(file)).decodeToString()
     }
 }
