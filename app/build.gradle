@@ -13,10 +13,6 @@ android {
     }
     namespace 'dev.pgm.poembox'
     compileSdk 33
-    dexOptions {
-        incremental true
-        javaMaxHeapSize "4g"
-    }
     defaultConfig {
         applicationId "dev.pgm.poembox"
         minSdk 21
