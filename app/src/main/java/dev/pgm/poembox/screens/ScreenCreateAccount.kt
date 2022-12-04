@@ -27,22 +27,11 @@ import dev.pgm.poembox.MainActivity
 import dev.pgm.poembox.MainActivity.Companion.USER_DATA
 import dev.pgm.poembox.roomUtils.User
 import dev.pgm.poembox.ui.theme.Purple700
-import kotlinx.coroutines.delay
-
-@Composable
-fun GoScreenTab(navController: NavController) {
-    LaunchedEffect(key1 = true) {
-        delay(0)
-        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-            popUpTo(0)
-        }
-    }
-}
 
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun UserLogin(navController: NavController) {
+fun CreateAccount(navController: NavController) {
     var next: Boolean by remember { mutableStateOf(false) }
     if (next) {
         GoScreenTab(navController)
@@ -85,7 +74,7 @@ fun UserLogin(navController: NavController) {
             val username = remember { mutableStateOf(TextFieldValue()) }
             val eMail = remember { mutableStateOf(TextFieldValue()) }
 
-            Text(text = "Login", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Serif))
+            Text(text = "Sing up", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Serif))
 
             Spacer(modifier = Modifier.height(20.dp))
             TextField(
@@ -114,19 +103,10 @@ fun UserLogin(navController: NavController) {
                         .fillMaxWidth()
                         .height(50.dp)
                 ) {
-                    Text(text = "Login")
+                    Text(text = "Create your account")
                 }
             }
-
             Spacer(modifier = Modifier.height(20.dp))
-            /*ClickableText(
-                text = AnnotatedString("Forgot password?"),
-                onClick = { },
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily.Default
-                )
-            )*/
         }
     }
 
@@ -136,6 +116,6 @@ fun UserLogin(navController: NavController) {
 @RequiresApi(Build.VERSION_CODES.M)
 @Preview(showBackground = true)
 @Composable
-fun PrevScreenUserLogin() {
-    UserLogin(rememberNavController())
+fun PrevScreenCreateAccount() {
+    CreateAccount(rememberNavController())
 }
