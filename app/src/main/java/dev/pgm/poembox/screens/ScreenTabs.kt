@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import dev.pgm.poembox.components.TabItem
@@ -32,8 +31,9 @@ fun ScreenTabs() {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun PrevScreenTabs() {
     ScreenTabs()
-}
+}*/
