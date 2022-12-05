@@ -17,10 +17,6 @@ data class Draft(
     @ColumnInfo(name = "writtenDate") val writtenDate: String = ""
 
     ) {
-    @ColumnInfo(name = "dateValidation") var dateValidation: String? = getDate()
-    private fun getDate(): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS")
-        val date = Date()
-        return formatter.format(date).toString()
-    }
+    @ColumnInfo(name = "dateValidation") var dateValidation: String? = ""
+
 }

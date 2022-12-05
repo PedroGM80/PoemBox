@@ -57,8 +57,8 @@ class UtilitySyllables {
     val pattern: Pattern
         get() {
             val regex = StringBuffer(otherCase[0].code)
-            for (i in 1 until otherCase.size) {
-                regex.append("|").append(otherCase[i])
+            for (index in 1 until otherCase.size) {
+                regex.append("|").append(otherCase[index])
             }
             return Pattern.compile(regex.toString())
         }
@@ -72,7 +72,7 @@ class UtilitySyllables {
         val syllables = ArrayList<String>()
         while (word!!.isNotEmpty()) {
             cut = next(word) + 1
-            syllable = unformat(word.substring(0, cut))
+            syllable = unFormat(word.substring(0, cut))
             word = word.substring(cut)
             syllables.add(syllable)
         }
@@ -90,12 +90,8 @@ class UtilitySyllables {
             found = isVowel(charsWord[vowel])
             if (!found) vowel++
         }
-
-
         if (lastVowel(vowel, charsWord)) return word.length - 1
-
         var lastLetter = vowel + 1
-
         if (charsWord[lastLetter] == 'h') {
 
             lastLetter++
@@ -195,7 +191,7 @@ class UtilitySyllables {
         return word
     }
 
-    private fun unformat(aWord: String?): String {
+    private fun unFormat(aWord: String?): String {
         var word = aWord
         if (word == null) word = ""
         for (i in conversions.indices) {
@@ -224,44 +220,44 @@ class UtilitySyllables {
 
 
     fun stressedVowel(syllable: String): Int {
-        val letter = syllable.lowercase(Locale.getDefault()).toCharArray()
-        var ret = -1
+        val letters = syllable.lowercase(Locale.getDefault()).toCharArray()
+        var check = -1
         var onlyOneVowel = false
         val patternVowels = Pattern.compile("[aeiouáéíóú]")
         val patternVowelsAccent = Pattern.compile("[áéíóú]")
         val patternOpenVowels = Pattern.compile("[aáeéoó]")
 
 
-        for (index in letter.indices) {
+        for (index in letters.indices) {
             val stringBuffer = StringBuffer()
-            stringBuffer.append(letter[index])
+            stringBuffer.append(letters[index])
             if (patternVowels.matcher(stringBuffer).matches()) {
                 onlyOneVowel = true
-                ret = index
+                check = index
             }
         }
-        if (onlyOneVowel) return ret
+        if (onlyOneVowel) return check
 
         // if this has interleaved
-        ret = -1
-        for (index in letter.indices) {
+        check = -1
+        for (index in letters.indices) {
             val stringBuffer = StringBuffer()
-            stringBuffer.append(letter[index])
+            stringBuffer.append(letters[index])
             if (patternVowelsAccent.matcher(stringBuffer).matches()) {
-                ret = index
+                check = index
             }
         }
-        if (ret != -1) return ret
+        if (check != -1) return check
 
-        ret = -1
-        for (index in letter.indices) {
+        check = -1
+        for (index in letters.indices) {
             val stringBuffer = StringBuffer()
-            stringBuffer.append(letter[index])
+            stringBuffer.append(letters[index])
             if (patternOpenVowels.matcher(stringBuffer).matches()) {
-                ret = index
+                check = index
             }
         }
-        return ret
+        return check
     }
 }
 
