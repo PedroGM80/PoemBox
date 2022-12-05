@@ -18,10 +18,10 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 class MainActivity : ComponentActivity() {
-    var user=User(null,null)
+    var user = User(null, null)
+
     companion object {
         var USER_DATA = ""
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        USER_DATA = getUser()
+        USER_DATA = getDecode()
         setContent {
             PoemBoxTheme {
                 // A surface container using the 'background' color from the theme
@@ -49,24 +49,23 @@ class MainActivity : ComponentActivity() {
         val name: String = user.userName ?: ""
         val mail: String = user.userMail ?: ""
         val info = "$mail#$name"
-        val fileDir=ContextContentProvider.applicationContext()!!.filesDir
+        val fileDir = ContextContentProvider.applicationContext()!!.filesDir
         if (File(fileDir, "$ALIAS.txt").exists()) {
 
             val file = File(fileDir, "$ALIAS.txt")
             val fileOutputStream = FileOutputStream(file)
             cryptoManager.encrypt(info.toByteArray(), fileOutputStream).toString()
-        }else{
+        } else {
 
             File(filesDir, "$ALIAS.txt").createNewFile()
             val file = File(filesDir, "$ALIAS.txt")
             val fileOutputStream = FileOutputStream(file)
             cryptoManager.encrypt(info.toByteArray(), fileOutputStream).toString()
         }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun getUser(): String {
+    fun getDecode(): String {
         return if (File(filesDir, "$ALIAS.txt").exists()) {
             val file = File(filesDir, "$ALIAS.txt")
             Log.i(":::ISTREAM", FileInputStream(file).toString())
