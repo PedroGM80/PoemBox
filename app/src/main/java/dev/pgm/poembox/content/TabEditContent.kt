@@ -1,5 +1,7 @@
 package dev.pgm.poembox.content
 
+import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,11 +19,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.pgm.poembox.ContextContentProvider
+import dev.pgm.poembox.MainActivity
+import dev.pgm.poembox.MainActivity.Companion.USER_NAME
 import dev.pgm.poembox.roomUtils.Draft
 import dev.pgm.poembox.roomUtils.PoemBoxDatabase
-import dev.pgm.poembox.ui.theme.ColorPoemTitleField
+import dev.pgm.poembox.roomUtils.User
+import dev.pgm.poembox.ui.theme.ColorPoemField
 import dev.pgm.poembox.ui.theme.Shapes
 import dev.pgm.poembox.ui.theme.Typography
+import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Composable
@@ -32,10 +41,12 @@ fun EditScreen() {
                 .background(MaterialTheme.colors.background)
                 .wrapContentSize(Alignment.Center)
         ) {
+            val scope = rememberCoroutineScope()
+
             Text(
                 text = "Edit",
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onBackground,
+                color = Color.Black,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 textAlign = TextAlign.Center,
                 fontSize = 25.sp
@@ -51,7 +62,7 @@ fun EditScreen() {
                 onValueChange = {
                     textTitle = it
                 },
-                colors = ColorPoemTitleField,
+                colors = ColorPoemField,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
@@ -65,17 +76,41 @@ fun EditScreen() {
                     textContent = it
                 },
                 textStyle = TextStyle(fontSize = Typography.body2.fontSize),
+                colors = ColorPoemField,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
-                    .fillMaxHeight(), // Here I have decreased the height
+                    .height(400.dp), // Here I have decreased the height
                 shape = Shapes.medium,
             )
             Button(
                 onClick = {
-                   // val draft=Draft(textTitle.text,textContent.text,"",,)
-                 //   PoemBoxDatabase().draftDao().addDraft(draft)
-                    },
+                    val loadedUserData = MainActivity.USER_DATA
+                    val dataSplit = loadedUserData.split("#")
+                    val userLoaded = dataSplit[1]
+                    val draft =
+                        Draft(
+                            id = 0,
+                            title = textTitle.text,
+                            draftContent = textContent.text,
+                            writerName = userLoaded,
+                            draftAnnotation = "",
+                            writtenDate = getDate()
+                        )
+
+                    Log.i(":::Create",draft.toString())
+                    scope.launch {
+                        withContext(Dispatchers.IO) {
+                            ContextContentProvider.applicationContext()
+                                ?.let {
+                                    if (draft != null) {
+                                        PoemBoxDatabase.getDatabase(it)?.draftDao()?.addDraft(draft)
+                                        Log.i(":::Save",draft.toString())
+                                    }
+                                }
+                        }
+                    }
+                },
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,10 +126,17 @@ fun EditScreen() {
     }
 }
 
+private fun getDate(): String {
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS")
+    val date = Date()
+    return formatter.format(date).toString()
+}
 
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun EditScreenPreview() {
     EditScreen()
 }
+*/

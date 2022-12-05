@@ -22,11 +22,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.pgm.poembox.MainActivity
 import dev.pgm.poembox.roomUtils.User
+import dev.pgm.poembox.ui.theme.ColorPoemField
 import dev.pgm.poembox.ui.theme.Purple700
 import kotlinx.coroutines.delay
 
+
+
+
 @Composable
 fun GoScreenTab(navController: NavController) {
+
     LaunchedEffect(key1 = true) {
         delay(0)
         navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
@@ -83,13 +88,15 @@ fun UserLogin(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
+            colors = ColorPoemField,
             label = { Text(text = user.userName.toString()) },
             value = username.value,
             onValueChange = { username.value = it })
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            label = { Text(text = user.userName.toString()) },
+            colors = ColorPoemField,
+            label = { Text(text = user.userMail.toString()) },
             value = eMail.value,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             onValueChange = { eMail.value = it })
