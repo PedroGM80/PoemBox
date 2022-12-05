@@ -22,6 +22,7 @@ fun ScreenSplash(navController: NavController) {
                 popUpTo(0)
             }
         } else {
+
             navController.navigate(ScreensRouteList.RouteScreenLogin.route) {
                 popUpTo(0)
             }

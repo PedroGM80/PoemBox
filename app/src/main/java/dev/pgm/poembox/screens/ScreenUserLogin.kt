@@ -1,7 +1,6 @@
 package dev.pgm.poembox.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -18,12 +17,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import dev.pgm.poembox.MainActivity.Companion.USER_DATA
+import dev.pgm.poembox.MainActivity
+import dev.pgm.poembox.roomUtils.User
 import dev.pgm.poembox.ui.theme.Purple700
 import kotlinx.coroutines.delay
 
@@ -40,19 +38,18 @@ fun GoScreenTab(navController: NavController) {
 
 @Composable
 fun UserLogin(navController: NavController) {
+    val loadedUserData = MainActivity.USER_DATA
+    val dataSplit = loadedUserData.split("#")
+    val userLoaded = dataSplit[0]
+    val mailLoaded = dataSplit[1]
+
+    Log.i(":::Data", userLoaded)
+    Log.i(":::DataB", mailLoaded)
+    val user = User(userLoaded, mailLoaded)
     var next: Boolean by remember { mutableStateOf(false) }
     if (next) {
         GoScreenTab(navController)
     }
-
-//    val user = User(null, null)//Create user with null values
-    //if (user.existUserRegister()) {
-
-    val userData = USER_DATA
-    val userDataSplit = userData.split("#")
-
-    //      user.userName = userDataSplit[0]
-    //    user.mail = userDataSplit[1]
 
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
@@ -86,13 +83,13 @@ fun UserLogin(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            label = { Text(text = "Username") },
+            label = { Text(text = user.userName.toString()) },
             value = username.value,
             onValueChange = { username.value = it })
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            label = { Text(text = "Email") },
+            label = { Text(text = user.userName.toString()) },
             value = eMail.value,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             onValueChange = { eMail.value = it })
@@ -101,9 +98,9 @@ fun UserLogin(navController: NavController) {
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
-                    //                  user.userName = username.value.text
-                    //                user.mail = eMail.value.text
-                    //              MainActivity().saveUser(user)
+                    val activity = MainActivity()
+                    activity.user.userName = user.userName.toString()
+                    activity.user.userMail = user.userMail.toString()
                     next = true
                 },
                 shape = RoundedCornerShape(50.dp),
@@ -130,9 +127,10 @@ fun UserLogin(navController: NavController) {
 
 }
 
+/*
 @RequiresApi(Build.VERSION_CODES.M)
 @Preview(showBackground = true)
 @Composable
 fun PrevScreenUserLogin() {
     UserLogin(rememberNavController())
-}
+}*/

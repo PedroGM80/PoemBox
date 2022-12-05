@@ -173,14 +173,15 @@ class UtilitySyllables {
         return firstVowel == secondVowel
     }
 
-    private fun isVowel(l: Char): Boolean {
+    private fun isVowel(letter: Char): Boolean {
         for (vowel in vowels) {
-            if (l.lowercaseChar() == vowel) return true
+            if (letter.lowercaseChar() == vowel) return true
         }
         return false
     }
 
-    private fun isConsonant(letter: Char) = !isVowel(letter)
+    private fun isConsonant(letter: Char): Boolean= !isVowel(letter)
+
 
 
     private fun format(aWord: String?): String {
