@@ -18,6 +18,9 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 class MainActivity : ComponentActivity() {
+    companion object{
+        var POEM_TITLE=""
+    }
     var user = User(null, null)
 
 

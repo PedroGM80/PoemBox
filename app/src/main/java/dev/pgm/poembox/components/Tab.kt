@@ -11,7 +11,6 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import dev.pgm.poembox.components.TabItem.Editor.setUserData
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
@@ -41,8 +40,6 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
                         pagerState.animateScrollToPage(index)
                     }
                 },
-
-
             )
         }
     }

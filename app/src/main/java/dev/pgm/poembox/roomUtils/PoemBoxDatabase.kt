@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import dev.pgm.poembox.ContextContentProvider
 
 @Database(
     entities = [Draft::class],
@@ -28,13 +29,14 @@ abstract class PoemBoxDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: PoemBoxDatabase? = null
 
-        fun getDatabase(context: Context): PoemBoxDatabase? {
+        fun getDatabase(): PoemBoxDatabase? {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             if (INSTANCE == null) {
                 synchronized(this) {
                     // Pass the database to the INSTANCE
-                    INSTANCE = buildDatabase(context)
+                    INSTANCE = ContextContentProvider.applicationContext()
+                        ?.let { buildDatabase(it) }
                 }
             }
             // Return database.

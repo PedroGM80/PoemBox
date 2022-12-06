@@ -6,8 +6,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DraftDao {
 
-    @Query("SELECT * FROM drafts WHERE title =:id")
+    @Query("SELECT * FROM drafts WHERE id=:id")
     suspend fun findById(id: Int): Draft
+
+    @Query("SELECT * FROM drafts WHERE title=:title")
+    suspend fun findByTitle(title: String): Draft
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addDraft(draft: Draft)
