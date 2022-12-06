@@ -20,9 +20,7 @@ import java.io.FileOutputStream
 class MainActivity : ComponentActivity() {
     var user = User(null, null)
 
-    companion object {
-        var USER_DATA = ""
-    }
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     val cryptoManager = CryptoManager()
@@ -30,14 +28,15 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        USER_DATA = getDecode()
+       val userData = getDecode()
+
         setContent {
             PoemBoxTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     //set up nav controller
                     ShowBars(flag = false)
-                    SetUpNavController(rememberNavController())
+                    SetUpNavController(rememberNavController(),userData)
                 }
             }
         }
