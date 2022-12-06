@@ -8,12 +8,14 @@ import androidx.compose.ui.res.painterResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
+import dev.pgm.poembox.components.TabItem.Editor.setUserData
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Tabs(tabs: List<TabItem>, pagerState: PagerState) {
+fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
+    setUserData(userData)
     val scope = rememberCoroutineScope()
     // OR ScrollableTabRow()
     TabRow(
@@ -39,6 +41,8 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState) {
                         pagerState.animateScrollToPage(index)
                     }
                 },
+
+
             )
         }
     }

@@ -1,6 +1,5 @@
 package dev.pgm.poembox.content
 
-import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,25 +15,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.ContextContentProvider
-import dev.pgm.poembox.MainActivity
-import dev.pgm.poembox.MainActivity.Companion.USER_NAME
 import dev.pgm.poembox.roomUtils.Draft
 import dev.pgm.poembox.roomUtils.PoemBoxDatabase
-import dev.pgm.poembox.roomUtils.User
 import dev.pgm.poembox.ui.theme.ColorPoemField
 import dev.pgm.poembox.ui.theme.Shapes
 import dev.pgm.poembox.ui.theme.Typography
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 @Composable
-fun EditScreen() {
+fun EditScreen(userData: String) {
     Surface(color = MaterialTheme.colors.primary) {
         Column(
             modifier = Modifier
@@ -85,12 +82,10 @@ fun EditScreen() {
             )
             Button(
                 onClick = {
-                    val loadedUserData = MainActivity.USER_DATA
-                    val dataSplit = loadedUserData.split("#")
+                    val dataSplit = userData.split("#")
                     val userLoaded = dataSplit[1]
                     val draft =
                         Draft(
-                            id = 0,
                             title = textTitle.text,
                             draftContent = textContent.text,
                             writerName = userLoaded,
@@ -98,15 +93,13 @@ fun EditScreen() {
                             writtenDate = getDate()
                         )
 
-                    Log.i(":::Create",draft.toString())
+                    Log.i(":::Create", draft.toString())
                     scope.launch {
                         withContext(Dispatchers.IO) {
                             ContextContentProvider.applicationContext()
                                 ?.let {
-                                    if (draft != null) {
-                                        PoemBoxDatabase.getDatabase(it)?.draftDao()?.addDraft(draft)
-                                        Log.i(":::Save",draft.toString())
-                                    }
+                                    PoemBoxDatabase.getDatabase(it)?.draftDao()?.addDraft(draft)
+                                    Log.i(":::Save", draft.toString())
                                 }
                         }
                     }

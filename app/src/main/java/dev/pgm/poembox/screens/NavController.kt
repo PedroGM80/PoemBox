@@ -9,20 +9,20 @@ import androidx.navigation.compose.composable
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun SetUpNavController(controller: NavHostController) {
+fun SetUpNavController(controller: NavHostController, userData: String) {
     NavHost(
         navController = controller,
         startDestination = ScreensRouteList.RouteScreenSplash.route
     ) {
 
         composable(ScreensRouteList.RouteScreenSplash.route) {
-            ScreenSplash(navController = controller)
+            ScreenSplash(navController = controller,userData)
         }
         composable(ScreensRouteList.RouteScreenTabs.route) {
-            ScreenTabs()
+            ScreenTabs(userData)
         }
         composable(ScreensRouteList.RouteScreenLogin.route) {
-            UserLogin(navController = controller)
+            UserLogin(navController = controller,userData)
 
         }
         composable(ScreensRouteList.RouteScreenCreateAccount.route) {

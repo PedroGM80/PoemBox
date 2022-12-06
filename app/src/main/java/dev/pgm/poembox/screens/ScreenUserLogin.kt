@@ -27,8 +27,6 @@ import dev.pgm.poembox.ui.theme.Purple700
 import kotlinx.coroutines.delay
 
 
-
-
 @Composable
 fun GoScreenTab(navController: NavController) {
 
@@ -42,11 +40,11 @@ fun GoScreenTab(navController: NavController) {
 
 
 @Composable
-fun UserLogin(navController: NavController) {
-    val loadedUserData = MainActivity.USER_DATA
+fun UserLogin(navController: NavController, userData: String) {
+    val loadedUserData =userData
     val dataSplit = loadedUserData.split("#")
-    val userLoaded = dataSplit[0]
-    val mailLoaded = dataSplit[1]
+    val userLoaded = dataSplit[1]
+    val mailLoaded = dataSplit[0]
 
     Log.i(":::Data", userLoaded)
     Log.i(":::DataB", mailLoaded)
@@ -81,22 +79,23 @@ fun UserLogin(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val username = remember { mutableStateOf(TextFieldValue()) }
-        val eMail = remember { mutableStateOf(TextFieldValue()) }
+        val username = remember { mutableStateOf(TextFieldValue(text = user.userName.toString())) }
+        val eMail =
+            remember { mutableStateOf(TextFieldValue(text = user.userMail.toString())) }
 
         Text(text = "Login", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Serif))
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
             colors = ColorPoemField,
-            label = { Text(text = user.userName.toString()) },
+            label = { Text(text = "User") },
             value = username.value,
             onValueChange = { username.value = it })
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
             colors = ColorPoemField,
-            label = { Text(text = user.userMail.toString()) },
+            label = { Text(text = "Email") },
             value = eMail.value,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             onValueChange = { eMail.value = it })

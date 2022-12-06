@@ -15,7 +15,7 @@ import dev.pgm.poembox.content.TabsContent
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ScreenTabs() {
+fun ScreenTabs(userData: String) {
     val tabs: List<TabItem> = listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager)
     val pagerState = rememberPagerState()
     Scaffold(
@@ -25,7 +25,7 @@ fun ScreenTabs() {
             modifier = Modifier
                 .padding(padding)
         ) {
-            Tabs(tabs = tabs, pagerState = pagerState)
+            Tabs(tabs = tabs, pagerState = pagerState, userData=userData)
             TabsContent(tabs = tabs, pagerState = pagerState)
         }
     }
