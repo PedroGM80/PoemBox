@@ -15,9 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.ContextContentProvider
+import dev.pgm.poembox.MainActivity.Companion.POEM_TITLE
 import dev.pgm.poembox.roomUtils.Draft
 import dev.pgm.poembox.roomUtils.PoemBoxDatabase
 import dev.pgm.poembox.ui.theme.ColorPoemField
@@ -92,18 +94,19 @@ fun EditScreen(userData: String) {
                             draftAnnotation = "",
                             writtenDate = getDate()
                         )
+                    val titlePoem = draft.title
 
                     Log.i(":::Create", draft.toString())
                     scope.launch {
                         withContext(Dispatchers.IO) {
-                            ContextContentProvider.applicationContext()
-                                ?.let {
-                                    PoemBoxDatabase.getDatabase(it)?.draftDao()?.addDraft(draft)
+
+                                    PoemBoxDatabase.getDatabase()?.draftDao()?.addDraft(draft)
                                     Log.i(":::Save", draft.toString())
-                                }
+
                         }
                     }
-                },
+                          POEM_TITLE=titlePoem
+                    Log.i(":::TitleEdit", POEM_TITLE)},
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,10 +129,9 @@ private fun getDate(): String {
 }
 
 
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun EditScreenPreview() {
-    EditScreen()
+    EditScreen("mail#nombre")
 }
-*/
