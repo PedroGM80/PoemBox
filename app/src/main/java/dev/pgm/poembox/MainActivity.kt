@@ -20,6 +20,7 @@ import java.io.FileOutputStream
 class MainActivity : ComponentActivity() {
     companion object{
         var POEM_TITLE=""
+        var  VALIDATE_STATUS=0
     }
     var user = User(null, null)
 

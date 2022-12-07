@@ -22,9 +22,9 @@ interface DraftDao {
     suspend fun getAllDrafts(): MutableList<Draft>
 
     @Update
-    suspend fun updateNote(draft: Draft)
+    suspend fun updateDraft(draft: Draft)
 
     @Delete
-    suspend fun deleteNote(draft: Draft)
+    suspend fun deleteDraft(draft: Draft)
 
 }
