@@ -19,6 +19,7 @@ class UtilitySyllables {
         arrayOf("yo", "|o"),
         arrayOf("yu", "|u")
     )
+    private val punctuationMarks =charArrayOf(',', '.')
     private val openVowels = charArrayOf('a', 'á', 'e', 'é', 'o', 'ó')
     private val closeVowels = charArrayOf('i', 'u', 'ü', 'y')
     private val closeVowelsAccent = charArrayOf('í', 'ú')
@@ -65,7 +66,10 @@ class UtilitySyllables {
 
 
     fun getSyllables(aWord: String?): ArrayList<String> {
-        var word = aWord
+        val wordNoPoint= aWord?.replace(".","")
+        val wordNoPoints= wordNoPoint?.replace(",","")
+        var word = wordNoPoints
+
         word = format(word)
         var cut: Int
         var syllable: String
@@ -144,9 +148,9 @@ class UtilitySyllables {
         return 0
     }
 
-    private fun lastVowel(vocal: Int, a: CharArray): Boolean {
-        for (i in vocal + 1 until a.size) {
-            if (isVowel(a[i])) {
+    private fun lastVowel(vocal: Int, aWord: CharArray): Boolean {
+        for (i in vocal + 1 until aWord.size) {
+            if (isVowel(aWord[i])) {
                 return false
             }
         }
@@ -264,7 +268,7 @@ class UtilitySyllables {
 
 fun main() {
     val testUtil = UtilitySyllables()
-    val resultA = testUtil.getSyllables("cacahuate")
+    val resultA = testUtil.getSyllables("cacahuate.")
     val resultA2 = testUtil.getSyllables("cacahuete")
     val resultB = testUtil.getSyllables("Verónica")
     val resultC = testUtil.getSyllables("Timón")

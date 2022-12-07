@@ -51,17 +51,93 @@ fun MonitoringScreen() {
         'y',
         'z'
     )
+    val showDialog = remember { mutableStateOf(false) }
     val numberSyllablesInPoem = mutableListOf<String>()
     var higherCountVowel = 65
     var minorCountVowel = 97
     var higherCountConsonant = 0
     var minorCountConsonant = 0
     var countLineBreak = 0
+    val bodyDialog = remember { mutableStateOf("") }
+
+    fun getRimeLetter(poemLine: String): String {
+//tengo que hacer una lista con las letras de rimas asociadas a las vocales
+        //para que si contiene una rima en a la siguiente ponga a
+        if (poemLine.isEmpty()) {
+            countLineBreak++
+        } else {
+            val utilitySyllables = UtilitySyllables()
+            val poemLineSyllables = utilitySyllables.getSyllables(poemLine)
+            val numberSyllablesInThePoemLine = poemLineSyllables.size
+            val higherArt = (numberSyllablesInThePoemLine > 8)
+            val minorArt = (numberSyllablesInThePoemLine <= 8)
+            val lastSyllable = poemLineSyllables.last()
+            val lastLetter = lastSyllable.last()
+            countLineBreak = 0
+            when {
+                utilitySyllables.isVowel(lastLetter) && higherArt -> {
+                    val check = higherCountVowel.toChar().toString()
+                    higherCountVowel++
+                    numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+                    return buildString {
+                        append(numberSyllablesInThePoemLine)
+                        append(check)
+                    }
+                }
+                !utilitySyllables.isVowel(lastLetter) && higherArt -> {
+                    val check = consonant[higherCountConsonant].toString()
+                    numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+                    higherCountConsonant++
+                    return buildString {
+                        append(numberSyllablesInThePoemLine)
+                        append(check)
+                    }
+                }
+                utilitySyllables.isVowel(lastLetter) && minorArt -> {
+                    val check = minorCountVowel.toChar().toString()
+                    numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+                    minorCountVowel++
+                    return buildString {
+                        append(numberSyllablesInThePoemLine)
+                        append(check)
+                    }
+                }
+                !utilitySyllables.isVowel(lastLetter) && minorArt -> {
+                    val check = consonant[minorCountConsonant].uppercase()
+                    numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+                    minorCountConsonant++
+                    return buildString {
+                        append(numberSyllablesInThePoemLine)
+                        append(check)
+                    }
+                }
+            }
+        }
+        return if (countLineBreak > 1) ", " else ""
+    }
+
     var poem by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    fun poemRimeIterator(poem: String): String {
+        var rimeChecks = ""
+        val poemLines = poem.split("\n")
+        for (line in poemLines) {
+            rimeChecks += getRimeLetter(line)
+        }
+        return rimeChecks
+    }
 
+    fun <T> findDuplicates(list: List<T>): Set<T> {
+        val seen: MutableSet<T> = mutableSetOf()
+        return list.filter { !seen.add(it) }.toSet()
+    }
+
+    fun getPredominateNumberSyllables(): String = findDuplicates(numberSyllablesInPoem).toString()
+        .replace("[", "")
+        .replace("]", "")
     Log.i(":::POEM", poem)
     Surface(color = MaterialTheme.colors.primary) {
+
         Box(Modifier.wrapContentSize(Alignment.Center)) {
             Column(
                 modifier = Modifier
@@ -127,7 +203,16 @@ fun MonitoringScreen() {
 
                 Row(Modifier.align(Alignment.CenterHorizontally)) {
                     Button(
-                        onClick = { },
+                        onClick = {
+                            Log.i(":::SHOW", "show dialogA")
+                            val result = poemRimeIterator(bodyPoem)
+                            val numberPredominate = getPredominateNumberSyllables()
+                            bodyDialog.value = "$numberPredominate syllable verses predominate," +
+                                    " following the schema: $result \n"
+                            Log.i(":::SHOWB", bodyDialog.value)
+                            showDialog.value = true
+
+                        },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .width(200.dp)
@@ -141,7 +226,6 @@ fun MonitoringScreen() {
                     }
                     Button(
                         onClick = {
-
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
@@ -154,6 +238,7 @@ fun MonitoringScreen() {
                             | number of verses""".trimMargin()
                         )
                     }
+
                 }
                 Row(Modifier.align(Alignment.CenterHorizontally)) {
                     Button(
@@ -199,83 +284,18 @@ fun MonitoringScreen() {
                     }
                 }
             }
+
         }
     }
-    fun getRimeLetter(poemLine: String): String {
-        val utilitySyllables = UtilitySyllables()
-        val poemLineSyllables = utilitySyllables.getSyllables(poemLine)
-        val numberSyllables = poemLineSyllables.size
-        val higherArt = (numberSyllables > 8)
-        val minorArt = (numberSyllables <= 8)
-        val lastSyllable = poemLineSyllables.last()
-        val lastLetter = lastSyllable.last()
-        if (poemLine.isEmpty()) {
-            countLineBreak++
-        } else {
-            countLineBreak = 0
-            when {
-                utilitySyllables.isVowel(lastLetter) && higherArt -> {
-                    val check = higherCountVowel.toChar().toString()
-                    higherCountVowel++
-                    numberSyllablesInPoem.add(numberSyllables.toString())
-                    return buildString {
-                        append(numberSyllablesInPoem)
-                        append(check)
-                    }
-                }
-                !utilitySyllables.isVowel(lastLetter) && higherArt -> {
-                    val check = consonant[higherCountConsonant].toString()
-                    numberSyllablesInPoem.add(numberSyllables.toString())
-                    higherCountConsonant++
-                    return buildString {
-                        append(numberSyllablesInPoem)
-                        append(check)
-                    }
-                }
-                utilitySyllables.isVowel(lastLetter) && minorArt -> {
-                    val check = minorCountVowel.toChar().toString()
-                    numberSyllablesInPoem.add(numberSyllables.toString())
-                    minorCountVowel++
-                    return buildString {
-                        append(numberSyllablesInPoem)
-                        append(check)
-                    }
-                }
-                !utilitySyllables.isVowel(lastLetter) && minorArt -> {
-                    val check = consonant[minorCountConsonant].uppercase()
-                    numberSyllablesInPoem.add(numberSyllables.toString())
-                    minorCountConsonant++
-                    return buildString {
-                        append(numberSyllablesInPoem)
-                        append(check)
-                    }
-                }
-            }
-        }
-        return if (countLineBreak > 1) ", " else ""
-    }
 
-    fun poemRimeIterator(poem: String): String {
-        var rimeChecks = ""
-        val poemLines = poem.split("\n")
-        for (line in poemLines) {
-            rimeChecks += getRimeLetter(line)
-        }
-        return rimeChecks
+    if (showDialog.value) {
+        AlertDialogSample("Classification by number of syllables", bodyDialog.value)
+        Log.i(":::SHOW", "show dialog")
     }
-
-    fun <T> findDuplicates(list: List<T>): Set<T> {
-        val seen: MutableSet<T> = mutableSetOf()
-        return list.filter { !seen.add(it) }.toSet()
-    }
-
-    fun getPredominateNumberSyllables(): String = findDuplicates(numberSyllablesInPoem).toString()
-        .replace("[", "")
-        .replace("]", "")
 }
 
 @Composable
-fun AlertDialogSample(text: String, title: String) {
+fun AlertDialogSample(body: String, title: String) {
     MaterialTheme {
         Column {
             val openDialog = remember { mutableStateOf(false) }
@@ -295,7 +315,7 @@ fun AlertDialogSample(text: String, title: String) {
                         Text(text = title)
                     },
                     text = {
-                        Text(text)
+                        Text(text = body)
                     },
                     confirmButton = {
                         Button(
@@ -318,7 +338,6 @@ fun AlertDialogSample(text: String, title: String) {
                 )
             }
         }
-
     }
 }
 
