@@ -169,7 +169,7 @@ class UtilitySyllables {
         return firstVowel == secondVowel
     }
 
-    private fun isVowel(letter: Char): Boolean {
+    internal fun isVowel(letter: Char): Boolean {
         for (vowel in vowels) {
             if (letter.lowercaseChar() == vowel) return true
         }
