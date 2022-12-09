@@ -19,11 +19,11 @@ class UtilitySyllables {
         arrayOf("yo", "|o"),
         arrayOf("yu", "|u")
     )
-    private val punctuationMarks =charArrayOf(',', '.')
+    private val punctuationMarks = charArrayOf(',', '.')
     private val openVowels = charArrayOf('a', 'á', 'e', 'é', 'o', 'ó')
     private val closeVowels = charArrayOf('i', 'u', 'ü', 'y')
     private val closeVowelsAccent = charArrayOf('í', 'ú')
-    private val patternAccent: Pattern = Pattern.compile(".*([áéíóú]).*")
+    val patternAccent: Pattern = Pattern.compile(".*([áéíóú]).*")
     private val patternVowelsCaseNCaseS: Pattern = Pattern.compile(".*([áéíóúaeiouns])")
     private val enye = 'ñ'
     private val vowels: CharArray
@@ -66,8 +66,8 @@ class UtilitySyllables {
 
 
     fun getSyllables(aWord: String?): ArrayList<String> {
-        val wordNoPoint= aWord?.replace(".","")
-        val wordNoPoints= wordNoPoint?.replace(",","")
+        val wordNoPoint = aWord?.replace(".", "")
+        val wordNoPoints = wordNoPoint?.replace(",", "")
         var word = wordNoPoints
 
         word = format(word)
@@ -173,15 +173,14 @@ class UtilitySyllables {
         return firstVowel == secondVowel
     }
 
-    internal fun isVowel(letter: Char): Boolean {
+    fun isVowel(letter: Char): Boolean {
         for (vowel in vowels) {
             if (letter.lowercaseChar() == vowel) return true
         }
         return false
     }
 
-    private fun isConsonant(letter: Char): Boolean= !isVowel(letter)
-
+    private fun isConsonant(letter: Char): Boolean = !isVowel(letter)
 
 
     private fun format(aWord: String?): String {
@@ -198,8 +197,9 @@ class UtilitySyllables {
     private fun unFormat(aWord: String?): String {
         var word = aWord
         if (word == null) word = ""
-        for (i in conversions.indices) {
-            word = word!!.replace(conversions[i][1], conversions[i][0])
+        for (index in conversions.indices) {
+
+            word = word!!.replace(conversions[index][1], conversions[index][0])
         }
         word = word!!.replace("¬", "h")
         return word
@@ -222,8 +222,23 @@ class UtilitySyllables {
         }
     }
 
+    fun stressedB(syllables: String): Int {
+        if (syllables.length == 1) return 0
 
-    fun stressedVowel(syllable: String): Int {
+        for (index in syllables.indices) {
+            if (patternAccent.matcher(syllables[index].toString())
+                    .matches()
+            ) return index//have accent is tonic
+        }
+        val last = syllables[syllables.length - 1]
+        return when {
+            patternVowelsCaseNCaseS.matcher(last.toString())
+                .matches() -> syllables.length - 2 // plain
+            else -> syllables.length - 1//acute
+        }
+    }
+
+    fun getStressedVowelIndex(syllable: String): Int {
         val letters = syllable.lowercase(Locale.getDefault()).toCharArray()
         var check = -1
         var onlyOneVowel = false
@@ -263,22 +278,23 @@ class UtilitySyllables {
         }
         return check
     }
-}
 
 
-fun main() {
-    val testUtil = UtilitySyllables()
-    val resultA = testUtil.getSyllables("cacahuate.")
-    val resultA2 = testUtil.getSyllables("cacahuete")
-    val resultB = testUtil.getSyllables("Verónica")
-    val resultC = testUtil.getSyllables("Timón")
-    val resultD = testUtil.getSyllables("Cáliz")
-    val resultE = testUtil.getSyllables("Cámara")
+    fun getLastSyllable(word: String): String {
+        return getSyllables(word).last()
+    }
 
-    println(resultA)
-    println(resultA2)
-    println(resultB)
-    println(resultC)
-    println(resultD)
-    println(resultE)
+    fun getLastVowel(word: String): String {
+        var vowel = ""
+        for (letter in word) {
+            if (isVowel(letter)) {
+                vowel = letter.toString()
+            }
+        }
+        return vowel
+    }
+
+
+
+
 }

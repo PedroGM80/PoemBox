@@ -1,6 +1,6 @@
 package dev.pgm.poembox.content
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.pgm.poembox.ContextContentProvider
 import dev.pgm.poembox.MainActivity.Companion.POEM_TITLE
 import dev.pgm.poembox.MainActivity.Companion.VALIDATE_STATUS
 import dev.pgm.poembox.roomUtils.Draft
@@ -33,7 +34,8 @@ import java.util.*
 
 
 @Composable
-fun EditScreen(userData: String) {//Clase emisora
+fun EditScreen(userData: String) {
+    var custom = remember { mutableStateOf(Color.Blue) }
     Surface(color = MaterialTheme.colors.primary) {
         Column(
             modifier = Modifier
@@ -79,38 +81,35 @@ fun EditScreen(userData: String) {//Clase emisora
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
-                    .height(400.dp), // Here I have decreased the height
+                    .height(400.dp),
                 shape = Shapes.medium,
             )
             Button(
                 onClick = {
-
-                    val dataSplit = userData.split("#")
-                    val userLoaded = dataSplit[1]
-                    val draft = Draft(
-
-                        title = textTitle.text,
-                        draftContent = textContent.text,
-                        writerName = userLoaded,
-                        draftAnnotation = "",
-                        writtenDate = getDate()
-                    )
-                    val titlePoem = draft.title
-
-                    Log.i(":::Create", draft.toString())
-                    scope.launch {
-                        withContext(Dispatchers.IO) {
-
-                            PoemBoxDatabase.getDatabase()?.draftDao()?.addDraft(draft)
-                            Log.i(":::Save", draft.toString())
+                    if (custom.value == Color.Blue) {
+                        val dataSplit = userData.split("#")
+                        val userLoaded = dataSplit[1]
+                        val draft = Draft(
+                            title = textTitle.text,
+                            draftContent = textContent.text,
+                            writerName = userLoaded,
+                            draftAnnotation = "",
+                            writtenDate = getDate()
+                        )
+                        val titlePoem = draft.title
+                        scope.launch {
+                            withContext(Dispatchers.IO) {
+                                PoemBoxDatabase.getDatabase()?.draftDao()?.addDraft(draft)
+                            }
                         }
+                        POEM_TITLE = titlePoem
+                        VALIDATE_STATUS = 1
+                        custom.value = Color.Red
+                    }else{
+                        Toast.makeText(ContextContentProvider.applicationContext(),"Your poem is saved",Toast.LENGTH_LONG).show()
                     }
-
-                    POEM_TITLE = titlePoem
-                    Log.i(":::TitleEdit", POEM_TITLE)
-                    VALIDATE_STATUS = 1
                 },
-
+                colors = ButtonDefaults.buttonColors(backgroundColor = custom.value),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,11 +125,10 @@ fun EditScreen(userData: String) {//Clase emisora
 }
 
 private fun getDate(): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS",Locale(Locale.ROOT.language))
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale(Locale.ROOT.language))
     val date = Date()
     return formatter.format(date).toString()
 }
-
 
 @Preview(showBackground = true)
 @Composable
