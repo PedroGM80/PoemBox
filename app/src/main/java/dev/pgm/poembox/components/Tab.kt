@@ -22,18 +22,12 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
     val scope = rememberCoroutineScope()
     // OR ScrollableTabRow()
     TabRow(
-
-        // Our selected tab is our current page
         selectedTabIndex = pagerState.currentPage,
-        // Override the indicator, using the provided pagerTabIndicatorOffset modifier
         backgroundColor = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.onSecondary,
         indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-            )
+            TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
         }) {
-        // Add tabs for all of our pages
         tabs.forEachIndexed { index, tab ->
             // OR Tab()
             LeadingIconTab(
