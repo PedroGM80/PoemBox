@@ -18,6 +18,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,13 +27,17 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import dev.pgm.poembox.R
 import dev.pgm.poembox.components.TabItem
+import dev.pgm.poembox.roomUtils.PoemBoxDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-data class PoemDetails(
-    val title: String,
-    val author: String,
-    val date: String,
-    val annotations: String,
-    val poem: String
+class PoemDetails(
+    var title: String,
+    var author: String,
+    var date: String,
+    var annotations: String,
+    var poem: String
 )
 
 @Composable
@@ -67,7 +72,7 @@ fun PoemCard(poem: PoemDetails) {
                         fontSize = 15.sp
                     )
                 )
-                Row() {
+                Row {
                     Image(
                         painter = painterResource(R.drawable.ic_baseline_text_snippet_24),
                         contentDescription = "Icon poem.",
@@ -104,9 +109,9 @@ fun PoemCard(poem: PoemDetails) {
 }
 
 @Composable
-fun DetailsContent(poemList:List<PoemDetails>) {
+fun DetailsContent(poemList: List<PoemDetails>) {
 
-    val poems = remember { poemList}
+    val poems = remember { poemList }
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
@@ -120,13 +125,16 @@ fun DetailsContent(poemList:List<PoemDetails>) {
 
 @Composable
 fun ManagerScreen() {
+    val list= mutableListOf<PoemDetails>()
+    val showList = remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.white))
             .wrapContentSize(Alignment.Center)
     ) {
-/*
+
         Text(
             text = "Manage",
             fontWeight = FontWeight.Bold,
@@ -134,9 +142,48 @@ fun ManagerScreen() {
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 25.sp
-        )*/
+        )
+        Button(
+            onClick = {
+                scope.launch {
+
+                    withContext(Dispatchers.IO) {
+                        val dataBase=PoemBoxDatabase.getDatabase()
+                        val sheets = dataBase?.sheetDao()?.getAllSheet()
+                        if (sheets != null) {
+                            for (sheet in sheets) {
+                                val draft = dataBase.draftDao().findByTitle(sheet.refDraftValidate)
+                                val poemDetail = sheet.dateValidation?.let {
+                                    PoemDetails(draft.title,draft.writerName,
+                                        it,"",draft.draftContent)
+
+                                }
+                                if (poemDetail != null) {
+                                    list.add(poemDetail)
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(5.dp)
+                .align(Alignment.CenterHorizontally)
+                .background(Color.Transparent)
+        ) { Text(text = "Charge poem") }
 
     }
+    Box(){
+        if (showList.value==true){
+            DetailsContent(poemList = list)
+        }
+    }
+
 }
 
 @OptIn(ExperimentalPagerApi::class)

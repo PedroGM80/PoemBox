@@ -35,7 +35,7 @@ import java.util.*
 
 @Composable
 fun EditScreen(userData: String) {
-    var custom = remember { mutableStateOf(Color.Blue) }
+    val custom = remember { mutableStateOf(Color.Blue) }
     Surface(color = MaterialTheme.colors.primary) {
         Column(
             modifier = Modifier
@@ -104,7 +104,7 @@ fun EditScreen(userData: String) {
                         }
                         POEM_TITLE = titlePoem
                         VALIDATE_STATUS = 1
-                        custom.value = Color.Red
+                        custom.value = Color.Green
                     }else{
                         Toast.makeText(ContextContentProvider.applicationContext(),"Your poem is saved",Toast.LENGTH_LONG).show()
                     }
@@ -124,7 +124,7 @@ fun EditScreen(userData: String) {
     }
 }
 
-private fun getDate(): String {
+internal fun getDate(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale(Locale.ROOT.language))
     val date = Date()
     return formatter.format(date).toString()

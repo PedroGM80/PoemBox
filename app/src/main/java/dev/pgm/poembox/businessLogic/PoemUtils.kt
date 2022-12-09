@@ -4,27 +4,17 @@ import java.util.*
 import java.util.regex.Pattern
 
 class PoemUtils {
-    fun countLinesWrote(text: String): Int {// This function return the number of lines wrote in the string
+    fun getNumberOfVerse(text: String): Int {// This function return the number of lines wrote in the string
         var lines = 0
         text.forEach { element ->
-            if (element == '\n') {
+            if (element == '\n' ) {
                 lines++
             }
         }
         return lines
     }
 
-    fun countEmptyLines(text: String): Int {// This function return the number of empty lines in the text field
-        var emptyLines = 0
-        text.forEach { element ->
-            if (element == '\n') {
-                if (text.substring(text.indexOf(element) + 1, text.indexOf(element) + 2) == " ") {
-                    emptyLines++
-                }
-            }
-        }
-        return emptyLines
-    }
+
 
     fun countWords(text: String): Int {// This function return the number of words wrote in the text field
         var words = 0
@@ -40,6 +30,16 @@ class PoemUtils {
         var characters = 0
         text.forEach { _ -> characters++ }
         return characters
+    }
+    fun getNumberStanza(text: String): Int {
+        var lineWrote=0
+        val lines=text.split("\n")
+        for (line in lines){
+            if (line.length>4){
+                lineWrote++
+            }
+        }
+        return  (lines.size-lineWrote)*2
     }
 
     fun isProparoxytone(word: String): Int {
@@ -85,7 +85,7 @@ class PoemUtils {
         return check
     }
 
-    fun getTonicSyllable(word: String): String? {
+    private fun getTonicSyllable(word: String): String? {
         val index = getTonicVowel(word)
         if (index != -1) {
             val syllables = UtilitySyllables().getSyllables(word)
@@ -115,7 +115,6 @@ class PoemUtils {
     fun hasSinhalese(line: String): Int {
         val firstsLetters = mutableListOf<Char>()
         val lastLetters = mutableListOf<Char>()
-        var result = false
         var sinhaleseCount = 0
         val words = line.split(" ")
         for (index in words.indices) {
@@ -131,16 +130,28 @@ class PoemUtils {
             if (utilitySyllables.isVowel(firstsLetters[index]) && utilitySyllables.isVowel(
                     lastLetters[index]
                 )
-            ) {
-                sinhaleseCount++
-            }
+            ) { sinhaleseCount++ }
             if (firstsLetters[index] == 'h' && utilitySyllables.isVowel(lastLetters[index])) {
-                sinhaleseCount++
-            }
+                sinhaleseCount++ }
         }
         return -sinhaleseCount
     }
-
+fun getEnjambment(verse:String):String{
+    val syllables=UtilitySyllables().getSyllables(verse)
+    for(index in syllables.indices){
+        if(syllables[index].contains(",") || syllables[index].contains(".")){
+            return if(index<5){
+                "Enjambment is abrupt and gives rise to a syncopated, fast, violent rhythm."
+            }else{
+                """Enjambment is soft, light and characterized by the great fluidity
+                            | it brings to the poem. It can be read practically like a prose poetic
+                            |  text with all its exceptions, of course. It brings dynamism to 
+                            |  the poem and very fast musical movements.""".trimMargin()
+            }
+        }
+    }
+    return "Enjambment does not exist"
+}
 }
 
 fun main() {
@@ -148,4 +159,14 @@ fun main() {
     println(number)
     val numberS = UtilitySyllables().getSyllables("que solo toca en ellas, manso, el viento")
     println(numberS.size)
+    val verso=""" un verso
+    dos versos
+    
+    un verso
+    dos versos"""
+    val wrote=PoemUtils().getNumberOfVerse(verso)
+    val numberOfStanza=PoemUtils().getNumberStanza(verso)
+    println(wrote)
+    println(numberOfStanza)
 }
+
