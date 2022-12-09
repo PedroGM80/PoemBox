@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -14,12 +13,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +24,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import dev.pgm.poembox.MainActivity
 import dev.pgm.poembox.roomUtils.User
-import dev.pgm.poembox.ui.theme.Purple700
 
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -36,7 +32,7 @@ fun CreateAccount(navController: NavController) {
 
 
     val user = User(null, null)//Create user with null values
-    Box(modifier = Modifier.fillMaxSize()) {
+    /*Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
             text = AnnotatedString("Sign up here"),
             modifier = Modifier
@@ -54,7 +50,7 @@ fun CreateAccount(navController: NavController) {
                 color = Purple700
             )
         )
-    }
+    }*/
     Column(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.Center,
@@ -88,7 +84,10 @@ fun CreateAccount(navController: NavController) {
                 onClick = {
                     user.userName = userInputName.value.text
                     user.userMail = userInputMail.value.text
-                    MainActivity().saveUser(user)
+                    val activity = MainActivity()
+                    activity.user.userName = user.userName.toString()
+                    activity.user.userMail = user.userMail.toString()
+                    activity.saveUser(user)
                     navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
                         popUpTo(0)
                     }

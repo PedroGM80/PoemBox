@@ -17,10 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.MainActivity.Companion.POEM_TITLE
+import dev.pgm.poembox.MainActivity.Companion.VALIDATE_STATUS
 import dev.pgm.poembox.R
 import dev.pgm.poembox.businessLogic.PoemUtils
 import dev.pgm.poembox.businessLogic.UtilitySyllables
 import dev.pgm.poembox.roomUtils.PoemBoxDatabase
+import dev.pgm.poembox.roomUtils.Sheet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,8 +38,11 @@ fun <T> findDuplicates(list: List<T>): Set<T> {
 
 @Composable
 fun MonitoringScreen() {
+    val custom = remember { mutableStateOf(Color.Blue) }
+    var countAssonant = 0
+    var countConsonant = 0
     val poemTitle = remember { mutableStateOf("Poem don't charge title.") }
-    var poemBody = remember { mutableStateOf("Poem don't charge body.") }
+    val poemBody = remember { mutableStateOf("Poem don't charge body.") }
     val showDialog = remember { mutableStateOf(false) }
     val numberSyllablesInPoem = mutableListOf<String>()
     val consonantRime = mutableMapOf<String, String>()
@@ -48,7 +53,7 @@ fun MonitoringScreen() {
     var minorCount = 97
     var countLineBreak = 0
     val bodyDialog = remember { mutableStateOf("") }
-
+    val titleDialog = remember { mutableStateOf("") }
     fun getMarkedRimeHigherArt(
         objectiveConsonant: String,
         objectiveAssonant: String,
@@ -66,10 +71,31 @@ fun MonitoringScreen() {
                 append(numberSyllablesInThePoemLine)
                 append(check)
             }
+        } else if (consonantRime.containsValue(objectiveConsonant) &&
+            !assonantRime.containsValue(objectiveAssonant)
+        ) {
+            assonantRime[higherCount.toChar().toString()] = objectiveAssonant
+            countConsonant++
+            val check = getKey(consonantRime, objectiveConsonant)
+            numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+            return buildString {
+                append(numberSyllablesInThePoemLine)
+                append(check)
+            }
+        } else if (!consonantRime.containsValue(objectiveConsonant) &&
+            assonantRime.containsValue(objectiveAssonant)
+        ) {
+            consonantRime[minorCount.toChar().toString()] = objectiveConsonant
+            countAssonant++
+            val check: String = getKey(assonantRime, objectiveAssonant)
+            numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+            return buildString {
+                append(numberSyllablesInThePoemLine)
+                append(check)
+            }
         } else {
-
-            val checkA: String? = getKey(assonantRime, objectiveAssonant) ?: null
-            val checkC = getKey(consonantRime, objectiveConsonant) ?: checkA
+            getKey(assonantRime, objectiveAssonant)
+            val checkC: String = getKey(consonantRime, objectiveConsonant)
             numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
             return buildString {
                 append(numberSyllablesInThePoemLine)
@@ -83,25 +109,43 @@ fun MonitoringScreen() {
         objectiveAssonant: String,
         numberSyllablesInThePoemLine: Int
     ): String {
-        if (!consonantRime.containsValue(objectiveConsonant)
-            && !assonantRime.containsValue(objectiveAssonant)
+        if (!consonantRime.containsValue(objectiveConsonant) &&
+            !assonantRime.containsValue(objectiveAssonant)
         ) {
-            consonantRime[higherCount.toChar().toString()] = objectiveConsonant
-            if (!assonantRime.containsValue(objectiveAssonant)) {
-
-                assonantRime[higherCount.toChar().toString()] = objectiveAssonant
-            }
+            consonantRime[minorCount.toChar().toString()] = objectiveConsonant
+            assonantRime[minorCount.toChar().toString()] = objectiveAssonant
+            val check = minorCount.toChar().toString()
             minorCount++
-            val check = higherCount.toChar().toString()
+            numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+            return buildString {
+                append(numberSyllablesInThePoemLine)
+                append(check)
+            }
+        } else if (consonantRime.containsValue(objectiveConsonant) &&
+            !assonantRime.containsValue(objectiveAssonant)
+        ) {
+            assonantRime[minorCount.toChar().toString()] = objectiveAssonant
+            countConsonant++
+            val check = getKey(consonantRime, objectiveConsonant)
+            numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
+            return buildString {
+                append(numberSyllablesInThePoemLine)
+                append(check)
+            }
+        } else if (!consonantRime.containsValue(objectiveConsonant) &&
+            assonantRime.containsValue(objectiveAssonant)
+        ) {
+            consonantRime[minorCount.toChar().toString()] = objectiveConsonant
+            countAssonant++
+            val check: String = getKey(assonantRime, objectiveAssonant)
             numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
             return buildString {
                 append(numberSyllablesInThePoemLine)
                 append(check)
             }
         } else {
-
-            val checkA = assonantRime[objectiveAssonant]
-            val checkC = consonantRime[objectiveConsonant] ?: checkA
+            getKey(assonantRime, objectiveAssonant)
+            val checkC: String = getKey(consonantRime, objectiveConsonant)
             numberSyllablesInPoem.add(numberSyllablesInThePoemLine.toString())
             return buildString {
                 append(numberSyllablesInThePoemLine)
@@ -145,11 +189,12 @@ fun MonitoringScreen() {
                         objectiveAssonant,
                         numberSyllablesInThePoemLine
                     )
-
                 }
             }
         }
-        return if (countLineBreak > 1) ", " else ""
+        return if (countLineBreak > 1) {
+            ", "
+        } else ""
     }
 
     fun poemRimeIterator(poem: String): String {
@@ -200,11 +245,10 @@ fun MonitoringScreen() {
                 )
                 Button(
                     onClick = {
-                        val poemLines = poem.split("\n")
-                        poemTitle.value = poemLines[0]
-                        poemBody.value = poem.removePrefix(poemLines[0])
-
                         scope.launch {
+                            val poemLines = poem.split("\n")
+                            poemTitle.value = poemLines[0]
+                            poemBody.value = poem.removePrefix(poemLines[0])
                             withContext(Dispatchers.IO) {
                                 val draft = PoemBoxDatabase.getDatabase()?.draftDao()
                                     ?.findByTitle(POEM_TITLE)
@@ -221,8 +265,6 @@ fun MonitoringScreen() {
                         .align(Alignment.CenterHorizontally)
                         .background(Color.Transparent)
                 ) { Text(text = "Charge poem") }
-
-
                 Row(Modifier.align(Alignment.CenterHorizontally)) {
                     Button(
                         onClick = {
@@ -230,6 +272,7 @@ fun MonitoringScreen() {
                             val numberPredominate = getPredominateNumberSyllables()
                             bodyDialog.value = "$numberPredominate syllable verses predominate," +
                                     " following the schema: $result \n"
+                            titleDialog.value = "Classification by number of syllables"
                             showDialog.value = true
 
                         },
@@ -243,6 +286,13 @@ fun MonitoringScreen() {
                     }
                     Button(
                         onClick = {
+                            val numberStanza = PoemUtils().getNumberStanza(poemBody.value)
+                            val numberVerse = PoemUtils().getNumberOfVerse(poemBody.value)
+                            val numberVerseInStanza = numberVerse / numberStanza
+                            titleDialog.value = "Classification by number of verses"
+                            bodyDialog.value = "The poem is made up of $numberStanza stanzas.\n" +
+                                    "$numberVerse verses, and has $numberVerseInStanza per stanza."
+                            showDialog.value = true
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = modifierButton()
@@ -256,7 +306,22 @@ fun MonitoringScreen() {
                 }
                 Row(Modifier.align(Alignment.CenterHorizontally)) {
                     Button(
-                        onClick = { },
+                        onClick = {
+                            poemRimeIterator(poemBody.value)
+                            Log.i("Asonante", assonantRime.toString())
+                            Log.i("Consonante", consonantRime.toString())
+                            val sizeAssonance = assonantRime.size
+                            val sizeConsonant = consonantRime.size
+                            var typeRime = "Undefined"
+                            if (sizeAssonance < sizeConsonant) {
+                                typeRime = "Assonance"
+                            } else if (sizeAssonance > sizeConsonant) {
+                                typeRime = "Consonance"
+                            }
+                            titleDialog.value = "Type of rhyme and meter"
+                            bodyDialog.value = "The rime is $typeRime"
+                            showDialog.value = true
+                        },
                         shape = RoundedCornerShape(10.dp),
                         modifier = modifierButton()
                     ) {
@@ -266,9 +331,14 @@ fun MonitoringScreen() {
                         )
                     }
                     Button(
-                        onClick = { },
+                        onClick = {
+                            val enjambment = PoemUtils().getEnjambment(poemBody.value)
+                            titleDialog.value = "Enjambment or stichomytia"
+                            bodyDialog.value = "The rime is $enjambment"
+                            showDialog.value = true
+                        },
                         shape = RoundedCornerShape(10.dp),
-                        modifier = modifierButtonEnOrStic()
+                        modifier = modifierButtonEnOrStc()
                     ) {
                         Text(
                             text = """Enjambment
@@ -278,7 +348,20 @@ fun MonitoringScreen() {
                 }
                 Row(Modifier.align(Alignment.CenterHorizontally)) {
                     Button(
-                        onClick = { },
+
+                        onClick = {
+                            if (custom.value == Color.Blue) {
+                                scope.launch {
+                                    val sheet=Sheet(poemTitle.value)
+                                    withContext(Dispatchers.IO) {
+                                        PoemBoxDatabase.getDatabase()?.sheetDao()?.addSheet(sheet )
+                                    }
+                                }
+                                VALIDATE_STATUS++
+                                custom.value = Color.Green
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = custom.value),
                         shape = RoundedCornerShape(10.dp),
                         modifier = modifierButtonValidate()
                     ) {
@@ -294,8 +377,7 @@ fun MonitoringScreen() {
     }
 
     if (showDialog.value) {
-        showDialog.value =
-            AlertDialogSample("Classification by number of syllables", bodyDialog.value)
+        showDialog.value = alertDialogSample(titleDialog.value, bodyDialog.value)
         Log.i(":::SHOW", "show dialog")
     }
 }
@@ -304,8 +386,7 @@ fun cleanPunctuationMarks(poemLine: String): String {
     val cleanPoemLine = poemLine.replace(".", "")
     val cleanB = cleanPoemLine.replace(",", "")
     val cleanC = cleanB.replace(";", "")
-    val cleanD = cleanC.replace(":", "")
-    return cleanD
+    return cleanC.replace(":", "")
 }
 
 @SuppressLint("ComposableModifierFactory", "ModifierFactoryExtensionFunction")
@@ -319,7 +400,7 @@ private fun modifierButton(): Modifier {
 
 @SuppressLint("ComposableModifierFactory", "ModifierFactoryExtensionFunction")
 @Composable
-private fun modifierButtonEnOrStic(): Modifier {
+private fun modifierButtonEnOrStc(): Modifier {
     return Modifier
         .height(100.dp)
         .width(200.dp)
@@ -336,7 +417,7 @@ private fun modifierButtonValidate(): Modifier {
 }
 
 @Composable
-private fun AlertDialogSample(title: String, body: String): Boolean {
+private fun alertDialogSample(title: String, body: String): Boolean {
     val openDialog = remember { mutableStateOf(true) }
 
     MaterialTheme {

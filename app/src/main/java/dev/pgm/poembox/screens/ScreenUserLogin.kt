@@ -3,7 +3,6 @@ package dev.pgm.poembox.screens
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -11,19 +10,16 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.pgm.poembox.MainActivity
 import dev.pgm.poembox.roomUtils.User
 import dev.pgm.poembox.ui.theme.ColorPoemField
-import dev.pgm.poembox.ui.theme.Purple700
 import kotlinx.coroutines.delay
 
 
@@ -54,7 +50,7 @@ fun UserLogin(navController: NavController, userData: String) {
         GoScreenTab(navController)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+/*    Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
             text = AnnotatedString("Sign up here"),
             modifier = Modifier
@@ -72,7 +68,7 @@ fun UserLogin(navController: NavController, userData: String) {
                 color = Purple700
             )
         )
-    }
+    }*/
     Column(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.Center,

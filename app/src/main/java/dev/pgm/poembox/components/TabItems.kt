@@ -6,6 +6,7 @@ import dev.pgm.poembox.components.TabItem.Editor.userData
 import dev.pgm.poembox.content.EditScreen
 import dev.pgm.poembox.content.ManagerScreen
 import dev.pgm.poembox.content.MonitoringScreen
+import dev.pgm.poembox.content.PoemDetails
 
 typealias ComposableFun = @Composable () -> Unit
 
