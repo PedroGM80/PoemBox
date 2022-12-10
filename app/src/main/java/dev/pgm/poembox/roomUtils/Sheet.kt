@@ -12,5 +12,5 @@ data class Sheet(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "Id") var id: Int=0
     @ColumnInfo(name = "dateCreation")
-    var dateValidation: String? = getDate()
+    var dateValidation: String = getDate()
 }
