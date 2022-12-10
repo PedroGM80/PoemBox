@@ -14,7 +14,7 @@ data class Draft(
     val title: String,
     @ColumnInfo(name = "draftContent") val draftContent: String,
     @ColumnInfo(name = "writerName") val writerName: String,
-    @ColumnInfo(name = "draftAnnotation") val draftAnnotation: String = "",
+    @ColumnInfo(name = "draftAnnotation") var draftAnnotation: String = "",
     @ColumnInfo(name = "writtenDate") val writtenDate: String = ""
 
 ) {

@@ -19,3 +19,13 @@ val ColorPoemField: TextFieldColors
         unfocusedIndicatorColor = Color.Transparent,
         backgroundColor = Color.LightGray,
     )
+
+val ColorPoemFieldDialog: TextFieldColors
+    @Composable
+    get() = TextFieldDefaults.textFieldColors(
+        textColor=Color.Black,
+        focusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        backgroundColor = Color.Transparent,
+    )

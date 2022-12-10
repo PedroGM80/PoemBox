@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,9 @@ import com.google.accompanist.pager.PagerState
 import dev.pgm.poembox.R
 import dev.pgm.poembox.components.TabItem
 import dev.pgm.poembox.roomUtils.PoemBoxDatabase
+import dev.pgm.poembox.ui.theme.ColorPoemFieldDialog
+import dev.pgm.poembox.ui.theme.Shapes
+import dev.pgm.poembox.ui.theme.Typography
 import kotlinx.coroutines.launch
 
 data class PoemDetails(
@@ -50,26 +55,21 @@ fun PoemCard(poem: PoemDetails) {
     val bodyDialog = remember { mutableStateOf("") }
     val titleDialog = remember { mutableStateOf("") }
     val showDialog = remember { mutableStateOf(false) }
+    val inputDialog = remember { mutableStateOf(false) }
+    val remove = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val showCard = remember { mutableStateOf(1f) }
     Card(
-
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .alpha(showCard.value)
             .fillMaxWidth(),
-
         elevation = 2.dp,
         backgroundColor = Color.LightGray,
         shape = RoundedCornerShape(corner = CornerSize(16.dp))
-
     ) {
-
         Row(modifier = Modifier.padding(20.dp)) {
-            Column(
-                modifier = Modifier.weight(1f),
-                Arrangement.Center
-            ) {
+            Column(modifier = Modifier.weight(1f), Arrangement.Center) {
                 Text(
                     text = poem.title,
                     style = TextStyle(
@@ -117,12 +117,10 @@ fun PoemCard(poem: PoemDetails) {
                                 true,
                                 "Clickable image",
                                 onClick = {
-                                    titleDialog.value = buildString {
-                                        append(poem.title)
-                                        append(" annotations")
-                                    }
+                                    titleDialog.value = poem.title
                                     bodyDialog.value = poem.annotations
-                                    showDialog.value = true
+                                    Log.i(":::In", bodyDialog.value)
+                                    inputDialog.value = true
                                 }
                             )
                     )
@@ -164,7 +162,7 @@ fun PoemCard(poem: PoemDetails) {
                                         append(" deleted")
                                     }
                                     bodyDialog.value = "Delete successful."
-                                  //  listener.delete(poem)
+                                    remove.value = true
                                     showDialog.value = true
                                 }
                             )
@@ -173,9 +171,15 @@ fun PoemCard(poem: PoemDetails) {
             }
         }
     }
-    if (showDialog.value) {
-        showCard.value=0f
+    if (showDialog.value && remove.value) {
+        showCard.value = 0f
         showDialog.value = alertDialogSample(titleDialog.value, bodyDialog.value)
+    }
+    if (showDialog.value) {
+        showDialog.value = alertDialogSample(titleDialog.value, bodyDialog.value)
+    }
+    if (inputDialog.value) {
+        inputDialog.value = inputDialogSample(titleDialog.value, bodyDialog.value)
     }
 }
 
@@ -183,86 +187,70 @@ fun PoemCard(poem: PoemDetails) {
 @Composable
 fun DetailsContent(poemList: MutableList<PoemDetails>) {
 
-   // val poems = remember { poemList }
-    if(poemList.isNotEmpty()){
+    // val poems = remember { poemList }
+    if (poemList.isNotEmpty()) {
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
-
-            items(
-                poemList
-            ) {
-                PoemCard(poem = it)
-            }
+            items(poemList) { PoemCard(poem = it) }
         }
     }
 }
 
 @Composable
 fun ManagerScreen() {
-
-    val list = remember {
-        mutableListOf<PoemDetails>()
-    }
+    val list = remember { mutableListOf<PoemDetails>() }
     val showList = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
+    val custom = remember { mutableStateOf(Color.Blue) }
     Surface(color = MaterialTheme.colors.primary) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colors.background)
-                .wrapContentSize(Alignment.Center)
-        ) {
-
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.white))
-                .wrapContentSize(Alignment.Center)
-        ) {
-
-            Text(
-                text = "Manage",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                fontSize = 25.sp
-            )
-            Button(
-                onClick = {
-                    scope.launch {
-                        val dataBase = PoemBoxDatabase.getDatabase()
-                        val sheets = dataBase?.sheetDao()?.getAllSheet()
-                        Log.i(":::SHEETS", sheets.toString())
-                        if (sheets != null) {
-                            for (sheet in sheets) {
-                                val draft = dataBase.draftDao().findByTitle(sheet.refDraftValidate)
-                                if (draft != null) {
-                                    Log.i(":::DRAFT", draft.toString())
-                                    val poemDetail = PoemDetails(
-                                        draft.title, draft.writerName,
-                                        sheet.dateValidation, "", draft.draftContent
-                                    )
-                                    list.add(poemDetail)
-                                    Log.i(":::POEM_DETAIL", poemDetail.toString())
-                                    showList.value = true
+        Box(Modifier.wrapContentSize(Alignment.Center)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colorResource(id = R.color.white))
+                    .align(Alignment.TopCenter)
+            ) {
+                Button(
+                    onClick = {
+                        if (custom.value == Color.Blue) {
+                            scope.launch {
+                                val dataBase = PoemBoxDatabase.getDatabase()
+                                val sheets = dataBase?.sheetDao()?.getAllSheet()
+                                if (sheets != null) {
+                                    Log.i(":::SHEETS", sheets.toString())
+                                    for (sheet in sheets) {
+                                        val draft =
+                                            dataBase.draftDao().findByTitle(sheet.refDraftValidate)
+                                        Log.i(":::DRAFT", draft.toString())
+                                        val poemDetail = PoemDetails(
+                                            draft.title,
+                                            draft.writerName,
+                                            sheet.dateValidation,
+                                            draft.draftAnnotation,
+                                            draft.draftContent
+                                        )
+                                        list.add(poemDetail)
+                                        Log.i(":::POEM_DETAIL", poemDetail.toString())
+                                        showList.value = true
+                                    }
                                 }
                             }
+                            custom.value = Color.Green
                         }
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(5.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .background(Color.Transparent)
+                ) { Text(text = "Charge poem") }
+                Box {
+                    if (showList.value) {
+                        DetailsContent(poemList = list)
                     }
-                },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(5.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .background(Color.Transparent)
-            ) { Text(text = "Charge poem") }
-            Box {
-                if (showList.value) {
-                    DetailsContent(poemList = list)
                 }
             }
         }
@@ -276,9 +264,81 @@ internal fun TabsContent(tabs: List<TabItem>, pagerState: PagerState) {
         tabs[page].screen()
     }
 }
+/*
 
 @Preview(showBackground = true)
 @Composable
 fun ManagerScreenPreview() {
     ManagerScreen()
+}
+*/
+
+@Composable
+fun inputDialogSample(title: String, bodyInput: String): Boolean {
+    val openDialog = remember { mutableStateOf(true) }
+    val mutableBody = remember { mutableStateOf(bodyInput) }
+    val scope = rememberCoroutineScope()
+    MaterialTheme {
+        Column {
+
+            if (openDialog.value) {
+                AlertDialog(onDismissRequest = { openDialog.value = false },
+
+                    title = {
+                        Text(text = title)
+                    },
+                    text = {
+                        Column {
+                            TextField(
+                                value = mutableBody.value,
+                                label = { "Poem notes" },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                onValueChange = { mutableBody.value = it },
+                                textStyle = TextStyle(
+                                    fontSize = Typography.body2.fontSize,
+                                    textAlign = TextAlign.Center
+                                ),
+                                colors = ColorPoemFieldDialog,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                                    .wrapContentHeight(),
+                                shape = Shapes.medium,
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        Button(onClick = {
+
+                            scope.launch {
+                                val dataBase = PoemBoxDatabase.getDatabase()
+                                val draft = dataBase?.draftDao()?.findByTitle(title)
+                                if (draft != null) {
+                                    draft.draftAnnotation = mutableBody.value
+                                    Log.i(":::SAVENOTE", draft.toString())
+                                    dataBase.draftDao()
+                                        .updateNoteByTitle(draft.draftAnnotation, draft.title)
+                                }
+                            }
+
+                        }) {
+                            Text("Save")
+                        }
+                    },
+                    dismissButton = {
+                        Button(onClick = { openDialog.value = false }) {
+                            Text("Close")
+                        }
+                    }
+                )
+            }
+        }
+    }
+    return openDialog.value
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DialogScreenPreview() {
+    inputDialogSample("Titulo", "contenido aqui")
 }
