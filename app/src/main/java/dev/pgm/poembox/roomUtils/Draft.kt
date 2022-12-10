@@ -5,8 +5,12 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "drafts",indices = [Index(value = ["title"],
-    unique = true)])
+@Entity(
+    tableName = "drafts", indices = [Index(
+        value = ["title"],
+        unique = true
+    )]
+)
 data class Draft(
 
     @ColumnInfo(name = "title")
@@ -19,7 +23,9 @@ data class Draft(
 
 ) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "Id") var id: Int=0
+    @ColumnInfo(name = "Id")
+    var id: Int = 0
+
     @ColumnInfo(name = "dateValidation")
     var dateValidation: String? = ""
 

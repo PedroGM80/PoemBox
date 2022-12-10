@@ -7,13 +7,12 @@ class PoemUtils {
     fun getNumberOfVerse(text: String): Int {// This function return the number of lines wrote in the string
         var lines = 0
         text.forEach { element ->
-            if (element == '\n' ) {
+            if (element == '\n') {
                 lines++
             }
         }
         return lines
     }
-
 
 
     fun countWords(text: String): Int {// This function return the number of words wrote in the text field
@@ -31,15 +30,16 @@ class PoemUtils {
         text.forEach { _ -> characters++ }
         return characters
     }
+
     fun getNumberStanza(text: String): Int {
-        var lineWrote=0
-        val lines=text.split("\n")
-        for (line in lines){
-            if (line.length>4){
+        var lineWrote = 0
+        val lines = text.split("\n")
+        for (line in lines) {
+            if (line.length > 4) {
                 lineWrote++
             }
         }
-        return  (lines.size-lineWrote)*2
+        return (lines.size - lineWrote) * 2
     }
 
     fun isProparoxytone(word: String): Int {
@@ -130,28 +130,32 @@ class PoemUtils {
             if (utilitySyllables.isVowel(firstsLetters[index]) && utilitySyllables.isVowel(
                     lastLetters[index]
                 )
-            ) { sinhaleseCount++ }
+            ) {
+                sinhaleseCount++
+            }
             if (firstsLetters[index] == 'h' && utilitySyllables.isVowel(lastLetters[index])) {
-                sinhaleseCount++ }
+                sinhaleseCount++
+            }
         }
         return -sinhaleseCount
     }
-fun getEnjambment(verse:String):String{
-    val syllables=UtilitySyllables().getSyllables(verse)
-    for(index in syllables.indices){
-        if(syllables[index].contains(",") || syllables[index].contains(".")){
-            return if(index<5){
-                "Enjambment is abrupt and gives rise to a syncopated, fast, violent rhythm."
-            }else{
-                """Enjambment is soft, light and characterized by the great fluidity
+
+    fun getEnjambment(verse: String): String {
+        val syllables = UtilitySyllables().getSyllables(verse)
+        for (index in syllables.indices) {
+            if (syllables[index].contains(",") || syllables[index].contains(".")) {
+                return if (index < 5) {
+                    "Enjambment is abrupt and gives rise to a syncopated, fast, violent rhythm."
+                } else {
+                    """Enjambment is soft, light and characterized by the great fluidity
                             | it brings to the poem. It can be read practically like a prose poetic
                             |  text with all its exceptions, of course. It brings dynamism to 
                             |  the poem and very fast musical movements.""".trimMargin()
+                }
             }
         }
+        return "Enjambment does not exist"
     }
-    return "Enjambment does not exist"
-}
 }
 
 fun main() {
@@ -159,13 +163,13 @@ fun main() {
     println(number)
     val numberS = UtilitySyllables().getSyllables("que solo toca en ellas, manso, el viento")
     println(numberS.size)
-    val verso=""" un verso
+    val verso = """ un verso
     dos versos
     
     un verso
     dos versos"""
-    val wrote=PoemUtils().getNumberOfVerse(verso)
-    val numberOfStanza=PoemUtils().getNumberStanza(verso)
+    val wrote = PoemUtils().getNumberOfVerse(verso)
+    val numberOfStanza = PoemUtils().getNumberStanza(verso)
     println(wrote)
     println(numberOfStanza)
 }

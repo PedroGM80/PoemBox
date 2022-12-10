@@ -18,12 +18,12 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 class MainActivity : ComponentActivity() {
-    companion object{
-        var POEM_TITLE=""
-        var  VALIDATE_STATUS=0
+    companion object {
+        var POEM_TITLE = ""
+        var VALIDATE_STATUS = 0
     }
-    var user = User(null, null)
 
+    var user = User(null, null)
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       val userData = getDecode()
+        val userData = getDecode()
 
         setContent {
             PoemBoxTheme {
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 Surface(color = MaterialTheme.colors.background) {
                     //set up nav controller
                     ShowBars(flag = false)
-                    SetUpNavController(rememberNavController(),userData)
+                    SetUpNavController(rememberNavController(), userData)
                 }
             }
         }

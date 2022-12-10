@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import dev.pgm.poembox.ContextContentProvider
 
 @Database(
-    entities = [Draft::class,Sheet::class],
+    entities = [Draft::class, Sheet::class],
     version = 1,
     exportSchema = true
 )//V1 need one build
