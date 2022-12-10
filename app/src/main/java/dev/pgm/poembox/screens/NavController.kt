@@ -16,13 +16,13 @@ fun SetUpNavController(controller: NavHostController, userData: String) {
     ) {
 
         composable(ScreensRouteList.RouteScreenSplash.route) {
-            ScreenSplash(navController = controller,userData)
+            ScreenSplash(navController = controller, userData)
         }
         composable(ScreensRouteList.RouteScreenTabs.route) {
             ScreenTabs(userData)
         }
         composable(ScreensRouteList.RouteScreenLogin.route) {
-            UserLogin(navController = controller,userData)
+            UserLogin(navController = controller, userData)
 
         }
         composable(ScreensRouteList.RouteScreenCreateAccount.route) {

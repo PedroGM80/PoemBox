@@ -64,8 +64,8 @@ fun CreateAccount(navController: NavController) {
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
-                 /*   user.userName = userInputName.value.text
-                    user.userMail = userInputMail.value.text*/
+                    /*   user.userName = userInputName.value.text
+                       user.userMail = userInputMail.value.text*/
                     val activity = MainActivity()
                     activity.user.userName = user.userName.toString()
                     activity.user.userMail = user.userMail.toString()
