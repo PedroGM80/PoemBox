@@ -32,7 +32,9 @@ fun CreateAccount(navController: NavController) {
     val user = User(null, null)//Create user with null values
 
     Column(
-        modifier = Modifier.padding(20.dp),
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
