@@ -43,24 +43,29 @@ fun Logo() {
         contentAlignment = Alignment.Center,
 
         ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.splash),
                 contentDescription = "My App Logo",
                 modifier = Modifier
                     .alpha(animateAlpha.value)
-                    .size(200.dp)
+                    .size(300.dp)
             )
             Text(
-                text = "PoemBox",
+                text = "TeckelSoft",
                 color = MaterialTheme.colors.primary,
-                fontSize = 40.sp,
+                fontSize = 35.sp,
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily.Serif,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .alpha(animateAlpha.value)
-                    .size(200.dp)
+                    .fillMaxWidth()
                     .padding(5.dp)
             )
         }
