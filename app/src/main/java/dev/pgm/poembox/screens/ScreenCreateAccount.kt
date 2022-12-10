@@ -29,28 +29,8 @@ import dev.pgm.poembox.roomUtils.User
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun CreateAccount(navController: NavController) {
-
-
     val user = User(null, null)//Create user with null values
-    /*Box(modifier = Modifier.fillMaxSize()) {
-        ClickableText(
-            text = AnnotatedString("Sign up here"),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(20.dp),
-            onClick = {
-                navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-                    popUpTo(0)
-                }
-            },
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontFamily = FontFamily.Default,
-                textDecoration = TextDecoration.Underline,
-                color = Purple700
-            )
-        )
-    }*/
+
     Column(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.Center,

@@ -211,7 +211,6 @@ fun MonitoringScreen() {
         .replace("]", "")
 
     Surface(color = MaterialTheme.colors.primary) {
-
         Box(Modifier.wrapContentSize(Alignment.Center)) {
             Column(
                 modifier = Modifier
@@ -224,7 +223,7 @@ fun MonitoringScreen() {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier
-                        .padding(top = 30.dp, start = 10.dp, end = 10.dp)
+                        .padding(top = 50.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                         .background(Color(Color.Yellow.value)),
@@ -236,7 +235,7 @@ fun MonitoringScreen() {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier
-                        .padding(bottom = 30.dp, start = 10.dp, end = 10.dp)
+                        .padding(bottom = 50.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                         .background(Color(Color.Yellow.value)),
@@ -245,10 +244,8 @@ fun MonitoringScreen() {
                 )
                 Button(
                     onClick = {
-
                         scope.launch {
                             withContext(Dispatchers.IO) {
-
                                 val draft = PoemBoxDatabase.getDatabase()?.draftDao()
                                     ?.findByTitle(POEM_TITLE)
                                 if (draft != null) {

@@ -37,11 +37,9 @@ fun GoScreenTab(navController: NavController) {
 
 @Composable
 fun UserLogin(navController: NavController, userData: String) {
-    val loadedUserData =userData
-    val dataSplit = loadedUserData.split("#")
+    val dataSplit = userData.split("#")
     val userLoaded = dataSplit[1]
     val mailLoaded = dataSplit[0]
-
     Log.i(":::Data", userLoaded)
     Log.i(":::DataB", mailLoaded)
     val user = User(userLoaded, mailLoaded)
@@ -49,28 +47,10 @@ fun UserLogin(navController: NavController, userData: String) {
     if (next) {
         GoScreenTab(navController)
     }
-
-/*    Box(modifier = Modifier.fillMaxSize()) {
-        ClickableText(
-            text = AnnotatedString("Sign up here"),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(20.dp),
-            onClick = {
-                navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-                    popUpTo(0)
-                }
-            },
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontFamily = FontFamily.Default,
-                textDecoration = TextDecoration.Underline,
-                color = Purple700
-            )
-        )
-    }*/
     Column(
-        modifier = Modifier.padding(20.dp),
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
