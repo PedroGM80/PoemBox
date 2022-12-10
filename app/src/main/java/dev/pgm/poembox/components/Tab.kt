@@ -1,6 +1,5 @@
 package dev.pgm.poembox.components
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -35,11 +34,19 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
                 text = { Text(tab.title) },
                 selected = pagerState.currentPage == index,
                 onClick = {
-                    if(VALIDATE_STATUS==0){
-                        Toast.makeText(ContextContentProvider.applicationContext(),"Please validate your draft",Toast.LENGTH_LONG).show()
+                    if (VALIDATE_STATUS == 0) {
+                        Toast.makeText(
+                            ContextContentProvider.applicationContext(),
+                            "Please validate your draft",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                    if(VALIDATE_STATUS==1){
-                        Toast.makeText(ContextContentProvider.applicationContext(),"Please validate the analysis of the poem",Toast.LENGTH_LONG).show()
+                    if (VALIDATE_STATUS == 1) {
+                        Toast.makeText(
+                            ContextContentProvider.applicationContext(),
+                            "Please validate the analysis of the poem",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     scope.launch {
                         pagerState.animateScrollToPage(VALIDATE_STATUS)

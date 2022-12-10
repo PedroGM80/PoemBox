@@ -25,7 +25,7 @@ fun ScreenTabs(userData: String) {
             modifier = Modifier
                 .padding(padding)
         ) {
-            Tabs(tabs = tabs, pagerState = pagerState, userData=userData)
+            Tabs(tabs = tabs, pagerState = pagerState, userData = userData)
             TabsContent(tabs = tabs, pagerState = pagerState)
         }
     }

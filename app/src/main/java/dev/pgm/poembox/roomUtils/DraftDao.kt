@@ -22,7 +22,7 @@ interface DraftDao {
     suspend fun getAllDrafts(): MutableList<Draft>
 
     @Query("UPDATE drafts SET draftAnnotation=:notes WHERE title=:title")
-    suspend fun updateNoteByTitle(notes:String,title: String)
+    suspend fun updateNoteByTitle(notes: String, title: String)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateDraft(draft: Draft)

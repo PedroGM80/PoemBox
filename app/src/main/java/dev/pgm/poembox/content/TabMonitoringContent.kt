@@ -352,9 +352,9 @@ fun MonitoringScreen() {
                         onClick = {
                             if (custom.value == Color.Blue) {
                                 scope.launch {
-                                    val sheet=Sheet(poemTitle.value)
+                                    val sheet = Sheet(poemTitle.value)
                                     withContext(Dispatchers.IO) {
-                                        PoemBoxDatabase.getDatabase()?.sheetDao()?.addSheet(sheet )
+                                        PoemBoxDatabase.getDatabase()?.sheetDao()?.addSheet(sheet)
                                     }
                                 }
                                 VALIDATE_STATUS++

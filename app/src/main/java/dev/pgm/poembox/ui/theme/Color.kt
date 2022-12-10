@@ -13,7 +13,7 @@ val Teal200 = Color(0xFF03DAC5)
 val ColorPoemField: TextFieldColors
     @Composable
     get() = TextFieldDefaults.textFieldColors(
-        textColor=Color.Black,
+        textColor = Color.Black,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
@@ -23,7 +23,7 @@ val ColorPoemField: TextFieldColors
 val ColorPoemFieldDialog: TextFieldColors
     @Composable
     get() = TextFieldDefaults.textFieldColors(
-        textColor=Color.Black,
+        textColor = Color.Black,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
