@@ -224,7 +224,7 @@ fun MonitoringScreen() {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier
-                        .padding(top = 10.dp, start = 10.dp, end = 10.dp)
+                        .padding(top = 30.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                         .background(Color(Color.Yellow.value)),
@@ -236,7 +236,7 @@ fun MonitoringScreen() {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier
-                        .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+                        .padding(bottom = 30.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                         .background(Color(Color.Yellow.value)),
@@ -245,17 +245,20 @@ fun MonitoringScreen() {
                 )
                 Button(
                     onClick = {
+
                         scope.launch {
-                            val poemLines = poem.split("\n")
-                            poemTitle.value = poemLines[0]
-                            poemBody.value = poem.removePrefix(poemLines[0])
                             withContext(Dispatchers.IO) {
+
                                 val draft = PoemBoxDatabase.getDatabase()?.draftDao()
                                     ?.findByTitle(POEM_TITLE)
                                 if (draft != null) {
                                     poem = draft.title + "\n" + draft.draftContent
+                                    val poemLines = poem.split("\n")
+                                    poemTitle.value = poemLines[0]
+                                    poemBody.value = poem.removePrefix(poemLines[0])
                                 }
                             }
+
                         }
                     },
                     shape = RoundedCornerShape(10.dp),
@@ -308,8 +311,8 @@ fun MonitoringScreen() {
                     Button(
                         onClick = {
                             poemRimeIterator(poemBody.value)
-                            Log.i("Asonante", assonantRime.toString())
-                            Log.i("Consonante", consonantRime.toString())
+                            Log.i("Assonant", assonantRime.toString())
+                            Log.i("Consonant", consonantRime.toString())
                             val sizeAssonance = assonantRime.size
                             val sizeConsonant = consonantRime.size
                             var typeRime = "Undefined"
@@ -378,7 +381,6 @@ fun MonitoringScreen() {
 
     if (showDialog.value) {
         showDialog.value = alertDialogSample(titleDialog.value, bodyDialog.value)
-        Log.i(":::SHOW", "show dialog")
     }
 }
 
@@ -417,7 +419,7 @@ private fun modifierButtonValidate(): Modifier {
 }
 
 @Composable
-private fun alertDialogSample(title: String, body: String): Boolean {
+fun alertDialogSample(title: String, body: String): Boolean {
     val openDialog = remember { mutableStateOf(true) }
 
     MaterialTheme {

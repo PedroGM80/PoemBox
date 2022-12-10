@@ -35,6 +35,7 @@ import java.util.*
 
 @Composable
 fun EditScreen(userData: String) {
+    val maxChar = 30
     val custom = remember { mutableStateOf(Color.Blue) }
     Surface(color = MaterialTheme.colors.primary) {
         Column(
@@ -58,16 +59,21 @@ fun EditScreen(userData: String) {
 
             TextField(
                 value = textTitle,
+
                 label = { Text(text = "Title") },
+
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+
                 onValueChange = {
-                    textTitle = it
-                },
+                    if (it.text.length <= maxChar) textTitle = it
+                },textStyle = TextStyle(textAlign = TextAlign.Center),
                 colors = ColorPoemField,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
                     .padding(10.dp),
-                shape = Shapes.medium
+                shape = Shapes.medium,
+
             )
             TextField(
                 value = textContent,
@@ -76,11 +82,12 @@ fun EditScreen(userData: String) {
                 onValueChange = {
                     textContent = it
                 },
-                textStyle = TextStyle(fontSize = Typography.body2.fontSize),
+                textStyle = TextStyle(fontSize = Typography.body2.fontSize,textAlign = TextAlign.Center),
                 colors = ColorPoemField,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
+                    .align(Alignment.CenterHorizontally)
                     .height(400.dp),
                 shape = Shapes.medium,
             )
