@@ -43,7 +43,6 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
                     }
                     scope.launch {
                         pagerState.animateScrollToPage(VALIDATE_STATUS)
-                        Log.i(":::INDEX",index.toString())
                     }
                 },
             )
