@@ -1,6 +1,7 @@
 package dev.pgm.poembox.screens
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,12 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import dev.pgm.poembox.ContextContentProvider
 import dev.pgm.poembox.MainActivity
 import dev.pgm.poembox.roomUtils.User
 
@@ -39,8 +40,8 @@ fun CreateAccount(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val userInputName = remember { mutableStateOf(TextFieldValue()) }
-        val userInputMail = remember { mutableStateOf(TextFieldValue()) }
+        val userInputName = remember { mutableStateOf("Username") }
+        val userInputMail = remember { mutableStateOf("Email") }
 
         Text(
             text = "Sing up",
@@ -49,7 +50,7 @@ fun CreateAccount(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            label = { Text(text = "Username") },
+            label = { Text(text = "User name") },
             value = userInputName.value,
             onValueChange = { userInputName.value = it })
 
@@ -64,14 +65,23 @@ fun CreateAccount(navController: NavController) {
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
-                    /*   user.userName = userInputName.value.text
-                       user.userMail = userInputMail.value.text*/
-                    val activity = MainActivity()
-                    activity.user.userName = user.userName.toString()
-                    activity.user.userMail = user.userMail.toString()
-                    activity.saveUser(user)
-                    navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-                        popUpTo(0)
+                    if (verifyEmail(userInputMail.value)) {
+
+                        user.userName = userInputName.value
+                        user.userMail = userInputMail.value
+                        val activity = MainActivity()
+                        activity.user.userName = user.userName.toString()
+                        activity.user.userMail = user.userMail.toString()
+                        activity.saveUser(user)
+                        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
+                            popUpTo(0)
+                        }
+                    } else {
+
+                        Toast.makeText(
+                            ContextContentProvider.applicationContext(), "Email no valid",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 },
                 shape = RoundedCornerShape(50.dp),
@@ -86,6 +96,10 @@ fun CreateAccount(navController: NavController) {
     }
 }
 
+fun verifyEmail(mail: String): Boolean {
+    val pattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex()
+    return pattern.matches(mail)
+}
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Preview(showBackground = true)

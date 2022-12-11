@@ -19,7 +19,6 @@ class UtilitySyllables {
         arrayOf("yo", "|o"),
         arrayOf("yu", "|u")
     )
-    private val punctuationMarks = charArrayOf(',', '.')
     private val openVowels = charArrayOf('a', 'á', 'e', 'é', 'o', 'ó')
     private val closeVowels = charArrayOf('i', 'u', 'ü', 'y')
     private val closeVowelsAccent = charArrayOf('í', 'ú')
@@ -54,14 +53,6 @@ class UtilitySyllables {
             }
             otherCase[size] = enye
             return otherCase
-        }
-    val pattern: Pattern
-        get() {
-            val regex = StringBuffer(otherCase[0].code)
-            for (index in 1 until otherCase.size) {
-                regex.append("|").append(otherCase[index])
-            }
-            return Pattern.compile(regex.toString())
         }
 
 
@@ -222,22 +213,6 @@ class UtilitySyllables {
         }
     }
 
-    fun stressedB(syllables: String): Int {
-        if (syllables.length == 1) return 0
-
-        for (index in syllables.indices) {
-            if (patternAccent.matcher(syllables[index].toString())
-                    .matches()
-            ) return index//have accent is tonic
-        }
-        val last = syllables[syllables.length - 1]
-        return when {
-            patternVowelsCaseNCaseS.matcher(last.toString())
-                .matches() -> syllables.length - 2 // plain
-            else -> syllables.length - 1//acute
-        }
-    }
-
     fun getStressedVowelIndex(syllable: String): Int {
         val letters = syllable.lowercase(Locale.getDefault()).toCharArray()
         var check = -1
@@ -279,7 +254,6 @@ class UtilitySyllables {
         return check
     }
 
-
     fun getLastSyllable(word: String): String {
         return getSyllables(word).last()
     }
@@ -293,6 +267,4 @@ class UtilitySyllables {
         }
         return vowel
     }
-
-
 }
