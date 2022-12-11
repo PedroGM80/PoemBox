@@ -19,7 +19,7 @@ class CryptoManager {
         private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
         private const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
         private const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
-        const val ALIAS = "protectedKey"
+        internal const val ALIAS = "protectedKey"
     }
 
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply {
@@ -57,7 +57,7 @@ class CryptoManager {
         }.generateKey()
     }
 
-    fun encrypt(byteArray: ByteArray, outputStream: OutputStream): ByteArray {
+    internal fun encrypt(byteArray: ByteArray, outputStream: OutputStream): ByteArray {
 
         val encryptBytes = encryptCipher.doFinal(byteArray)
         outputStream.use { stream ->
@@ -69,7 +69,7 @@ class CryptoManager {
         return encryptBytes
     }
 
-    fun decrypt(inputStream: InputStream): ByteArray {
+    internal fun decrypt(inputStream: InputStream): ByteArray {
         return inputStream.use { stream ->
             val ivSize = stream.read()
 

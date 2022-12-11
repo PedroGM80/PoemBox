@@ -254,9 +254,7 @@ class UtilitySyllables {
         return check
     }
 
-    fun getLastSyllable(word: String): String {
-        return getSyllables(word).last()
-    }
+    fun getLastSyllable(word: String) = getSyllables(word).last()
 
     fun getLastVowel(word: String): String {
         var vowel = ""
