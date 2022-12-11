@@ -13,6 +13,11 @@ import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
 
 
+/**
+ * Screen tabs
+ *
+ * @param userData
+ */
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ScreenTabs(userData: String) {
@@ -31,9 +36,3 @@ fun ScreenTabs(userData: String) {
     }
 }
 
-/*
-@Preview(showBackground = true)
-@Composable
-fun PrevScreenTabs() {
-    ScreenTabs()
-}*/

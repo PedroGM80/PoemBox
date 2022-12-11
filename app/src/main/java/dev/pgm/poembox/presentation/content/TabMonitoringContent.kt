@@ -28,15 +28,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Get key
+ *
+ * @param hashMap
+ * @param target
+ * @param K
+ * @param V
+ * @return
+ */
 fun <K, V> getKey(hashMap: Map<K, V>, target: V): K {
     return hashMap.filter { target == it.value }.keys.first()
 }
 
+/**
+ * Find duplicates
+ *
+ * @param list
+ * @param T
+ * @return
+ */
 fun <T> findDuplicates(list: List<T>): Set<T> {
     val seen: MutableSet<T> = mutableSetOf()
     return list.filter { !seen.add(it) }.toSet()
 }
 
+/** Monitoring screen */
 @Composable
 fun MonitoringScreen() {
     val custom = remember { mutableStateOf(Color.Blue) }
@@ -105,6 +122,14 @@ fun MonitoringScreen() {
         }
     }
 
+    /**
+     * Get marked rime minor art
+     *
+     * @param objectiveConsonant
+     * @param objectiveAssonant
+     * @param numberSyllablesInThePoemLine
+     * @return marked rime minor art
+     */
     fun getMarkedRimeMinorArt(
         objectiveConsonant: String,
         objectiveAssonant: String,
@@ -155,6 +180,12 @@ fun MonitoringScreen() {
         }
     }
 
+    /**
+     * Get rime letter
+     *
+     * @param poemLine
+     * @return rime letter
+     */
     fun getRimeLetter(poemLine: String): String {
 
         if (poemLine.isEmpty()) {
@@ -198,6 +229,12 @@ fun MonitoringScreen() {
         } else ""
     }
 
+    /**
+     * Poem rime iterator
+     *
+     * @param poem
+     * @return All rime marked
+     */
     fun poemRimeIterator(poem: String): String {
         var rimeChecks = ""
         val poemLines = poem.split("\n")
@@ -207,6 +244,11 @@ fun MonitoringScreen() {
         return rimeChecks
     }
 
+    /**
+     * Get predominate number syllables
+     *
+     * @return predominate number syllables
+     */
     fun getPredominateNumberSyllables(): String = findDuplicates(numberSyllablesInPoem).toString()
         .replace("[", "")
         .replace("]", "")
@@ -382,6 +424,12 @@ fun MonitoringScreen() {
     }
 }
 
+/**
+ * Clean punctuation marks
+ *
+ * @param poemLine
+ * @return poemLine cleaned
+ */
 fun cleanPunctuationMarks(poemLine: String): String {
     val cleanPoemLine = poemLine.replace(".", "")
     val cleanB = cleanPoemLine.replace(",", "")
@@ -416,6 +464,7 @@ private fun modifierButtonValidate(): Modifier {
         .padding(10.dp)
 }
 
+/** Monitoring screen preview */
 @Preview(showBackground = true)
 @Composable
 fun MonitoringScreenPreview() {

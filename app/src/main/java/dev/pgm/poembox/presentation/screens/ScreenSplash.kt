@@ -27,10 +27,3 @@ fun ScreenSplash(navController: NavController, userData: String) {
     Logo()
 }
 
-/*
-@Preview(showBackground = true)
-@Composable
-private fun ShowSplash() {
-    ScreenSplash(rememberNavController(), userData)
-}
-*/

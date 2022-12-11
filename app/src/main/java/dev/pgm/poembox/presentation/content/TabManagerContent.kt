@@ -32,6 +32,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Poem details
+ *
+ * @constructor Create empty Poem details
+ * @property title
+ * @property author
+ * @property date
+ * @property annotations
+ * @property poem
+ */
 data class PoemDetails(
     var title: String,
     var author: String,
@@ -45,6 +55,11 @@ data class PoemDetails(
 
 }
 
+/**
+ * Poem card
+ *
+ * @param poem
+ */
 @Composable
 fun PoemCard(poem: PoemDetails) {
     val bodyDialog = remember { mutableStateOf("") }
@@ -174,6 +189,11 @@ fun PoemCard(poem: PoemDetails) {
 }
 
 
+/**
+ * Details content
+ *
+ * @param poemList
+ */
 @Composable
 fun DetailsContent(poemList: MutableList<PoemDetails>) {
 
@@ -187,6 +207,7 @@ fun DetailsContent(poemList: MutableList<PoemDetails>) {
     }
 }
 
+/** Manager screen */
 @Composable
 fun ManagerScreen() {
     val list = remember { mutableListOf<PoemDetails>() }
@@ -246,6 +267,12 @@ fun ManagerScreen() {
     }
 }
 
+/**
+ * Tabs content
+ *
+ * @param tabs
+ * @param pagerState
+ */
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 internal fun TabsContent(tabs: List<TabItem>, pagerState: PagerState) {

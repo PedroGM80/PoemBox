@@ -14,6 +14,13 @@ import dev.pgm.poembox.presentation.MainActivity.Companion.VALIDATE_STATUS
 import dev.pgm.poembox.presentation.components.TabItem.Editor.setUserData
 import kotlinx.coroutines.launch
 
+/**
+ * Tabs
+ *
+ * @param tabs
+ * @param pagerState
+ * @param userData
+ */
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
