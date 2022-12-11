@@ -5,7 +5,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 /**
  * Show bars
- *
+ * @author Pedro Gallego Morales
  * @param flag
  */
 @Composable

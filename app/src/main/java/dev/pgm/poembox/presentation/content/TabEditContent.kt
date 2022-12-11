@@ -117,7 +117,7 @@ fun EditScreen(userData: String) {
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(75.dp)
+                       .wrapContentHeight()
                         .padding(10.dp)
                 ) {
                     Text(
