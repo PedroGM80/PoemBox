@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 /**
  * Utility syllables
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Utility syllables
  */
 class UtilitySyllables {

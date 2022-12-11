@@ -22,7 +22,7 @@ import java.io.FileOutputStream
 
 /**
  * Main activity
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Main activity
  */
 class MainActivity : ComponentActivity() {

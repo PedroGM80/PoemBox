@@ -8,7 +8,7 @@ import android.net.Uri
 
 /**
  * Context content provider
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Context content provider
  */
 class ContextContentProvider : ContentProvider() {
