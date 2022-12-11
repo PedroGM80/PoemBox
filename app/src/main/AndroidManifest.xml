@@ -15,7 +15,7 @@
         android:theme="@style/Theme.PoemBox"
         tools:targetApi="33">
         <provider
-            android:name=".ContextContentProvider"
+            android:name=".domain.ContextContentProvider"
             android:authorities="${applicationId}.ContextContentProvider"
             android:enabled="true"
             android:exported="false"
@@ -25,7 +25,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.PoemBox">
             <intent-filter>
