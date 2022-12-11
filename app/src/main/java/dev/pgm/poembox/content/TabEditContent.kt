@@ -33,10 +33,9 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @Composable
 fun EditScreen(userData: String) {
-    val maxChar = 30
+    val maxChar = 60
     val custom = remember { mutableStateOf(Color.Blue) }
     Surface(color = MaterialTheme.colors.primary) {
         Box(Modifier.wrapContentSize(Alignment.Center)) {
