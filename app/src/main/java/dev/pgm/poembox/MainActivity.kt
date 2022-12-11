@@ -19,15 +19,13 @@ import java.io.FileOutputStream
 
 class MainActivity : ComponentActivity() {
     companion object {
-        var POEM_TITLE = ""
-        var VALIDATE_STATUS = 0
+       internal var POEM_TITLE = ""
+       internal var VALIDATE_STATUS = 0
     }
 
-    var user = User(null, null)
-
-
+  internal  var user = User(null, null)
     @RequiresApi(Build.VERSION_CODES.M)
-    val cryptoManager = CryptoManager()
+  internal  val cryptoManager = CryptoManager()
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,13 +79,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PoemBoxTheme {
-        SetUpNavController(rememberNavController())
-    }
-}*/
