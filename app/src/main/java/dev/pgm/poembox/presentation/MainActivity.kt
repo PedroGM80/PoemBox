@@ -20,6 +20,11 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
+/**
+ * Main activity
+ *
+ * @constructor Create empty Main activity
+ */
 class MainActivity : ComponentActivity() {
     companion object {
         internal var POEM_TITLE = ""
@@ -49,6 +54,11 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    /**
+     * Save user
+     *
+     * @param user
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun saveUser(user: User) {
         val name: String = user.userName ?: ""
@@ -69,6 +79,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Get decode
+     *
+     * @return Decode info
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     fun getDecode(): String {
         return if (File(filesDir, "$ALIAS.txt").exists()) {

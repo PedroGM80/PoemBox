@@ -5,6 +5,16 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Draft
+ *
+ * @constructor Create empty Draft
+ * @property title
+ * @property draftContent
+ * @property writerName
+ * @property draftAnnotation
+ * @property writtenDate
+ */
 @Entity(
     tableName = "drafts", indices = [Index(
         value = ["title"],

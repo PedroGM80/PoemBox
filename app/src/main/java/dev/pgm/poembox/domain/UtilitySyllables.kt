@@ -3,6 +3,11 @@ package dev.pgm.poembox.domain
 import java.util.*
 import java.util.regex.Pattern
 
+/**
+ * Utility syllables
+ *
+ * @constructor Create empty Utility syllables
+ */
 class UtilitySyllables {
     private val conversions = arrayOf(
         arrayOf("ch", "@"),
@@ -56,6 +61,12 @@ class UtilitySyllables {
         }
 
 
+    /**
+     * Get syllables
+     *
+     * @param aWord
+     * @return syllables list
+     */
     fun getSyllables(aWord: String?): ArrayList<String> {
         val wordNoPoint = aWord?.replace(".", "")
         val wordNoPoints = wordNoPoint?.replace(",", "")
@@ -74,6 +85,12 @@ class UtilitySyllables {
         return syllables
     }
 
+    /**
+     * Next
+     *
+     * @param word
+     * @return Int
+     */
     fun next(word: String?): Int {
         var hInterleaved = 0
         val charsWord = word!!.toCharArray()
@@ -139,6 +156,13 @@ class UtilitySyllables {
         return 0
     }
 
+    /**
+     * Last vowel
+     *
+     * @param vocal
+     * @param aWord
+     * @return boolean
+     */
     private fun lastVowel(vocal: Int, aWord: CharArray): Boolean {
         for (i in vocal + 1 until aWord.size) {
             if (isVowel(aWord[i])) {
@@ -148,6 +172,13 @@ class UtilitySyllables {
         return true
     }
 
+    /**
+     * Is hiatus
+     *
+     * @param firstVowel
+     * @param secondVowel
+     * @return boolean
+     */
     private fun isHiatus(firstVowel: Char, secondVowel: Char): Boolean {
         // one closeVowels and accent
         for (closeVowel in closeVowelsAccent) {
@@ -164,6 +195,12 @@ class UtilitySyllables {
         return firstVowel == secondVowel
     }
 
+    /**
+     * Is vowel
+     *
+     * @param letter
+     * @return
+     */
     fun isVowel(letter: Char): Boolean {
         for (vowel in vowels) {
             if (letter.lowercaseChar() == vowel) return true
@@ -171,9 +208,21 @@ class UtilitySyllables {
         return false
     }
 
+    /**
+     * Is consonant
+     *
+     * @param letter
+     * @return boolean
+     */
     private fun isConsonant(letter: Char): Boolean = !isVowel(letter)
 
 
+    /**
+     * Format
+     *
+     * @param aWord
+     * @return word  formatted
+     */
     private fun format(aWord: String?): String {
         var word = aWord
         if (word == null) word = ""
@@ -185,6 +234,12 @@ class UtilitySyllables {
         return word
     }
 
+    /**
+     * Un format
+     *
+     * @param aWord
+     * @return word reverted format
+     */
     private fun unFormat(aWord: String?): String {
         var word = aWord
         if (word == null) word = ""
@@ -197,6 +252,12 @@ class UtilitySyllables {
     }
 
 
+    /**
+     * Stressed
+     *
+     * @param syllables
+     * @return index stressed syllable
+     */
     fun stressed(syllables: List<String?>): Int {
         if (syllables.size == 1) return 0
 
@@ -213,6 +274,12 @@ class UtilitySyllables {
         }
     }
 
+    /**
+     * Get stressed vowel index
+     *
+     * @param syllable
+     * @return  index stressed syllable
+     */
     fun getStressedVowelIndex(syllable: String): Int {
         val letters = syllable.lowercase(Locale.getDefault()).toCharArray()
         var check = -1
@@ -254,8 +321,19 @@ class UtilitySyllables {
         return check
     }
 
+    /**
+     * Get last syllable
+     *
+     * @param word
+     */
     fun getLastSyllable(word: String) = getSyllables(word).last()
 
+    /**
+     * Get last vowel
+     *
+     * @param word
+     * @return
+     */
     fun getLastVowel(word: String): String {
         var vowel = ""
         for (letter in word) {
