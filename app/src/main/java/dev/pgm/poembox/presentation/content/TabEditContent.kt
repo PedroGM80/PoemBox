@@ -129,6 +129,11 @@ fun EditScreen(userData: String) {
     }
 }
 
+/**
+ * Get date
+ *
+ * @return actual date
+ */
 internal fun getDate(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale(Locale.ROOT.language))
     val date = Date()

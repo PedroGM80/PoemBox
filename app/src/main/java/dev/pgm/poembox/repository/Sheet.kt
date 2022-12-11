@@ -5,6 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import dev.pgm.poembox.presentation.content.getDate
 
+/**
+ * Sheet
+ *
+ * @constructor Create empty Sheet
+ * @property refDraftValidate
+ */
 @Entity(tableName = "sheets")
 data class Sheet(
     @ColumnInfo(name = "RefDraftValidate")

@@ -6,6 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import dev.pgm.poembox.domain.ContextContentProvider
 
+/**
+ * Poem box database
+ *
+ * @constructor Create empty Poem box database
+ */
 @Database(
     entities = [Draft::class, Sheet::class],
     version = 1,
@@ -23,7 +28,18 @@ import dev.pgm.poembox.domain.ContextContentProvider
 
 abstract class PoemBoxDatabase : RoomDatabase() {
 
+    /**
+     * Draft dao
+     *
+     * @return  DraftDao
+     */
     abstract fun draftDao(): DraftDao
+
+    /**
+     * Sheet dao
+     *
+     * @return  SheetDao
+     */
     abstract fun sheetDao(): SheetDao
 
     companion object {

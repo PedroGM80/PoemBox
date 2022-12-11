@@ -26,6 +26,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Input dialog sample
+ *
+ * @param title
+ * @param bodyInput
+ * @return response button
+ */
 @Composable
 fun inputDialogSample(title: String, bodyInput: String): Boolean {
     val openDialog = remember { mutableStateOf(true) }
@@ -87,6 +94,13 @@ fun inputDialogSample(title: String, bodyInput: String): Boolean {
     return openDialog.value
 }
 
+/**
+ * Alert dialog sample
+ *
+ * @param title
+ * @param body
+ * @return  response button
+ */
 @Composable
 fun alertDialogSample(title: String, body: String): Boolean {
     val openDialog = remember { mutableStateOf(true) }

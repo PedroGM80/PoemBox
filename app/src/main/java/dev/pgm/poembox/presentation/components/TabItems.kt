@@ -9,9 +9,22 @@ import dev.pgm.poembox.presentation.content.MonitoringScreen
 
 typealias ComposableFun = @Composable () -> Unit
 
+/**
+ * Tab item
+ *
+ * @constructor Create empty Tab item
+ * @property icon
+ * @property title
+ * @property screen
+ */
 sealed class TabItem(var icon: Int, var title: String, var screen: ComposableFun) {
     var userData: String = ""
 
+    /**
+     * Set user data
+     *
+     * @param data
+     */
     @JvmName("setUserData1")
     fun setUserData(data: String) {
         userData = data

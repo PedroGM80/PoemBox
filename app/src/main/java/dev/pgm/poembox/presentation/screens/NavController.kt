@@ -7,6 +7,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
+/**
+ * Set up nav controller
+ *
+ * @param controller
+ * @param userData
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun SetUpNavController(controller: NavHostController, userData: String) {

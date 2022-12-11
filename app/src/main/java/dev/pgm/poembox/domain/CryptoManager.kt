@@ -12,6 +12,11 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 
+/**
+ * Crypto manager
+ *
+ * @constructor Create empty Crypto manager
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 class CryptoManager {
     companion object {
@@ -22,25 +27,44 @@ class CryptoManager {
         internal const val ALIAS = "protectedKey"
     }
 
+    /** Key store */
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply {
         load(null)
     }
 
+    /** Encrypt cipher */
     private val encryptCipher = Cipher.getInstance(TRANSFORMATION).apply {
         init(Cipher.ENCRYPT_MODE, getKey())
     }
 
-    private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
+
+    /**
+     * Get decrypt cipher for iv
+     *
+     * @param bytes
+     * @return
+     */
+    private fun getDecryptCipherForIv(bytes: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
+            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(bytes))
         }
     }
 
+    /**
+     * Get key
+     *
+     * @return secret key
+     */
     private fun getKey(): SecretKey {
         val existingKey = keyStore.getEntry(ALIAS, null) as? KeyStore.SecretKeyEntry
         return existingKey?.secretKey ?: createKey()
     }
 
+    /**
+     * Create key
+     *
+     * @return key generated
+     */
     private fun createKey(): SecretKey {
         return KeyGenerator.getInstance(ALGORITHM).apply {
             init(
@@ -57,6 +81,13 @@ class CryptoManager {
         }.generateKey()
     }
 
+    /**
+     * Encrypt
+     *
+     * @param byteArray
+     * @param outputStream
+     * @return
+     */
     internal fun encrypt(byteArray: ByteArray, outputStream: OutputStream): ByteArray {
 
         val encryptBytes = encryptCipher.doFinal(byteArray)
@@ -69,6 +100,12 @@ class CryptoManager {
         return encryptBytes
     }
 
+    /**
+     * Decrypt
+     *
+     * @param inputStream
+     * @return
+     */
     internal fun decrypt(inputStream: InputStream): ByteArray {
         return inputStream.use { stream ->
             val ivSize = stream.read()

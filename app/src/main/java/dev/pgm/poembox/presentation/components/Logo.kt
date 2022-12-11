@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.R
 
+/** Logo */
 @Composable
 fun Logo() {
     val animateAlpha = remember { Animatable(0.1f) }

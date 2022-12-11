@@ -23,6 +23,11 @@ import dev.pgm.poembox.repository.User
 import kotlinx.coroutines.delay
 
 
+/**
+ * Go screen tab
+ *
+ * @param navController
+ */
 @Composable
 fun GoScreenTab(navController: NavController) {
 
@@ -34,6 +39,12 @@ fun GoScreenTab(navController: NavController) {
     }
 }
 
+/**
+ * User login
+ *
+ * @param navController
+ * @param userData
+ */
 @Composable
 fun UserLogin(navController: NavController, userData: String) {
     val dataSplit = userData.split("#")
