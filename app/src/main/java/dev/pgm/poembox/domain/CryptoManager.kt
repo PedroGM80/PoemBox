@@ -14,7 +14,7 @@ import javax.crypto.spec.IvParameterSpec
 
 /**
  * Crypto manager
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Crypto manager
  */
 @RequiresApi(Build.VERSION_CODES.M)

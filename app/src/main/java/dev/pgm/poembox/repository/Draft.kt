@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 /**
  * Draft
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Draft
  * @property title
  * @property draftContent

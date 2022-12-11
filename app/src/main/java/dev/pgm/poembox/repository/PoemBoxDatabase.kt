@@ -8,7 +8,7 @@ import dev.pgm.poembox.domain.ContextContentProvider
 
 /**
  * Poem box database
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Poem box database
  */
 @Database(

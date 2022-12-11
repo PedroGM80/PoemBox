@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 /**
  * Poem utils
- *
+ * @author Pedro Gallego Morales
  * @constructor Create empty Poem utils
  */
 class PoemUtils {
