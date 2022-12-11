@@ -223,7 +223,7 @@ fun MonitoringScreen() {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier
-                        .padding(top = 50.dp, start = 10.dp, end = 10.dp)
+                        .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                         .background(Color(Color.Yellow.value)),
@@ -235,7 +235,7 @@ fun MonitoringScreen() {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier
-                        .padding(bottom = 50.dp, start = 10.dp, end = 10.dp)
+                        .padding(bottom = 20.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                         .background(Color(Color.Yellow.value)),
