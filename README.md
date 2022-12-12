@@ -6,8 +6,8 @@ En este manual de usuario aprenderemos a utilizar la aplicación Poembox; crear 
 navegar por sus diferentes apartados.
 
 
-![Image](./poemform.png "Logo")
-[Enlace](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk "Descarga")
+- ![Image](./poemform.png "Logo")
+- [Enlace](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk "Descarga")
 
 ## Autor
 
