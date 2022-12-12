@@ -395,6 +395,7 @@ fun MonitoringScreen() {
                         onClick = {
                             if (custom.value == Color.Blue) {
                                 scope.launch {
+
                                     val sheet = Sheet(poemTitle.value)
                                     withContext(Dispatchers.IO) {
                                         UseCase().addSheet(sheet)
