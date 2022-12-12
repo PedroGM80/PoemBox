@@ -8,7 +8,7 @@ navegar por sus diferentes apartados.
 
 ![Image](./poemform.png "Logo")
 
-[Enlace](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk "Descarga")
+[Enlace](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk "Enlace de descarga")
 
 ## Autor
 
