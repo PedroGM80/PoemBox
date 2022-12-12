@@ -76,7 +76,7 @@ fun UserLogin(navController: NavController, userData: String) {
             colors = ColorPoemField,
             label = { Text(text = "User") },
             value = username.value,
-            onValueChange = { username.value = it })
+            onValueChange = { })
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
@@ -84,7 +84,7 @@ fun UserLogin(navController: NavController, userData: String) {
             label = { Text(text = "Email") },
             value = eMail.value,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = { eMail.value = it })
+            onValueChange = { })
 
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
