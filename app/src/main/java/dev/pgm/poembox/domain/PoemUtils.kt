@@ -16,7 +16,7 @@ class PoemUtils {
                 lines++
             }
         }
-        return lines
+        return lines + 1
     }
 
     /**
@@ -43,17 +43,22 @@ class PoemUtils {
      * @return int for proparoxytone
      */
     fun isProparoxytone(word: String): Int {
+        val patternVowelsAccent = Pattern.compile("[áéíóú]")
         val syllables = UtilitySyllables().getSyllables(word)
-        val syllablesB = syllables.removeLast()
-        val syllable = syllablesB.last()
-        val stringBuffer = StringBuffer()
-        stringBuffer.append(syllable)
-        return if (UtilitySyllables().patternAccent.matcher(stringBuffer).matches()) {
-            1
-        } else {
-            0
+        val syllable = PoemUtils().getTonicSyllable(word)
+        println(syllable)
+
+        if (syllable != null) {
+            if (syllable.contains('á') || syllable.contains('é') ||
+                syllable.contains('í') || syllable.contains('ó') || syllable.contains('ú')
+            ) {
+                return 1
+            }
         }
+        return 0
+
     }
+
 
     /**
      * Get tonic vowel
@@ -186,3 +191,4 @@ class PoemUtils {
         return "Enjambment does not exist"
     }
 }
+
