@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         internal var POEM_TITLE = ""
         internal var VALIDATE_STATUS = 0
     }
-
+   private var userData = ""
     internal var user = User(null, null)
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val userData = getDecode()
+        var userData = getDecode()
 
         setContent {
             PoemBoxTheme {
@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
      */
     @RequiresApi(Build.VERSION_CODES.M)
     fun saveUser(user: User) {
+        userData=user.userMail.toString()+"#"+user.userName.toString()
         val name: String = user.userName ?: ""
         val mail: String = user.userMail ?: ""
         val info = "$mail#$name"

@@ -71,9 +71,12 @@ fun CreateAccount(navController: NavController) {
                         val activity = MainActivity()
                         activity.user.userName = user.userName.toString()
                         activity.user.userMail = user.userMail.toString()
-                        activity.saveUser(user)
-                        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-                            popUpTo(0)
+
+                        if (user.userMail != null && user.userName != null) {
+                            activity.saveUser(user)
+                            navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
+                                popUpTo(0)
+                            }
                         }
                     } else {
 
