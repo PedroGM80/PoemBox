@@ -6,7 +6,7 @@ En este manual de usuario aprenderemos a utilizar la aplicación Poembox; crear 
 navegar por sus diferentes apartados.
 
 
-![Image](./image3.png "Logo")
+![Image](./poemform.png "Logo")
 
 
 ## Autor
