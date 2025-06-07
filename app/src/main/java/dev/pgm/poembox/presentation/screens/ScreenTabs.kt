@@ -2,11 +2,10 @@ package dev.pgm.poembox.presentation.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.components.Tabs
 import dev.pgm.poembox.presentation.components.TopBar
@@ -18,11 +17,11 @@ import dev.pgm.poembox.presentation.content.TabsContent
  *
  * @param userData
  */
-@OptIn(ExperimentalPagerApi::class)
+
 @Composable
 fun ScreenTabs(userData: String) {
     val tabs: List<TabItem> = listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager)
-    val pagerState = rememberPagerState()
+    val pagerState =  rememberPagerState { tabs.size }
     Scaffold(
         topBar = { TopBar() },
     ) { padding ->

@@ -214,6 +214,7 @@ fun MonitoringScreen() {
                         numberSyllablesInThePoemLine
                     )
                 }
+
                 minorArt -> {
                     return getMarkedRimeMinorArt(
                         objectiveConsonant,
@@ -403,7 +404,9 @@ fun MonitoringScreen() {
                                 custom.value = Color.Green
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = custom.value),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = custom.value
+                        ),
                         shape = RoundedCornerShape(10.dp),
                         modifier = modifierButtonValidate()
                     ) {

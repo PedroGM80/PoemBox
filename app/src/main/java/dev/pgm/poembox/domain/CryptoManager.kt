@@ -1,9 +1,7 @@
 package dev.pgm.poembox.domain
 
-import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import androidx.annotation.RequiresApi
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.KeyStore
@@ -17,7 +15,6 @@ import javax.crypto.spec.IvParameterSpec
  * @author Pedro Gallego Morales
  * @constructor Create empty Crypto manager
  */
-@RequiresApi(Build.VERSION_CODES.M)
 class CryptoManager {
     companion object {
         private const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES

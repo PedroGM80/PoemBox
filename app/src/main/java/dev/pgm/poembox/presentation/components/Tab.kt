@@ -1,65 +1,102 @@
 package dev.pgm.poembox.presentation.components
 
 import android.widget.Toast
-import androidx.compose.material3.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import dev.pgm.poembox.domain.ContextContentProvider
+import androidx.compose.ui.platform.LocalContext
 import dev.pgm.poembox.presentation.MainActivity.Companion.VALIDATE_STATUS
 import dev.pgm.poembox.presentation.components.TabItem.Editor.setUserData
 import kotlinx.coroutines.launch
 
 /**
- * Tabs
+ * Tabs component for navigation
  *
- * @param tabs
- * @param pagerState
- * @param userData
+ * @param tabs List of tabs to display
+ * @param pagerState State for controlling the pager
+ * @param userData User data to be set
  */
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
+fun Tabs(
+    tabs: List<TabItem>,
+    pagerState: PagerState,
+    userData: String,
+    modifier: Modifier = Modifier
+) {
     setUserData(userData)
     val scope = rememberCoroutineScope()
-    // OR ScrollableTabRow()
+    val context = LocalContext.current
+
     TabRow(
         selectedTabIndex = pagerState.currentPage,
-        backgroundColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         indicator = { tabPositions ->
-            TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
-        }) {
+            if (tabPositions.isNotEmpty()) {
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                )
+            }
+        }
+    ) {
         tabs.forEachIndexed { index, tab ->
-            // OR Tab()
-            LeadingIconTab(
-                icon = { Icon(imageVector = tab.icon, contentDescription = tab.title) },
-                text = { Text(tab.title) },
+            Tab(
+                icon = {
+                    Icon(
+                        imageVector = tab.icon,
+                        contentDescription = tab.title
+                    )
+                },
+                text = {
+                    Text(
+                        text = tab.title,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
                 selected = pagerState.currentPage == index,
                 onClick = {
-                    if (VALIDATE_STATUS == 0) {
-                        Toast.makeText(
-                            ContextContentProvider.applicationContext(),
-                            "Please validate your draft",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    if (VALIDATE_STATUS == 1) {
-                        Toast.makeText(
-                            ContextContentProvider.applicationContext(),
-                            "Please validate the analysis of the poem",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    scope.launch {
-                        pagerState.animateScrollToPage(VALIDATE_STATUS)
+                    when (VALIDATE_STATUS) {
+                        0 -> {
+                            Toast.makeText(
+                                context,
+                                "Please validate your draft",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            scope.launch {
+                                pagerState.animateScrollToPage(0)
+                            }
+                        }
+                        1 -> {
+                            Toast.makeText(
+                                context,
+                                "Please validate the analysis of the poem",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            scope.launch {
+                                pagerState.animateScrollToPage(1)
+                            }
+                        }
+                        else -> {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        }
                     }
                 },
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
-

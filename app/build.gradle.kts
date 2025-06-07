@@ -1,46 +1,22 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "dev.pgm.poembox"
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
-    ndkVersion = "23.1.7779620"
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "dev.pgm.poembox"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = 24
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-        multiDexEnabled = true
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
-
-        bundle {
-            density {
-                enableSplit = true
-            }
-            abi {
-                enableSplit = true
-            }
-            language {
-                enableSplit = false
-            }
-        }
     }
 
     buildTypes {
@@ -52,65 +28,50 @@ android {
             )
         }
     }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-
     kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        jvmTarget = "11"
     }
-
     buildFeatures {
         compose = true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.0"
-    }
-
-    packagingOptions {
-        resources {
-            excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
-        }
-    }
-
-    dynamicFeatures = setOf()
 }
 
 dependencies {
-    implementation(libs.activity.compose)
-    implementation(libs.appcompat)
-    implementation(libs.compose.material)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.preview)
-    implementation(libs.constraintlayout)
-    implementation(libs.core.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.navigation.compose)
-    implementation(libs.navigation.runtime.ktx)
-    implementation(libs.preference.ktx)
-    implementation(libs.room.ktx)
+    // Core Android dependencies
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+
+    // Room
     implementation(libs.room.runtime)
-    implementation(libs.security.crypto)
-    implementation(libs.security.crypto.ktx)
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pager.indicators)
-    implementation(libs.material)
-    implementation(libs.compose.material3)
-    implementation(libs.datastore.preferences)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.coroutines.android)
-    implementation(libs.multidex)
-
-    kapt(libs.room.compiler)
-
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    androidTestImplementation(libs.espresso.core)
+    implementation(libs.room.ktx)
+    implementation(libs.androidx.navigation.compose.jvmstubs)
+    ksp(libs.room.compiler)
+    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    debugImplementation(libs.compose.ui.test.manifest)
-    debugImplementation(libs.compose.ui.tooling)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Accompanist System UI Controller
+    implementation(libs.accompanist.systemuicontroller)
+
+    // Navigation Compose
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.material.icons.extended)
+
 }

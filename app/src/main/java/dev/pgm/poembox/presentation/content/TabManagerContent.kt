@@ -5,6 +5,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,9 +24,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.UseCase
 import dev.pgm.poembox.presentation.components.TabItem
@@ -74,8 +73,10 @@ fun PoemCard(poem: PoemDetails) {
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .alpha(showCard.value)
             .fillMaxWidth(),
-        elevation = 2.dp,
-        backgroundColor = Color.LightGray,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
         shape = RoundedCornerShape(corner = CornerSize(16.dp))
     ) {
         Row(modifier = Modifier.padding(20.dp)) {
@@ -273,7 +274,7 @@ fun ManagerScreen() {
  * @param tabs
  * @param pagerState
  */
-@OptIn(ExperimentalPagerApi::class)
+
 @Composable
 internal fun TabsContent(tabs: List<TabItem>, pagerState: PagerState) {
     HorizontalPager(state = pagerState, count = tabs.size) { page ->
