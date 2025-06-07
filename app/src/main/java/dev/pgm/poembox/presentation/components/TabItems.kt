@@ -1,15 +1,14 @@
 package dev.pgm.poembox.presentation.components
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
-import dev.pgm.poembox.presentation.components.TabItem.Editor.userData
+import androidx.compose.ui.graphics.vector.ImageVector
 import dev.pgm.poembox.presentation.content.EditScreen
 import dev.pgm.poembox.presentation.content.ManagerScreen
 import dev.pgm.poembox.presentation.content.MonitoringScreen
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Analytics
-import androidx.compose.material.icons.filled.List
-import androidx.compose.ui.graphics.vector.ImageVector
 
 typealias ComposableFun = @Composable () -> Unit
 
@@ -22,7 +21,9 @@ typealias ComposableFun = @Composable () -> Unit
  * @property screen
  */
 sealed class TabItem(var icon: ImageVector, var title: String, var screen: ComposableFun) {
-    var userData: String = ""
+    companion object {
+        var userDataString: String = ""
+    }
 
     /**
      * Set user data
@@ -31,10 +32,10 @@ sealed class TabItem(var icon: ImageVector, var title: String, var screen: Compo
      */
     @JvmName("setUserData1")
     fun setUserData(data: String) {
-        userData = data
+        userDataString = data
     }
 
-    object Editor : TabItem(Icons.Filled.Edit, "Edit", { EditScreen(userData) })
+    object Editor : TabItem(Icons.Filled.Edit, "Edit", { EditScreen(userData = userDataString) })
     object Monitor : TabItem(Icons.Filled.Analytics, "Analyze", { MonitoringScreen() })
     object Manager : TabItem(Icons.Filled.List, "Manager", { ManagerScreen() })
 }

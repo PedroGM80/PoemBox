@@ -1,8 +1,5 @@
 package dev.pgm.poembox.presentation.theme
 
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF6750A4)
@@ -31,22 +28,3 @@ val md_theme_dark_onBackground = Color(0xFFE6E1E5)
 val md_theme_dark_surface = Color(0xFF1C1B1F)
 val md_theme_dark_onSurface = Color(0xFFE6E1E5)
 
-val ColorPoemField: TextFieldColors
-    @Composable
-    get() = TextFieldDefaults.textFieldColors(
-        textColor = Color.Black,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-        containerColor = Color.LightGray
-    )
-
-val ColorPoemFieldDialog: TextFieldColors
-    @Composable
-    get() = TextFieldDefaults.textFieldColors(
-        textColor = Color.Black,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-        containerColor = Color.Transparent
-    )

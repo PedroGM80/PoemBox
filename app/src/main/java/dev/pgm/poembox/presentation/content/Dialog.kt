@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.pgm.poembox.domain.ContextContentProvider
 import dev.pgm.poembox.domain.UseCase
-import dev.pgm.poembox.presentation.theme.ColorPoemFieldDialog
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +57,6 @@ fun inputDialogSample(title: String, bodyInput: String): Boolean {
                                 fontSize = Typography.bodyMedium.fontSize,
                                 textAlign = TextAlign.Center
                             ),
-                            colors = ColorPoemFieldDialog,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
