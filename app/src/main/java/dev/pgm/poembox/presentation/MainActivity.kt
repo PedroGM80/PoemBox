@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
 import dev.pgm.poembox.domain.ContextContentProvider
 import dev.pgm.poembox.domain.CryptoManager
@@ -15,7 +15,7 @@ import dev.pgm.poembox.domain.CryptoManager.Companion.ALIAS
 import dev.pgm.poembox.domain.ShowBars
 import dev.pgm.poembox.presentation.screens.SetUpNavController
 import dev.pgm.poembox.presentation.theme.PoemBoxTheme
-import dev.pgm.poembox.repository.User
+import dev.pgm.poembox.data.User
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PoemBoxTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = MaterialTheme.colorScheme.background) {
                     //set up nav controller
                     ShowBars(flag = false)
                     SetUpNavController(rememberNavController(), userData)

@@ -1,16 +1,16 @@
 package dev.pgm.poembox.domain
 
-import dev.pgm.poembox.repository.Draft
-import dev.pgm.poembox.repository.PoemBoxRepository
-import dev.pgm.poembox.repository.Sheet
+import dev.pgm.poembox.data.Draft
+import dev.pgm.poembox.data.Sheet
+import dev.pgm.poembox.domain.PoemRepository
+import dev.pgm.poembox.domain.ServiceLocator
 
 /**
  * Use case
  * @author Pedro Gallego Morales
  * @constructor Create empty Use case
  */
-class UseCase {
-    val repository = PoemBoxRepository()
+class UseCase(private val repository: PoemRepository = ServiceLocator.repository) {
 
     /**
      * Add draft

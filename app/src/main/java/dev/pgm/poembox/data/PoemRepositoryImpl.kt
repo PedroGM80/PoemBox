@@ -1,11 +1,15 @@
-package dev.pgm.poembox.repository
+package dev.pgm.poembox.data
+
+import dev.pgm.poembox.domain.PoemRepository
+import dev.pgm.poembox.data.Draft
+import dev.pgm.poembox.data.Sheet
 
 /**
  * Poem box repository
  *
  * @constructor Create empty Poem box repository
  */
-class PoemBoxRepository {
+class PoemRepositoryImpl : PoemRepository {
     internal val dataBase = PoemBoxDatabase.getDatabase()
 
     /**
@@ -13,7 +17,7 @@ class PoemBoxRepository {
      *
      * @param draft
      */
-    suspend fun insertDraft(draft: Draft) {
+    override suspend fun insertDraft(draft: Draft) {
         dataBase?.draftDao()?.addDraft(draft)
     }
 
@@ -22,18 +26,18 @@ class PoemBoxRepository {
      *
      * @param titleDraft
      */
-    suspend fun findDraftByTitle(titleDraft: String) =
+    override suspend fun findDraftByTitle(titleDraft: String) =
         dataBase?.draftDao()?.findByTitle(titleDraft)
 
     /** Get all sheet */
-    suspend fun getAllSheet() = dataBase?.sheetDao()?.getAllSheet()
+    override suspend fun getAllSheet() = dataBase?.sheetDao()?.getAllSheet()
 
     /**
      * Find sheet by date creation
      *
      * @param date
      */
-    suspend fun findSheetByDateCreation(date: String) = dataBase?.sheetDao()
+    override suspend fun findSheetByDateCreation(date: String) = dataBase?.sheetDao()
         ?.findByDateCreation(date)
 
     /**
@@ -41,7 +45,7 @@ class PoemBoxRepository {
      *
      * @param sheet
      */
-    suspend fun deleteSheet(sheet: Sheet) {
+    override suspend fun deleteSheet(sheet: Sheet) {
         dataBase
             ?.sheetDao()
             ?.deleteSheet(sheet)
@@ -52,7 +56,7 @@ class PoemBoxRepository {
      *
      * @param draft
      */
-    suspend fun deleteDraft(draft: Draft) {
+    override suspend fun deleteDraft(draft: Draft) {
         dataBase?.draftDao()?.deleteDraft(draft)
     }
 
@@ -61,7 +65,7 @@ class PoemBoxRepository {
      *
      * @param sheet
      */
-    suspend fun addSheet(sheet: Sheet) {
+    override suspend fun addSheet(sheet: Sheet) {
         dataBase?.sheetDao()?.addSheet(sheet)
     }
 
@@ -71,7 +75,7 @@ class PoemBoxRepository {
      * @param note
      * @param title
      */
-    suspend fun updateNoteByTitle(note: String, title: String) {
+    override suspend fun updateNoteByTitle(note: String, title: String) {
         dataBase?.draftDao()?.updateNoteByTitle(note, title)
     }
 }

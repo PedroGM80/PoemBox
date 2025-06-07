@@ -1,4 +1,4 @@
-package dev.pgm.poembox.repository
+package dev.pgm.poembox.data
 
 import android.content.Context
 import androidx.room.Database

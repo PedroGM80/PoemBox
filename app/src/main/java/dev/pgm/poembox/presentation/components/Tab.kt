@@ -1,11 +1,10 @@
 package dev.pgm.poembox.presentation.components
 
 import android.widget.Toast
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -29,15 +28,15 @@ fun Tabs(tabs: List<TabItem>, pagerState: PagerState, userData: String) {
     // OR ScrollableTabRow()
     TabRow(
         selectedTabIndex = pagerState.currentPage,
-        backgroundColor = MaterialTheme.colors.background,
-        contentColor = MaterialTheme.colors.onSecondary,
+        backgroundColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
         }) {
         tabs.forEachIndexed { index, tab ->
             // OR Tab()
             LeadingIconTab(
-                icon = { Icon(painter = painterResource(id = tab.icon), contentDescription = "") },
+                icon = { Icon(imageVector = tab.icon, contentDescription = tab.title) },
                 text = { Text(tab.title) },
                 selected = pagerState.currentPage == index,
                 onClick = {

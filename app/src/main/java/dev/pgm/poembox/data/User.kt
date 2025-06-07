@@ -1,4 +1,4 @@
-package dev.pgm.poembox.repository
+package dev.pgm.poembox.data
 
 
 /**
