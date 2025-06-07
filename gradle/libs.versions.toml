@@ -1,56 +1,110 @@
 [versions]
-compose = "1.5.0"
-activity_compose = "1.6.1"
-appcompat = "1.5.1"
-constraintlayout = "2.1.4"
-core_ktx = "1.9.0"
-lifecycle_runtime = "2.5.1"
-navigation = "2.5.3"
-preference = "1.2.0"
-room = "2.4.3"
-security_crypto = "1.1.0-alpha04"
-accompanist = "0.28.0"
-material = "1.7.0"
-jb_material3 = "1.3.2"
+# AndroidX
+core_ktx = "1.12.0"
+appcompat = "1.6.1"
+activity_compose = "1.8.2"
+lifecycle_runtime = "2.6.2"
+lifecycle_viewmodel = "2.6.2"
+lifecycle_viewmodel_compose = "2.7.0"
+lifecycle_runtime_compose = "2.7.0"
+
+# Compose
+compose_bom = "2023.10.01"
+compose_compiler = "1.5.6"
+
+# Navigation
+navigation = "2.7.6"
+
+# Room
+room = "2.6.1"
+
+# Security
+security_crypto = "1.1.0-alpha06"
+
+# Accompanist
+accompanist = "0.32.0"
+
+# Material
+material = "1.11.0"
+material3 = "1.2.0-rc01"
+
+# Testing
 junit4 = "4.13.2"
-androidx_junit = "1.1.4"
-espresso_core = "3.5.0"
+androidx_junit = "1.1.5"
+espresso_core = "3.5.1"
+
+# DataStore
 datastore_preferences = "1.0.0"
-coroutines_android = "1.6.4"
-multidex = "1.0.3"
-google_services = "4.3.14"
-dokka = "1.7.20"
+
+# Coroutines
+coroutines_android = "1.7.3"
+coroutines_core = "1.7.3"
+
+# Other
+multidex = "2.0.1"
+google_services = "4.4.0"
+dokka = "1.9.10"
 
 [libraries]
+# AndroidX
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core_ktx" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
-compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity_compose" }
-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+
+# Lifecycle
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle_runtime" }
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle_viewmodel_compose" }
+lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle_runtime_compose" }
+
+# Compose BOM
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose_bom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+
+# Navigation
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigation" }
-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
+
+# Room
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+# Security
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "security_crypto" }
 security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "security_crypto" }
+
+# Accompanist
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+
+# Material
 material = { module = "com.google.android.material:material", version.ref = "material" }
-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "jb_material3" }
+
+# DataStore
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore_preferences" }
+
+# Coroutines
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines_android" }
-multidex = { module = "com.android.support:multidex", version.ref = "multidex" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines_core" }
+
+# Testing
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx_junit" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso_core" }
+
+# Other
+multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 google-services = { module = "com.google.gms:google-services", version.ref = "google_services" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+
+[plugins]
+android-application = { id = "com.android.application", version = "8.1.2" }
+android-library = { id = "com.android.library", version = "8.1.2" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.9.20" }
+jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version = "1.9.20" }
+jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
