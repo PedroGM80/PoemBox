@@ -67,6 +67,7 @@ dependencies {
 
     // Accompanist System UI Controller
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.navigation.animation)
 
     // Navigation Compose
     implementation(libs.androidx.navigation.compose)
