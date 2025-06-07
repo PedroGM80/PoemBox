@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,8 +22,7 @@ import dev.pgm.poembox.domain.UseCase
 import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.presentation.MainActivity.Companion.POEM_TITLE
 import dev.pgm.poembox.presentation.MainActivity.Companion.VALIDATE_STATUS
-import dev.pgm.poembox.repository.PoemBoxDatabase
-import dev.pgm.poembox.repository.Sheet
+import dev.pgm.poembox.data.Sheet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -253,7 +252,7 @@ fun MonitoringScreen() {
         .replace("[", "")
         .replace("]", "")
 
-    Surface(color = MaterialTheme.colors.primary) {
+    Surface(color = MaterialTheme.colorScheme.primary) {
         Box(Modifier.wrapContentSize(Alignment.Center)) {
             Column(
                 modifier = Modifier
@@ -289,8 +288,7 @@ fun MonitoringScreen() {
                     onClick = {
                         scope.launch {
                             withContext(Dispatchers.IO) {
-                                val draft = PoemBoxDatabase.getDatabase()?.draftDao()
-                                    ?.findByTitle(POEM_TITLE)
+                                val draft = UseCase().findDraftByTitle(POEM_TITLE)
                                 if (draft != null) {
                                     poem = draft.title + "\n" + draft.draftContent
                                     val poemLines = poem.split("\n")

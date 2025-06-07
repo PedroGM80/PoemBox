@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +26,7 @@ import dev.pgm.poembox.presentation.MainActivity.Companion.VALIDATE_STATUS
 import dev.pgm.poembox.presentation.theme.ColorPoemField
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
-import dev.pgm.poembox.repository.Draft
+import dev.pgm.poembox.data.Draft
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,7 +37,7 @@ import java.util.*
 fun EditScreen(userData: String) {
     val maxChar = 60
     val custom = remember { mutableStateOf(Color.Blue) }
-    Surface(color = MaterialTheme.colors.primary) {
+    Surface(color = MaterialTheme.colorScheme.primary) {
         Box(Modifier.wrapContentSize(Alignment.Center)) {
             Column(
                 modifier = Modifier
