@@ -1,117 +1,61 @@
 package dev.pgm.poembox.presentation.screens
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import dev.pgm.poembox.data.User
-import dev.pgm.poembox.presentation.MainActivity
-import kotlinx.coroutines.delay
+import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 
-
-/**
- * Go screen tab
- *
- * @param navController
- */
 @Composable
-fun GoScreenTab(navController: NavController) {
+fun UserLogin(
+    navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
+    val userName by viewModel.userName.collectAsState()
 
-    LaunchedEffect(key1 = true) {
-        delay(0)
-        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-            popUpTo(0)
-        }
-    }
-}
-
-/**
- * User login
- *
- * @param navController
- * @param userData
- */
-@Composable
-fun UserLogin(navController: NavController, userData: String) {
-    val dataSplit = userData.split("#")
-    val userLoaded = dataSplit[1]
-    val mailLoaded = dataSplit[0]
-    Log.i(":::Data", userLoaded)
-    Log.i(":::DataB", mailLoaded)
-    val user = User(userLoaded, mailLoaded)
-    var next: Boolean by remember { mutableStateOf(false) }
-    if (next) {
-        GoScreenTab(navController)
-    }
     Column(
         modifier = Modifier
-            .padding(20.dp)
-            .fillMaxHeight(),
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "Welcome Back",
+            style = MaterialTheme.typography.headlineLarge,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Bold
+        )
 
-        val username = remember { mutableStateOf(TextFieldValue(text = user.userName.toString())) }
-        val eMail =
-            remember { mutableStateOf(TextFieldValue(text = user.userMail.toString())) }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "Login", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Serif))
+        Text(
+            text = "Logged in as: ${userName ?: "Unknown"}",
+            style = MaterialTheme.typography.bodyLarge
+        )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        TextField(
-            label = { Text(text = "User") },
-            value = username.value,
-            onValueChange = { })
+        Spacer(modifier = Modifier.height(32.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
-        TextField(
-            label = { Text(text = "Email") },
-            value = eMail.value,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = { })
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-            Button(
-                onClick = {
-                    val activity = MainActivity()
-                    activity.user.userName = user.userName.toString()
-                    activity.user.userMail = user.userMail.toString()
-                    next = true
-                },
-                shape = RoundedCornerShape(50.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            ) {
-                Text(text = "Login")
-            }
+        Button(
+            onClick = {
+                navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
+                    popUpTo(0)
+                }
+            },
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = "Enter PoemBox", fontSize = 18.sp)
         }
-        Spacer(modifier = Modifier.height(20.dp))
     }
 }
