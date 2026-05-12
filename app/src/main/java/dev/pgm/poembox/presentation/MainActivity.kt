@@ -18,11 +18,14 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
+import dagger.hilt.android.AndroidEntryPoint
+
 /**
  * Main activity
  * @author Pedro Gallego Morales
  * @constructor Create empty Main activity
  */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     companion object {
         internal var POEM_TITLE = ""
