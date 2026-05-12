@@ -5,23 +5,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.components.Tabs
 import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
-
-
-/**
- * Screen tabs
- *
- * @param userData
- */
+import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 
 @Composable
-fun ScreenTabs(userData: String) {
+fun ScreenTabs(
+    viewModel: AuthViewModel = hiltViewModel()
+) {
+    val userName by viewModel.userName.collectAsState()
     val tabs: List<TabItem> = listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager)
-    val pagerState =  rememberPagerState { tabs.size }
+    val pagerState = rememberPagerState { tabs.size }
+    
     Scaffold(
         topBar = { TopBar() },
     ) { padding ->
@@ -29,9 +30,8 @@ fun ScreenTabs(userData: String) {
             modifier = Modifier
                 .padding(padding)
         ) {
-            Tabs(tabs = tabs, pagerState = pagerState, userData = userData)
+            Tabs(tabs = tabs, pagerState = pagerState, userData = userName ?: "Unknown")
             TabsContent(tabs = tabs, pagerState = pagerState)
         }
     }
 }
-

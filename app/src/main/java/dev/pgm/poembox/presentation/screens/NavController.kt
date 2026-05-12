@@ -11,37 +11,27 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 
-/**
- * Set up nav controller
- *
- * @param controller
- * @param userData
- */
 @OptIn(ExperimentalAnimationApi::class)
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun SetUpNavController(controller: NavHostController, userData: String) {
+fun SetUpNavController(controller: NavHostController) {
     AnimatedNavHost(
         navController = controller,
         startDestination = ScreensRouteList.RouteScreenSplash.route,
         enterTransition = { fadeIn(animationSpec = tween(700)) },
         exitTransition = { fadeOut(animationSpec = tween(700)) }
     ) {
-
         composable(ScreensRouteList.RouteScreenSplash.route) {
-            ScreenSplash(navController = controller, userData)
+            ScreenSplash(navController = controller)
         }
         composable(ScreensRouteList.RouteScreenTabs.route) {
-            ScreenTabs(userData)
+            ScreenTabs()
         }
         composable(ScreensRouteList.RouteScreenLogin.route) {
-            UserLogin(navController = controller, userData)
-
+            UserLogin(navController = controller)
         }
         composable(ScreensRouteList.RouteScreenCreateAccount.route) {
             CreateAccount(navController = controller)
-
         }
     }
 }
-
