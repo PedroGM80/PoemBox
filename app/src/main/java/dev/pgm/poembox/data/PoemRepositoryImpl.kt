@@ -1,16 +1,18 @@
 package dev.pgm.poembox.data
 
 import dev.pgm.poembox.domain.PoemRepository
-import dev.pgm.poembox.data.Draft
-import dev.pgm.poembox.data.Sheet
+import javax.inject.Inject
 
 /**
- * Poem box repository
+ * Poem box repository implementation
  *
- * @constructor Create empty Poem box repository
+ * @property draftDao
+ * @property sheetDao
  */
-class PoemRepositoryImpl : PoemRepository {
-    internal val dataBase = PoemBoxDatabase.getDatabase()
+class PoemRepositoryImpl @Inject constructor(
+    private val draftDao: DraftDao,
+    private val sheetDao: SheetDao
+) : PoemRepository {
 
     /**
      * Insert draft
@@ -18,7 +20,7 @@ class PoemRepositoryImpl : PoemRepository {
      * @param draft
      */
     override suspend fun insertDraft(draft: Draft) {
-        dataBase?.draftDao()?.addDraft(draft)
+        draftDao.addDraft(draft)
     }
 
     /**
@@ -27,18 +29,18 @@ class PoemRepositoryImpl : PoemRepository {
      * @param titleDraft
      */
     override suspend fun findDraftByTitle(titleDraft: String) =
-        dataBase?.draftDao()?.findByTitle(titleDraft)
+        draftDao.findByTitle(titleDraft)
 
     /** Get all sheet */
-    override suspend fun getAllSheet() = dataBase?.sheetDao()?.getAllSheet()
+    override suspend fun getAllSheet() = sheetDao.getAllSheet()
 
     /**
      * Find sheet by date creation
      *
      * @param date
      */
-    override suspend fun findSheetByDateCreation(date: String) = dataBase?.sheetDao()
-        ?.findByDateCreation(date)
+    override suspend fun findSheetByDateCreation(date: String) = 
+        sheetDao.findByDateCreation(date)
 
     /**
      * Delete sheet
@@ -46,9 +48,7 @@ class PoemRepositoryImpl : PoemRepository {
      * @param sheet
      */
     override suspend fun deleteSheet(sheet: Sheet) {
-        dataBase
-            ?.sheetDao()
-            ?.deleteSheet(sheet)
+        sheetDao.deleteSheet(sheet)
     }
 
     /**
@@ -57,7 +57,7 @@ class PoemRepositoryImpl : PoemRepository {
      * @param draft
      */
     override suspend fun deleteDraft(draft: Draft) {
-        dataBase?.draftDao()?.deleteDraft(draft)
+        draftDao.deleteDraft(draft)
     }
 
     /**
@@ -66,7 +66,7 @@ class PoemRepositoryImpl : PoemRepository {
      * @param sheet
      */
     override suspend fun addSheet(sheet: Sheet) {
-        dataBase?.sheetDao()?.addSheet(sheet)
+        sheetDao.addSheet(sheet)
     }
 
     /**
@@ -76,6 +76,6 @@ class PoemRepositoryImpl : PoemRepository {
      * @param title
      */
     override suspend fun updateNoteByTitle(note: String, title: String) {
-        dataBase?.draftDao()?.updateNoteByTitle(note, title)
+        draftDao.updateNoteByTitle(note, title)
     }
 }
