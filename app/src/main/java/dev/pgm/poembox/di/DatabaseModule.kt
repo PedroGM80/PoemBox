@@ -7,9 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.pgm.poembox.data.DraftDao
 import dev.pgm.poembox.data.PoemBoxDatabase
-import dev.pgm.poembox.data.SheetDao
+import dev.pgm.poembox.data.local.dao.DraftDao
+import dev.pgm.poembox.data.local.dao.SheetDao
 import javax.inject.Singleton
 
 @Module

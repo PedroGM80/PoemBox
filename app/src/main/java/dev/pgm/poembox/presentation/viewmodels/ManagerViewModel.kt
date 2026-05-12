@@ -5,18 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.pgm.poembox.data.Draft
-import dev.pgm.poembox.data.Sheet
-import dev.pgm.poembox.domain.PoemRepository
+import dev.pgm.poembox.domain.usecase.DeletePoemUseCase
+import dev.pgm.poembox.domain.usecase.GetAllSheetsUseCase
+import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.presentation.content.PoemDetails
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ManagerViewModel @Inject constructor(
-    private val repository: PoemRepository
+    private val getAllSheetsUseCase: GetAllSheetsUseCase,
+    private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
+    private val deletePoemUseCase: DeletePoemUseCase
 ) : ViewModel() {
 
     private val _poems = mutableStateOf<List<PoemDetails>>(emptyList())
@@ -28,22 +28,18 @@ class ManagerViewModel @Inject constructor(
     fun loadPoems() {
         viewModelScope.launch {
             _isLoading.value = true
-            val sheets = withContext(Dispatchers.IO) {
-                repository.getAllSheet()
-            }
+            val sheets = getAllSheetsUseCase()
             val detailsList = mutableListOf<PoemDetails>()
-            sheets?.forEach { sheet ->
-                val draft = withContext(Dispatchers.IO) {
-                    repository.findDraftByTitle(sheet.refDraftValidate)
-                }
+            sheets.forEach { sheet ->
+                val draft = getDraftByTitleUseCase(sheet.draftTitle)
                 if (draft != null) {
                     detailsList.add(
                         PoemDetails(
                             title = draft.title,
-                            author = draft.writerName,
-                            date = sheet.dateValidation,
-                            annotations = draft.draftAnnotation,
-                            poem = draft.draftContent
+                            author = draft.author,
+                            date = sheet.validationDate,
+                            annotations = draft.annotation,
+                            poem = draft.content
                         )
                     )
                 }
@@ -55,21 +51,7 @@ class ManagerViewModel @Inject constructor(
 
     fun deletePoem(poem: PoemDetails) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val sheet = repository.findSheetByDateCreation(poem.date)
-                val draft = repository.findDraftByTitle(poem.title)
-                if (sheet != null) repository.deleteSheet(sheet)
-                if (draft != null) repository.deleteDraft(draft)
-            }
-            loadPoems() // Reload after delete
-        }
-    }
-    
-    fun updateAnnotations(title: String, annotations: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.updateNoteByTitle(annotations, title)
-            }
+            deletePoemUseCase(poem.title, poem.date)
             loadPoems()
         }
     }

@@ -5,12 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.pgm.poembox.data.Draft
-import dev.pgm.poembox.domain.PoemRepository
+import dev.pgm.poembox.domain.model.Draft
+import dev.pgm.poembox.domain.usecase.SaveDraftUseCase
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.UtilitySyllables
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -19,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditViewModel @Inject constructor(
-    private val repository: PoemRepository
+    private val saveDraftUseCase: SaveDraftUseCase
 ) : ViewModel() {
 
     private val _title = mutableStateOf("")
@@ -66,18 +64,17 @@ class EditViewModel @Inject constructor(
         viewModelScope.launch {
             val draft = Draft(
                 title = _title.value,
-                draftContent = _content.value,
-                writerName = userName,
-                draftAnnotation = "",
-                writtenDate = getDate()
+                content = _content.value,
+                author = userName,
+                date = getDate()
             )
-            repository.insertDraft(draft)
+            saveDraftUseCase(draft)
             onSuccess()
         }
     }
 
     private fun getDate(): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault())
         return formatter.format(Date())
     }
 }

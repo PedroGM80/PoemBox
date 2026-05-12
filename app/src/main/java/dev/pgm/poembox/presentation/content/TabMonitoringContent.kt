@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -91,6 +92,20 @@ fun MonitoringScreen(
                 content = "${state.rhymeAnalysis}\n\n${state.enjambmentAnalysis}",
                 icon = Icons.Default.Brush
             )
+
+            Button(
+                onClick = { viewModel.validatePoem() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(56.dp),
+                enabled = !state.isValidated,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (state.isValidated) Color.Gray else MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(if (state.isValidated) "Poem Validated" else "Validate Poem")
+            }
         }
     }
 }

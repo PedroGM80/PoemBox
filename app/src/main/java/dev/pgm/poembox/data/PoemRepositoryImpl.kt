@@ -1,81 +1,48 @@
 package dev.pgm.poembox.data
 
+import dev.pgm.poembox.data.local.dao.DraftDao
+import dev.pgm.poembox.data.local.dao.SheetDao
+import dev.pgm.poembox.data.mapper.toDomain
+import dev.pgm.poembox.data.mapper.toEntity
 import dev.pgm.poembox.domain.PoemRepository
+import dev.pgm.poembox.domain.model.Draft
+import dev.pgm.poembox.domain.model.Sheet
 import javax.inject.Inject
 
-/**
- * Poem box repository implementation
- *
- * @property draftDao
- * @property sheetDao
- */
 class PoemRepositoryImpl @Inject constructor(
     private val draftDao: DraftDao,
     private val sheetDao: SheetDao
 ) : PoemRepository {
 
-    /**
-     * Insert draft
-     *
-     * @param draft
-     */
-    override suspend fun insertDraft(draft: Draft) {
-        draftDao.addDraft(draft)
+    override suspend fun saveDraft(draft: Draft) {
+        draftDao.addDraft(draft.toEntity())
     }
 
-    /**
-     * Find draft by title
-     *
-     * @param titleDraft
-     */
-    override suspend fun findDraftByTitle(titleDraft: String) =
-        draftDao.findByTitle(titleDraft)
+    override suspend fun getDraftByTitle(title: String): Draft? {
+        return draftDao.findByTitle(title)?.toDomain()
+    }
 
-    /** Get all sheet */
-    override suspend fun getAllSheet() = sheetDao.getAllSheet()
+    override suspend fun getAllSheets(): List<Sheet> {
+        return sheetDao.getAllSheet().map { it.toDomain() }
+    }
 
-    /**
-     * Find sheet by date creation
-     *
-     * @param date
-     */
-    override suspend fun findSheetByDateCreation(date: String) = 
-        sheetDao.findByDateCreation(date)
+    override suspend fun saveSheet(sheet: Sheet) {
+        sheetDao.addSheet(sheet.toEntity())
+    }
 
-    /**
-     * Delete sheet
-     *
-     * @param sheet
-     */
+    override suspend fun getSheetByDate(date: String): Sheet? {
+        return sheetDao.findByDateCreation(date)?.toDomain()
+    }
+
     override suspend fun deleteSheet(sheet: Sheet) {
-        sheetDao.deleteSheet(sheet)
+        sheetDao.deleteSheet(sheet.toEntity())
     }
 
-    /**
-     * Delete draft
-     *
-     * @param draft
-     */
     override suspend fun deleteDraft(draft: Draft) {
-        draftDao.deleteDraft(draft)
+        draftDao.deleteDraft(draft.toEntity())
     }
 
-    /**
-     * Add sheet
-     *
-     * @param sheet
-     */
-    override suspend fun addSheet(sheet: Sheet) {
-        sheetDao.addSheet(sheet)
-    }
-
-    /**
-     * Update note by title
-     *
-     * @param note
-     * @param title
-     */
-    override suspend fun updateNoteByTitle(note: String, title: String) {
-        draftDao.updateNoteByTitle(note, title)
+    override suspend fun updateDraftAnnotation(title: String, annotation: String) {
+        draftDao.updateNoteByTitle(annotation, title)
     }
 }
