@@ -2,161 +2,135 @@ package dev.pgm.poembox.presentation.content
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
-import dev.pgm.poembox.data.Draft
 import dev.pgm.poembox.domain.ContextContentProvider
-import dev.pgm.poembox.domain.UseCase
-import dev.pgm.poembox.presentation.MainActivity.Companion.POEM_TITLE
-import dev.pgm.poembox.presentation.MainActivity.Companion.VALIDATE_STATUS
+import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
-fun EditScreen(userData: String) {
-    val maxChar = 60
-    val custom = remember { mutableStateOf(Color.Blue) }
-    Surface(color = MaterialTheme.colorScheme.primary) {
-        Box(Modifier.wrapContentSize(Alignment.Center)) {
-            Column(
+fun EditScreen(
+    userData: String,
+    viewModel: EditViewModel = hiltViewModel()
+) {
+    val title by viewModel.title
+    val content by viewModel.content
+    val analysisResult by viewModel.analysisResult
+    var isSaved by remember { mutableStateOf(false) }
+
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextField(
+                value = title,
+                onValueChange = { viewModel.onTitleChange(it) },
+                label = { Text(text = "Poem Title") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                textStyle = TextStyle(
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                ),
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(colorResource(id = R.color.white))
-                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                shape = Shapes.medium,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                )
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
             ) {
-                val scope = rememberCoroutineScope()
-                var textTitle by remember { mutableStateOf(TextFieldValue("")) }
-                var textContent by remember { mutableStateOf(TextFieldValue("")) }
-
                 TextField(
-                    value = textTitle,
-                    label = { Text(text = "Title") },
+                    value = content,
+                    onValueChange = { viewModel.onContentChange(it) },
+                    placeholder = { Text(text = "Start writing your poem here...") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onValueChange = {
-                        if (it.text.length <= maxChar) textTitle = it
-                    },
-                    textStyle = TextStyle(textAlign = TextAlign.Center),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                        .padding(10.dp),
-                    shape = Shapes.medium,
-
-                    )
-                TextField(
-                    value = textContent,
-                    label = { Text(text = "") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onValueChange = {
-                        textContent = it
-                    },
                     textStyle = TextStyle(
                         fontSize = Typography.bodyLarge.fontSize,
-                        textAlign = TextAlign.Center
+                        lineHeight = 24.sp
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .align(Alignment.CenterHorizontally)
-                        .height(400.dp),
+                    modifier = Modifier.fillMaxSize(),
                     shape = Shapes.medium,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = colorResource(id = R.color.white).copy(alpha = 0.5f),
+                        unfocusedContainerColor = colorResource(id = R.color.white).copy(alpha = 0.3f)
+                    )
                 )
-                Button(
-                    onClick = {
-                        if (custom.value == Color.Blue) {
-                            val dataSplit = userData.split("#")
-                            val userLoaded = dataSplit[1]
-                            val draft = Draft(
-                                title = textTitle.text,
-                                draftContent = textContent.text,
-                                writerName = userLoaded,
-                                draftAnnotation = "",
-                                writtenDate = getDate()
-                            )
-                            val titlePoem = draft.title
-                            scope.launch {
-                                withContext(Dispatchers.IO) {
-                                    UseCase().addDraft(draft)
-                                }
-                            }
-                            POEM_TITLE = titlePoem
-                            VALIDATE_STATUS = 1
-                            custom.value = Color.Green
-                        } else {
-                            Toast.makeText(
-                                ContextContentProvider.applicationContext(),
-                                "Your poem is saved",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(contentColor = custom.value),
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(10.dp)
-                ) {
+
+                if (analysisResult.isNotBlank()) {
                     Text(
-                        text = "Validate poem draft", fontSize = 15.sp
+                        text = analysisResult,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(16.dp)
+                            .background(
+                                MaterialTheme.colorScheme.secondaryContainer,
+                                RoundedCornerShape(8.dp)
+                            )
+                            .padding(8.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
+
+            Button(
+                onClick = {
+                    val dataSplit = userData.split("#")
+                    val userLoaded = if (dataSplit.size > 1) dataSplit[1] else "Unknown"
+                    viewModel.saveDraft(userLoaded) {
+                        isSaved = true
+                        Toast.makeText(
+                            ContextContentProvider.applicationContext(),
+                            "Poem draft saved successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSaved) Color.Gray else MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(56.dp)
+            ) {
+                Text(
+                    text = if (isSaved) "Draft Saved" else "Save Poem Draft",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
     }
-}
-
-/**
- * Get date
- *
- * @return actual date
- */
-internal fun getDate(): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale(Locale.ROOT.language))
-    val date = Date()
-    return formatter.format(date).toString()
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EditScreenPreview() {
-    EditScreen("mail#nombre")
 }
