@@ -1,117 +1,90 @@
 package dev.pgm.poembox.presentation.screens
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import dev.pgm.poembox.domain.ContextContentProvider
-import dev.pgm.poembox.presentation.MainActivity
-import dev.pgm.poembox.data.User
+import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 
-
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun CreateAccount(navController: NavController) {
-    val user = User(null, null)//Create user with null values
+fun CreateAccount(
+    navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
+    var userInputName by remember { mutableStateOf("") }
+    var userInputMail by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
-            .fillMaxHeight()
-            .padding(20.dp),
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val userInputName = remember { mutableStateOf("Username") }
-        val userInputMail = remember { mutableStateOf("Email") }
-
         Text(
-            text = "Sing up",
-            style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Serif)
+            text = "Create Account",
+            style = MaterialTheme.typography.headlineLarge,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        TextField(
-            label = { Text(text = "User name") },
-            value = userInputName.value,
-            onValueChange = { userInputName.value = it })
+        Spacer(modifier = Modifier.height(32.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
-        TextField(
+        OutlinedTextField(
+            label = { Text(text = "Username") },
+            value = userInputName,
+            onValueChange = { userInputName = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
             label = { Text(text = "Email") },
-            value = userInputMail.value,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = { userInputMail.value = it })
+            value = userInputMail,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            onValueChange = { userInputMail = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-            Button(
-                onClick = {
-                    if (verifyEmail(userInputMail.value)) {
+        Spacer(modifier = Modifier.height(32.dp))
 
-                        user.userName = userInputName.value
-                        user.userMail = userInputMail.value
-                        val activity = MainActivity()
-                        activity.user.userName = user.userName.toString()
-                        activity.user.userMail = user.userMail.toString()
-
-                        if (user.userMail != null && user.userName != null) {
-                            activity.saveUser(user)
-                            navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
-                                popUpTo(0)
-                            }
+        Button(
+            onClick = {
+                if (verifyEmail(userInputMail)) {
+                    viewModel.registerUser(userInputName, userInputMail) {
+                        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
+                            popUpTo(0)
                         }
-                    } else {
-
-                        Toast.makeText(
-                            ContextContentProvider.applicationContext(), "Email no valid",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
-                },
-                shape = RoundedCornerShape(50.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            ) {
-                Text(text = "Create your account")
-            }
+                } else {
+                    Toast.makeText(context, "Invalid Email", Toast.LENGTH_LONG).show()
+                }
+            },
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = "Sign Up", fontSize = 18.sp)
         }
-        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
-/**
- * Verify email
- *
- * @param mail
- * @return boolean valid email input.
- */
 fun verifyEmail(mail: String): Boolean {
     val pattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex()
     return pattern.matches(mail)
-}
-
-@RequiresApi(Build.VERSION_CODES.M)
-@Preview(showBackground = true)
-@Composable
-fun PrevScreenCreateAccount() {
-    CreateAccount(rememberNavController())
 }
