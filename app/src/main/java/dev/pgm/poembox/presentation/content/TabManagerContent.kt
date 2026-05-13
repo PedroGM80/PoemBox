@@ -239,34 +239,36 @@ fun ManagerScreen(
         )
     }
 
-    if (showDeleteDialog && poemToDelete != null) {
-        AlertDialog(
-            onDismissRequest = {
-                showDeleteDialog = false
-                poemToDelete = null
-            },
-            title = { Text(stringResource(R.string.manager_delete_dialog_title)) },
-            text = { Text(context.getString(R.string.manager_delete_dialog_text, poemToDelete!!.title)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.deletePoem(poemToDelete!!)
-                        showDeleteDialog = false
-                        poemToDelete = null
-                    }
-                ) {
-                    Text(stringResource(R.string.manager_delete_dialog_confirm), color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
+    poemToDelete?.let { poem ->
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = {
                     showDeleteDialog = false
                     poemToDelete = null
-                }) {
-                    Text(stringResource(R.string.manager_cancel_button))
+                },
+                title = { Text(stringResource(R.string.manager_delete_dialog_title)) },
+                text = { Text(context.getString(R.string.manager_delete_dialog_text, poem.title)) },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.deletePoem(poem)
+                            showDeleteDialog = false
+                            poemToDelete = null
+                        }
+                    ) {
+                        Text(stringResource(R.string.manager_delete_dialog_confirm), color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showDeleteDialog = false
+                        poemToDelete = null
+                    }) {
+                        Text(stringResource(R.string.manager_cancel_button))
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 

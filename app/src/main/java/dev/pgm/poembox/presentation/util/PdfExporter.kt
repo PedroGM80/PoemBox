@@ -67,13 +67,6 @@ object PdfExporter {
         y = drawWrappedText(canvas, body, bodyPaint, MARGIN, y, contentWidth, 22f)
         y += 24f
 
-        // Analysis section
-        fun addAnalysisLine(label: String, value: String) {
-            if (value.isBlank()) return
-            canvas.drawText(label, MARGIN, y, labelPaint)
-            // intentionally captured; y is updated after call
-        }
-
         if (syllablesAnalysis.isNotBlank() || versesAnalysis.isNotBlank()) {
             canvas.drawLine(MARGIN, y, PAGE_WIDTH - MARGIN, y, linePaint)
             y += 20f
@@ -103,10 +96,13 @@ object PdfExporter {
 
         document.finishPage(page)
 
-        context.contentResolver.openOutputStream(uri)?.use { stream ->
-            document.writeTo(stream)
+        try {
+            context.contentResolver.openOutputStream(uri)?.use { stream ->
+                document.writeTo(stream)
+            }
+        } finally {
+            document.close()
         }
-        document.close()
     }
 
     private fun drawWrappedText(
@@ -119,22 +115,10 @@ object PdfExporter {
         lineHeight: Float
     ): Float {
         var y = startY
-        text.split("\n").forEach { paragraph ->
-            val words = paragraph.split(" ")
-            var line = ""
-            for (word in words) {
-                val candidate = if (line.isEmpty()) word else "$line $word"
-                if (paint.measureText(candidate) <= maxWidth) {
-                    line = candidate
-                } else {
-                    if (line.isNotEmpty()) {
-                        canvas.drawText(line, x, y, paint)
-                        y += lineHeight
-                    }
-                    line = word
-                }
-            }
-            if (line.isNotEmpty()) {
+        wrapTextIntoLines(text, paint, maxWidth).forEach { line ->
+            if (line.isEmpty()) {
+                y += lineHeight * 0.5f
+            } else {
                 canvas.drawText(line, x, y, paint)
                 y += lineHeight
             }

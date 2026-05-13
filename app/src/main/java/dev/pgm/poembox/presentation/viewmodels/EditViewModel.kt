@@ -5,16 +5,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.SessionManager
-import dev.pgm.poembox.worker.DailyReminderWorker
 import dev.pgm.poembox.domain.UtilitySyllables
+import dev.pgm.poembox.worker.DailyReminderScheduler
 import dev.pgm.poembox.domain.model.Draft
 import dev.pgm.poembox.domain.model.LineValidation
 import dev.pgm.poembox.domain.model.PoeticFormDef
@@ -25,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
@@ -33,7 +31,6 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -42,7 +39,10 @@ class EditViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val saveDraftUseCase: SaveDraftUseCase,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val dailyReminderScheduler: DailyReminderScheduler,
+    private val poemUtils: PoemUtils,
+    private val utilitySyllables: UtilitySyllables
 ) : ViewModel() {
 
     private val _title = mutableStateOf("")
@@ -69,26 +69,13 @@ class EditViewModel @Inject constructor(
     private val _lineValidations = mutableStateOf<List<LineValidation>>(emptyList())
     val lineValidations: State<List<LineValidation>> = _lineValidations
 
-    private val poemUtils = PoemUtils()
-    private val utilitySyllables = UtilitySyllables()
-
     val dailyReminderEnabled = sessionManager.dailyReminderEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     fun setDailyReminder(enabled: Boolean) {
         viewModelScope.launch {
             sessionManager.setDailyReminderEnabled(enabled)
-            val workManager = WorkManager.getInstance(context)
-            if (enabled) {
-                val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(1, TimeUnit.DAYS).build()
-                workManager.enqueueUniquePeriodicWork(
-                    "daily_poem_reminder",
-                    ExistingPeriodicWorkPolicy.UPDATE,
-                    request
-                )
-            } else {
-                workManager.cancelUniqueWork("daily_poem_reminder")
-            }
+            if (enabled) dailyReminderScheduler.schedule() else dailyReminderScheduler.cancel()
         }
     }
 
@@ -109,18 +96,21 @@ class EditViewModel @Inject constructor(
                 }
         }
         viewModelScope.launch {
-            sessionManager.pendingEditTitle.filter { it.isNotBlank() }.collect { title ->
-                val draft = getDraftByTitleUseCase(title)
-                draft?.let {
-                    _title.value = it.title
-                    _content.value = it.content
-                    _annotation.value = it.annotation
-                    _isSaved.value = true
-                    _wordCount.value = if (it.content.isBlank()) 0
-                                       else it.content.trim().split(Regex("\\s+")).size
-                    _analysisInput.value = it.content
+            sessionManager.pendingEditTitle.filter { it.isNotBlank() }.collectLatest { title ->
+                try {
+                    val draft = getDraftByTitleUseCase(title)
+                    draft?.let {
+                        _title.value = it.title
+                        _content.value = it.content
+                        _annotation.value = it.annotation
+                        _isSaved.value = true
+                        _wordCount.value = if (it.content.isBlank()) 0
+                                           else it.content.trim().split(Regex("\\s+")).size
+                        _analysisInput.value = it.content
+                    }
+                } finally {
+                    sessionManager.consumeEditRequest()
                 }
-                sessionManager.consumeEditRequest()
             }
         }
     }

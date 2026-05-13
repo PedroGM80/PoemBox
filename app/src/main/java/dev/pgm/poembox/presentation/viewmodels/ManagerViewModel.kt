@@ -65,24 +65,27 @@ class ManagerViewModel @Inject constructor(
     fun loadPoems() {
         viewModelScope.launch {
             _isLoading.value = true
-            val sheets = getAllSheetsUseCase()
-            val detailsList = sheets.map { sheet ->
-                async {
-                    val draft = getDraftByTitleUseCase(sheet.draftTitle)
-                    if (draft != null) {
-                        PoemDetails(
-                            title = draft.title,
-                            author = draft.author,
-                            date = sheet.validationDate,
-                            annotations = draft.annotation,
-                            poem = draft.content
-                        )
-                    } else null
-                }
-            }.awaitAll().filterNotNull()
-            _allPoems.value = detailsList
-            applyFilter()
-            _isLoading.value = false
+            try {
+                val sheets = getAllSheetsUseCase()
+                val detailsList = sheets.map { sheet ->
+                    async {
+                        runCatching { getDraftByTitleUseCase(sheet.draftTitle) }.getOrNull()
+                            ?.let { draft ->
+                                PoemDetails(
+                                    title = draft.title,
+                                    author = draft.author,
+                                    date = sheet.validationDate,
+                                    annotations = draft.annotation,
+                                    poem = draft.content
+                                )
+                            }
+                    }
+                }.awaitAll().filterNotNull()
+                _allPoems.value = detailsList
+                applyFilter()
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 

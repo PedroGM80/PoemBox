@@ -59,7 +59,7 @@ class GeminiViewModel @Inject constructor(
                 }
                 val response = model.generateContent(prompt)
                 val suggestion = response.text?.trim() ?: ""
-                _state.value = GeminiUiState(suggestion = suggestion)
+                _state.value = GeminiUiState(suggestion = suggestion, isLoading = false)
             } catch (e: Exception) {
                 _state.value = GeminiUiState(
                     error = context.getString(R.string.gemini_error, e.message ?: "Unknown error")
