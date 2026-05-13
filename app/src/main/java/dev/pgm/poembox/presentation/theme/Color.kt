@@ -28,3 +28,8 @@ val md_theme_dark_onBackground = Color(0xFFE6E1E5)
 val md_theme_dark_surface = Color(0xFF1C1B1F)
 val md_theme_dark_onSurface = Color(0xFFE6E1E5)
 
+val ImmersiveDarkBackground = Color(0xFF1A1A2E)
+val ImmersiveDarkText = Color(0xFFF5F0E8)
+val ImmersiveWarmBackground = Color(0xFFFAF3E0)
+val ImmersiveWarmText = Color(0xFF3E2723)
+

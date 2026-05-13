@@ -310,7 +310,7 @@ fun EditScreen(
                             .padding(16.dp)
                             .background(
                                 MaterialTheme.colorScheme.secondaryContainer,
-                                RoundedCornerShape(8.dp)
+                                MaterialTheme.shapes.small
                             )
                             .padding(horizontal = 12.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelSmall,
@@ -417,7 +417,7 @@ fun EditScreen(
                     containerColor = if (isSaved) MaterialTheme.colorScheme.secondary
                     else MaterialTheme.colorScheme.primary
                 ),
-                shape = RoundedCornerShape(12.dp),
+                shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
@@ -425,8 +425,7 @@ fun EditScreen(
             ) {
                 Text(
                     text = stringResource(if (isSaved) R.string.editor_saved_button else R.string.editor_save_button),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }

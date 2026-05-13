@@ -5,8 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
@@ -48,7 +48,7 @@ fun PoemCard(
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = MaterialTheme.shapes.medium
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -79,10 +79,18 @@ fun PoemCard(
                     )
                 }
                 IconButton(onClick = onViewPoem) {
-                    Icon(Icons.Default.Description, contentDescription = stringResource(R.string.manager_view_poem_description))
+                    Icon(
+                        Icons.Default.Description,
+                        contentDescription = stringResource(R.string.manager_view_poem_description),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
                 IconButton(onClick = onViewNotes) {
-                    Icon(Icons.Default.Notes, contentDescription = stringResource(R.string.manager_view_notes_description))
+                    Icon(
+                        Icons.Default.Notes,
+                        contentDescription = stringResource(R.string.manager_view_notes_description),
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
@@ -145,7 +153,7 @@ fun ManagerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = MaterialTheme.shapes.medium
             )
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -172,9 +180,11 @@ fun ManagerScreen(
                             modifier = Modifier.align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = "📜",
-                                style = MaterialTheme.typography.displayMedium
+                            Icon(
+                                imageVector = Icons.Default.AutoStories,
+                                contentDescription = null,
+                                modifier = Modifier.size(72.dp),
+                                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                             )
                             Spacer(Modifier.height(12.dp))
                             Text(

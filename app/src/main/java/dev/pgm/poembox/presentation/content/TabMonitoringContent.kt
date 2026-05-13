@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -22,7 +23,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -36,14 +36,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.util.PdfExporter
 import dev.pgm.poembox.presentation.util.PoemCardRenderer
+import dev.pgm.poembox.presentation.theme.ImmersiveDarkBackground
+import dev.pgm.poembox.presentation.theme.ImmersiveDarkText
+import dev.pgm.poembox.presentation.theme.ImmersiveWarmBackground
+import dev.pgm.poembox.presentation.theme.ImmersiveWarmText
 import dev.pgm.poembox.presentation.theme.PoeticFont
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
 
 @Composable
 private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () -> Unit) {
     var warmBackground by remember { mutableStateOf(false) }
-    val bgColor = if (warmBackground) Color(0xFFFAF3E0) else Color(0xFF1A1A2E)
-    val textColor = if (warmBackground) Color(0xFF3E2723) else Color(0xFFF5F0E8)
+    val bgColor = if (warmBackground) ImmersiveWarmBackground else ImmersiveDarkBackground
+    val textColor = if (warmBackground) ImmersiveWarmText else ImmersiveDarkText
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -187,7 +191,12 @@ fun MonitoringScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("📝", style = MaterialTheme.typography.displayMedium)
+                    Icon(
+                        imageVector = Icons.Default.EditNote,
+                        contentDescription = null,
+                        modifier = Modifier.size(72.dp),
+                        tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                    )
                     Spacer(Modifier.height(16.dp))
                     Text(
                         stringResource(R.string.monitor_no_poem_title),
@@ -345,8 +354,7 @@ fun MonitoringScreen(
             ) {
                 Text(
                     text = stringResource(if (state.isValidated) R.string.monitor_validated_button else R.string.monitor_validate_button),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
