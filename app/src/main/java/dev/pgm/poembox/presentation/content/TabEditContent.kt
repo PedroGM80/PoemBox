@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.WritingPrompts
 import dev.pgm.poembox.domain.model.LineValidation
 import dev.pgm.poembox.domain.model.PoeticForms
 import dev.pgm.poembox.presentation.theme.Shapes
@@ -114,6 +115,8 @@ fun EditScreen(
     val selectedForm by viewModel.selectedForm
     var showNotes by remember { mutableStateOf(false) }
     var showValidation by remember { mutableStateOf(false) }
+    var showInspiration by remember { mutableStateOf(false) }
+    val todayPrompt = remember { WritingPrompts.todayPrompt() }
     val userName by authViewModel.userName.collectAsState()
     val context = LocalContext.current
 
@@ -218,6 +221,54 @@ fun EditScreen(
                         color = if (complete) MaterialTheme.colorScheme.tertiary
                                 else MaterialTheme.colorScheme.outline
                     )
+                }
+            }
+
+            // Daily inspiration card
+            TextButton(
+                onClick = { showInspiration = !showInspiration },
+                modifier = Modifier.align(Alignment.Start)
+            ) {
+                Icon(
+                    imageVector = if (showInspiration) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(stringResource(R.string.editor_inspiration_title), style = MaterialTheme.typography.labelMedium)
+            }
+            AnimatedVisibility(visible = showInspiration) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "\"$todayPrompt\"",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        TextButton(
+                            onClick = { viewModel.onTitleChange(todayPrompt) }
+                        ) {
+                            Text(
+                                stringResource(R.string.editor_inspiration_use_title),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
                 }
             }
 
