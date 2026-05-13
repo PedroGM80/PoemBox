@@ -152,7 +152,6 @@ class PoemUtils {
         lastLetters.removeLast()
         val utilitySyllables = UtilitySyllables()
         for (index in firstsLetters.indices) {
-            println("ultima" + lastLetters[index] + "primera " + firstsLetters[index])
             if (utilitySyllables.isVowel(firstsLetters[index]) && utilitySyllables.isVowel(
                     lastLetters[index]
                 )

@@ -54,9 +54,9 @@ class UtilitySyllables {
             val size = vowels.size + 1
             val otherCase = CharArray(size)
             for (index in vowels.indices) {
-                otherCase[index] = openVowels[index]
+                otherCase[index] = vowels[index]
             }
-            otherCase[size] = enye
+            otherCase[size - 1] = enye
             return otherCase
         }
 
