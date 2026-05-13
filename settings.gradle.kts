@@ -24,3 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "PoemBox"
 include(":app")
+include(":domain")
+include(":data")
