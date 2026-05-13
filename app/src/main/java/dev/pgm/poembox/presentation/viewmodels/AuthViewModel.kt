@@ -17,7 +17,7 @@ class AuthViewModel @Inject constructor(
 
     val userName: StateFlow<String?> = sessionManager.userName.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Eagerly,
         initialValue = null
     )
 
