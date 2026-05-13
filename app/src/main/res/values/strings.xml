@@ -126,6 +126,8 @@
 
     <!-- Share as image -->
     <string name="monitor_share_image_description">Compartir como imagen</string>
+    <string name="monitor_bg_image_description">Elegir imagen de fondo para la tarjeta</string>
+    <string name="monitor_bg_image_clear_description">Quitar imagen de fondo</string>
 
     <!-- Poem analysis (returned by domain layer) -->
     <string name="analysis_syllable_predominant">Predominan los versos de %1$s sílabas.</string>

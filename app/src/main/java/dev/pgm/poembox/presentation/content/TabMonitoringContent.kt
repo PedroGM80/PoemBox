@@ -1,6 +1,7 @@
 package dev.pgm.poembox.presentation.content
 
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -13,12 +14,13 @@ import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -125,6 +127,11 @@ fun MonitoringScreen(
     val state by viewModel.state
     val context = LocalContext.current
     var showImmersive by remember { mutableStateOf(false) }
+    var bgImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val bgImagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri -> bgImageUri = uri }
 
     if (showImmersive) {
         ImmersiveReadingDialog(
@@ -276,8 +283,20 @@ fun MonitoringScreen(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                    IconButton(onClick = { bgImagePickerLauncher.launch("image/*") }) {
+                        Icon(
+                            Icons.Default.Wallpaper,
+                            contentDescription = stringResource(R.string.monitor_bg_image_description),
+                            tint = if (bgImageUri != null) MaterialTheme.colorScheme.secondary
+                                   else MaterialTheme.colorScheme.primary
+                        )
+                    }
                     IconButton(onClick = {
-                        val uri = PoemCardRenderer.createAndShare(context, state.title, state.body, darkMode = true)
+                        val uri = PoemCardRenderer.createAndShare(
+                            context, state.title, state.body,
+                            darkMode = true,
+                            backgroundImageUri = bgImageUri
+                        )
                         val intent = Intent(Intent.ACTION_SEND).apply {
                             type = "image/png"
                             putExtra(Intent.EXTRA_STREAM, uri)
