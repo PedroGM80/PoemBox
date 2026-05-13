@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.viewmodels.ManagerViewModel
+import dev.pgm.poembox.presentation.viewmodels.SortOrder
 
 data class PoemDetails(
     val title: String,
@@ -91,6 +93,8 @@ fun ManagerScreen(
 ) {
     val poems by viewModel.poems
     val isLoading by viewModel.isLoading
+    val searchQuery by viewModel.searchQuery
+    val sortOrder by viewModel.sortOrder
     val context = LocalContext.current
 
     var showContentDialog by remember { mutableStateOf(false) }
@@ -118,57 +122,87 @@ fun ManagerScreen(
             }
         }
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when {
-                isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                poems.isEmpty() -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "📜",
-                            style = MaterialTheme.typography.displayMedium
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        Text(
-                            text = stringResource(R.string.manager_empty_title),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = stringResource(R.string.manager_empty_subtitle),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.outline
-                        )
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { viewModel.onSearchQueryChange(it) },
+                placeholder = { Text(stringResource(R.string.manager_search_placeholder)) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(12.dp)
+            )
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                SortOrder.entries.forEach { order ->
+                    val label = when (order) {
+                        SortOrder.DATE_DESC -> stringResource(R.string.manager_sort_recent)
+                        SortOrder.DATE_ASC -> stringResource(R.string.manager_sort_oldest)
+                        SortOrder.TITLE_ASC -> stringResource(R.string.manager_sort_title)
                     }
+                    FilterChip(
+                        selected = sortOrder == order,
+                        onClick = { viewModel.onSortOrderChange(order) },
+                        label = { Text(label, style = MaterialTheme.typography.labelMedium) }
+                    )
                 }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = 12.dp)
-                    ) {
-                        items(poems) { poem ->
-                            PoemCard(
-                                poem = poem,
-                                onDelete = {
-                                    poemToDelete = poem
-                                    showDeleteDialog = true
-                                },
-                                onViewPoem = {
-                                    dialogTitle = poem.title
-                                    dialogBody = poem.poem
-                                    showContentDialog = true
-                                },
-                                onViewNotes = {
-                                    dialogTitle = context.getString(R.string.manager_notes_prefix, poem.title)
-                                    dialogBody = poem.annotations.ifBlank { context.getString(R.string.manager_no_notes) }
-                                    showContentDialog = true
-                                }
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                when {
+                    isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    poems.isEmpty() -> {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "📜",
+                                style = MaterialTheme.typography.displayMedium
                             )
+                            Spacer(Modifier.height(12.dp))
+                            Text(
+                                text = stringResource(R.string.manager_empty_title),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = stringResource(R.string.manager_empty_subtitle),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    }
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(vertical = 12.dp)
+                        ) {
+                            items(poems) { poem ->
+                                PoemCard(
+                                    poem = poem,
+                                    onDelete = {
+                                        poemToDelete = poem
+                                        showDeleteDialog = true
+                                    },
+                                    onViewPoem = {
+                                        dialogTitle = poem.title
+                                        dialogBody = poem.poem
+                                        showContentDialog = true
+                                    },
+                                    onViewNotes = {
+                                        dialogTitle = context.getString(R.string.manager_notes_prefix, poem.title)
+                                        dialogBody = poem.annotations.ifBlank { context.getString(R.string.manager_no_notes) }
+                                        showContentDialog = true
+                                    }
+                                )
+                            }
                         }
                     }
                 }

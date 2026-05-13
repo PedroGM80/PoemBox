@@ -14,6 +14,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class SortOrder { DATE_DESC, DATE_ASC, TITLE_ASC }
+
 @HiltViewModel
 class ManagerViewModel @Inject constructor(
     private val getAllSheetsUseCase: GetAllSheetsUseCase,
@@ -21,17 +23,47 @@ class ManagerViewModel @Inject constructor(
     private val deletePoemUseCase: DeletePoemUseCase
 ) : ViewModel() {
 
+    private val _allPoems = mutableStateOf<List<PoemDetails>>(emptyList())
+
     private val _poems = mutableStateOf<List<PoemDetails>>(emptyList())
     val poems: State<List<PoemDetails>> = _poems
 
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
 
+    private val _searchQuery = mutableStateOf("")
+    val searchQuery: State<String> = _searchQuery
+
+    private val _sortOrder = mutableStateOf(SortOrder.DATE_DESC)
+    val sortOrder: State<SortOrder> = _sortOrder
+
+    fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
+        applyFilter()
+    }
+
+    fun onSortOrderChange(order: SortOrder) {
+        _sortOrder.value = order
+        applyFilter()
+    }
+
+    private fun applyFilter() {
+        val q = _searchQuery.value.trim().lowercase()
+        val filtered = if (q.isBlank()) _allPoems.value
+        else _allPoems.value.filter {
+            it.title.lowercase().contains(q) || it.author.lowercase().contains(q)
+        }
+        _poems.value = when (_sortOrder.value) {
+            SortOrder.DATE_DESC -> filtered.sortedByDescending { it.date }
+            SortOrder.DATE_ASC -> filtered.sortedBy { it.date }
+            SortOrder.TITLE_ASC -> filtered.sortedBy { it.title.lowercase() }
+        }
+    }
+
     fun loadPoems() {
         viewModelScope.launch {
             _isLoading.value = true
             val sheets = getAllSheetsUseCase()
-            // Consultas paralelas: N+1 → N corrutinas concurrentes
             val detailsList = sheets.map { sheet ->
                 async {
                     val draft = getDraftByTitleUseCase(sheet.draftTitle)
@@ -46,7 +78,8 @@ class ManagerViewModel @Inject constructor(
                     } else null
                 }
             }.awaitAll().filterNotNull()
-            _poems.value = detailsList
+            _allPoems.value = detailsList
+            applyFilter()
             _isLoading.value = false
         }
     }

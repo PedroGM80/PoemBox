@@ -58,6 +58,12 @@
     <string name="manager_by_author">Por %1$s</string>
     <string name="manager_notes_prefix">Notas: %1$s</string>
 
+    <!-- Manager search/sort -->
+    <string name="manager_search_placeholder">Buscar poema…</string>
+    <string name="manager_sort_recent">Reciente</string>
+    <string name="manager_sort_oldest">Antiguo</string>
+    <string name="manager_sort_title">A→Z</string>
+
     <!-- Poem analysis (returned by domain layer) -->
     <string name="analysis_syllable_predominant">Predominan los versos de %1$s sílabas.</string>
     <string name="analysis_structure">El poema tiene %1$d estrofas y %2$d versos (%3$d por estrofa).</string>
