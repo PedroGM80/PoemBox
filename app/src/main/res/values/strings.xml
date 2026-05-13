@@ -17,6 +17,21 @@
     <string name="login_logged_as">Conectado como: %1$s</string>
     <string name="login_enter_button">Entrar a PoemBox</string>
 
+    <!-- Poetic forms -->
+    <string name="form_libre">Libre</string>
+    <string name="form_haiku">Haiku</string>
+    <string name="form_redondilla">Redondilla</string>
+    <string name="form_cuarteta">Cuarteta</string>
+    <string name="form_cuarteto">Cuarteto</string>
+    <string name="form_soneto">Soneto</string>
+    <string name="form_decima">Décima</string>
+    <string name="form_selector_label">Forma poética</string>
+    <string name="form_progress">%1$d/%2$d versos</string>
+    <string name="form_complete">Forma completa ✓</string>
+    <string name="form_syllable_ok">%1$d síl. ✓</string>
+    <string name="form_syllable_error">%1$d/%2$d síl.</string>
+    <string name="form_syllable_free">%1$d síl.</string>
+
     <!-- Tab names -->
     <string name="tab_editor">Editor</string>
     <string name="tab_monitor">Analizar</string>

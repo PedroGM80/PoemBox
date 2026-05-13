@@ -12,6 +12,9 @@ import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Draft
+import dev.pgm.poembox.domain.model.LineValidation
+import dev.pgm.poembox.domain.model.PoeticFormDef
+import dev.pgm.poembox.domain.model.PoeticForms
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.domain.usecase.SaveDraftUseCase
 import kotlinx.coroutines.Dispatchers
@@ -53,8 +56,11 @@ class EditViewModel @Inject constructor(
     private val _annotation = mutableStateOf("")
     val annotation: State<String> = _annotation
 
-    private val _lineSyllables = mutableStateOf<List<Pair<String, Int>>>(emptyList())
-    val lineSyllables: State<List<Pair<String, Int>>> = _lineSyllables
+    private val _selectedForm = mutableStateOf<PoeticFormDef>(PoeticForms.LIBRE)
+    val selectedForm: State<PoeticFormDef> = _selectedForm
+
+    private val _lineValidations = mutableStateOf<List<LineValidation>>(emptyList())
+    val lineValidations: State<List<LineValidation>> = _lineValidations
 
     private val poemUtils = PoemUtils()
     private val utilitySyllables = UtilitySyllables()
@@ -68,11 +74,11 @@ class EditViewModel @Inject constructor(
                 .debounce(250L)
                 .filter { it.isNotBlank() }
                 .collect { text ->
-                    val (result, lines) = withContext(Dispatchers.Default) {
-                        computeAnalysis(text) to computeLineSyllables(text)
+                    val (result, validations) = withContext(Dispatchers.Default) {
+                        computeAnalysis(text) to computeLineValidations(text, _selectedForm.value)
                     }
                     _analysisResult.value = result
-                    _lineSyllables.value = lines
+                    _lineValidations.value = validations
                 }
         }
         viewModelScope.launch {
@@ -110,6 +116,11 @@ class EditViewModel @Inject constructor(
         }
     }
 
+    fun onFormSelected(form: PoeticFormDef) {
+        _selectedForm.value = form
+        if (_content.value.isNotBlank()) _analysisInput.value = _content.value
+    }
+
     fun onAnnotationChange(newAnnotation: String) {
         _annotation.value = newAnnotation
         _isSaved.value = false
@@ -120,7 +131,7 @@ class EditViewModel @Inject constructor(
         _content.value = ""
         _analysisResult.value = ""
         _annotation.value = ""
-        _lineSyllables.value = emptyList()
+        _lineValidations.value = emptyList()
         _isSaved.value = false
         _wordCount.value = 0
         _analysisInput.value = ""
@@ -138,14 +149,23 @@ class EditViewModel @Inject constructor(
         return context.getString(R.string.analysis_last_line_syllables, total)
     }
 
-    private fun computeLineSyllables(text: String): List<Pair<String, Int>> {
-        return text.split("\n").filter { it.isNotBlank() }.map { line ->
+    private fun computeLineValidations(text: String, form: PoeticFormDef): List<LineValidation> {
+        return text.split("\n").filter { it.isNotBlank() }.mapIndexed { index, line ->
             val syllables = utilitySyllables.getSyllables(line)
             val lastWord = line.trim().split(" ").last()
             val isAcute = poemUtils.isAcute(lastWord)
             val isProparoxytone = poemUtils.isProparoxytone(lastWord)
             val countSinhalese = poemUtils.hasSinhalese(line)
-            line to (syllables.size + isAcute + isProparoxytone + countSinhalese)
+            val actual = syllables.size + isAcute + isProparoxytone + countSinhalese
+            val expected = form.getSyllablesForLine(index)
+            LineValidation(
+                index = index,
+                lineText = line,
+                actualSyllables = actual,
+                expectedSyllables = expected,
+                rhymeLetter = form.getRhymeLetterForLine(index),
+                syllableOk = expected == null || actual == expected
+            )
         }
     }
 

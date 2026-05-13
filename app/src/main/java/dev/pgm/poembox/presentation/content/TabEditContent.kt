@@ -3,7 +3,9 @@ package dev.pgm.poembox.presentation.content
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -14,20 +16,75 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.model.LineValidation
+import dev.pgm.poembox.domain.model.PoeticForms
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.EditViewModel
+
+@Composable
+private fun LineValidationRow(v: LineValidation) {
+    val accentColor = when {
+        v.expectedSyllables == null -> MaterialTheme.colorScheme.primary
+        v.syllableOk -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.error
+    }
+    val syllableLabel = when {
+        v.expectedSyllables == null -> stringResource(R.string.form_syllable_free, v.actualSyllables)
+        v.syllableOk -> stringResource(R.string.form_syllable_ok, v.actualSyllables)
+        else -> stringResource(R.string.form_syllable_error, v.actualSyllables, v.expectedSyllables)
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 3.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Rhyme letter badge
+        if (v.rhymeLetter != null) {
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = accentColor.copy(alpha = 0.15f),
+                modifier = Modifier.padding(end = 6.dp)
+            ) {
+                Text(
+                    text = v.rhymeLetter.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = accentColor,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                )
+            }
+        } else {
+            Spacer(Modifier.width(24.dp))
+        }
+        Text(
+            text = "${v.index + 1}. ${v.lineText.take(28)}${if (v.lineText.length > 28) "…" else ""}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = syllableLabel,
+            style = MaterialTheme.typography.labelSmall,
+            color = accentColor,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
 
 @Composable
 fun EditScreen(
@@ -40,9 +97,10 @@ fun EditScreen(
     val isSaved by viewModel.isSaved
     val wordCount by viewModel.wordCount
     val annotation by viewModel.annotation
-    val lineSyllables by viewModel.lineSyllables
+    val lineValidations by viewModel.lineValidations
+    val selectedForm by viewModel.selectedForm
     var showNotes by remember { mutableStateOf(false) }
-    var showSyllables by remember { mutableStateOf(false) }
+    var showValidation by remember { mutableStateOf(false) }
     val userName by authViewModel.userName.collectAsState()
     val context = LocalContext.current
 
@@ -93,6 +151,59 @@ fun EditScreen(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(R.string.editor_new_poem_description),
                         tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
+            // Form selector
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                PoeticForms.ALL.forEach { form ->
+                    FilterChip(
+                        selected = selectedForm.id == form.id,
+                        onClick = { viewModel.onFormSelected(form) },
+                        label = {
+                            Text(
+                                stringResource(form.nameRes),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    )
+                }
+            }
+
+            // Progress indicator for fixed-length forms
+            if (selectedForm.totalLines > 0) {
+                val current = lineValidations.size
+                val total = selectedForm.totalLines
+                val complete = current >= total
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    LinearProgressIndicator(
+                        progress = { (current.toFloat() / total).coerceIn(0f, 1f) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(4.dp),
+                        color = if (complete) MaterialTheme.colorScheme.tertiary
+                                else MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = if (complete) stringResource(R.string.form_complete)
+                               else stringResource(R.string.form_progress, current, total),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (complete) MaterialTheme.colorScheme.tertiary
+                                else MaterialTheme.colorScheme.outline
                     )
                 }
             }
@@ -148,49 +259,29 @@ fun EditScreen(
                 )
             }
 
-            if (lineSyllables.isNotEmpty()) {
+            if (lineValidations.isNotEmpty()) {
                 TextButton(
-                    onClick = { showSyllables = !showSyllables },
+                    onClick = { showValidation = !showValidation },
                     modifier = Modifier.align(Alignment.Start)
                 ) {
                     Icon(
-                        imageVector = if (showSyllables) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        imageVector = if (showValidation) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(stringResource(R.string.editor_syllables_per_verse), style = MaterialTheme.typography.labelMedium)
                 }
-                AnimatedVisibility(visible = showSyllables) {
+                AnimatedVisibility(visible = showValidation) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 4.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        )
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-                            lineSyllables.forEachIndexed { index, (line, count) ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 2.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "${index + 1}. ${line.take(30)}${if (line.length > 30) "…" else ""}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.editor_syllable_count_short, count),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
+                            lineValidations.forEach { v ->
+                                LineValidationRow(v)
                             }
                         }
                     }
