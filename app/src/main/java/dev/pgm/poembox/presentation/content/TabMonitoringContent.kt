@@ -22,7 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
 
 @Composable
@@ -42,12 +44,12 @@ fun MonitoringScreen(
                 appendLine(state.body)
                 if (state.syllablesAnalysis.isNotBlank()) {
                     appendLine()
-                    appendLine("--- Análisis métrico ---")
+                    appendLine(context.getString(R.string.monitor_export_section_metrical))
                     appendLine(state.syllablesAnalysis)
                 }
                 if (state.versesAnalysis.isNotBlank()) {
                     appendLine()
-                    appendLine("--- Estructura ---")
+                    appendLine(context.getString(R.string.monitor_export_section_structure))
                     appendLine(state.versesAnalysis)
                 }
             }
@@ -79,12 +81,12 @@ fun MonitoringScreen(
                     Text("📝", style = MaterialTheme.typography.displayMedium)
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        "Guarda un borrador en el Editor",
+                        stringResource(R.string.monitor_no_poem_title),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        "para ver el análisis aquí.",
+                        stringResource(R.string.monitor_no_poem_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.outline
                     )
@@ -106,7 +108,7 @@ fun MonitoringScreen(
                     IconButton(onClick = { viewModel.loadPoem() }) {
                         Icon(
                             Icons.Default.Refresh,
-                            contentDescription = "Actualizar análisis",
+                            contentDescription = stringResource(R.string.monitor_refresh_description),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -121,11 +123,11 @@ fun MonitoringScreen(
                             putExtra(Intent.EXTRA_TEXT, shareText)
                             putExtra(Intent.EXTRA_SUBJECT, state.title)
                         }
-                        context.startActivity(Intent.createChooser(intent, "Compartir poema"))
+                        context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
                     }) {
                         Icon(
                             Icons.Default.Share,
-                            contentDescription = "Compartir poema",
+                            contentDescription = stringResource(R.string.monitor_share_description),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -135,7 +137,7 @@ fun MonitoringScreen(
                     }) {
                         Icon(
                             Icons.Default.Download,
-                            contentDescription = "Exportar como .txt",
+                            contentDescription = stringResource(R.string.monitor_export_description),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -164,19 +166,19 @@ fun MonitoringScreen(
             }
 
             AnalysisCard(
-                title = "Análisis métrico",
+                title = stringResource(R.string.monitor_card_metrical),
                 content = state.syllablesAnalysis,
                 icon = Icons.Default.Straighten
             )
 
             AnalysisCard(
-                title = "Estructura",
+                title = stringResource(R.string.monitor_card_structure),
                 content = state.versesAnalysis,
                 icon = Icons.Default.Analytics
             )
 
             AnalysisCard(
-                title = "Rima y estilo",
+                title = stringResource(R.string.monitor_card_rhyme),
                 content = buildString {
                     if (state.rhymeAnalysis.isNotBlank()) appendLine(state.rhymeAnalysis)
                     if (state.enjambmentAnalysis.isNotBlank()) append(state.enjambmentAnalysis)
@@ -201,7 +203,7 @@ fun MonitoringScreen(
                 )
             ) {
                 Text(
-                    text = if (state.isValidated) "Poema validado ✓" else "Validar poema",
+                    text = stringResource(if (state.isValidated) R.string.monitor_validated_button else R.string.monitor_validate_button),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -246,7 +248,7 @@ fun AnalysisCard(title: String, content: String, icon: ImageVector) {
                     Text(text = content, style = MaterialTheme.typography.bodyMedium)
                 } else {
                     Text(
-                        text = "Esperando análisis...",
+                        text = stringResource(R.string.monitor_waiting),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline
                     )

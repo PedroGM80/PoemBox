@@ -17,6 +17,11 @@
     <string name="login_logged_as">Conectado como: %1$s</string>
     <string name="login_enter_button">Entrar a PoemBox</string>
 
+    <!-- Tab names -->
+    <string name="tab_editor">Editor</string>
+    <string name="tab_monitor">Analizar</string>
+    <string name="tab_manager">Mis poemas</string>
+
     <!-- TopBar / User menu -->
     <string name="user_menu_description">Menú de usuario</string>
     <string name="logout">Cerrar sesión</string>
@@ -28,11 +33,20 @@
     <string name="editor_saved_button">Borrador guardado ✓</string>
     <string name="editor_saved_toast">Borrador guardado</string>
     <string name="editor_new_poem_description">Nuevo poema</string>
+    <string name="editor_unknown_author">Desconocido</string>
+    <string name="editor_word_count">%1$d palabras</string>
+    <string name="editor_syllable_count_short">%1$d sil.</string>
+    <string name="editor_syllables_per_verse">Sílabas por verso</string>
+    <string name="editor_notes_section">Notas del poema</string>
+    <string name="editor_notes_placeholder">Añade notas o contexto del poema…</string>
 
     <!-- Monitor Tab -->
     <string name="monitor_no_poem_title">Guarda un borrador en el Editor</string>
     <string name="monitor_no_poem_subtitle">para ver el análisis aquí.</string>
     <string name="monitor_share_description">Compartir poema</string>
+    <string name="monitor_export_description">Exportar como .txt</string>
+    <string name="monitor_export_section_metrical">— Análisis métrico —</string>
+    <string name="monitor_export_section_structure">— Estructura —</string>
     <string name="monitor_refresh_description">Actualizar análisis</string>
     <string name="monitor_share_chooser">Compartir poema</string>
     <string name="monitor_validate_button">Validar poema</string>

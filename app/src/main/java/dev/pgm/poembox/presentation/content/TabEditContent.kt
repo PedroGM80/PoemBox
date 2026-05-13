@@ -21,7 +21,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
@@ -61,7 +63,7 @@ fun EditScreen(
                 TextField(
                     value = title,
                     onValueChange = { viewModel.onTitleChange(it) },
-                    label = { Text(text = "Título del poema") },
+                    label = { Text(text = stringResource(R.string.editor_title_label)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     textStyle = TextStyle(
                         textAlign = TextAlign.Center,
@@ -89,7 +91,7 @@ fun EditScreen(
                 IconButton(onClick = { viewModel.clearPoem() }) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Nuevo poema",
+                        contentDescription = stringResource(R.string.editor_new_poem_description),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -104,7 +106,7 @@ fun EditScreen(
                 TextField(
                     value = content,
                     onValueChange = { viewModel.onContentChange(it) },
-                    placeholder = { Text(text = "Escribe aquí tu poema...") },
+                    placeholder = { Text(text = stringResource(R.string.editor_content_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     textStyle = TextStyle(
                         fontSize = Typography.bodyLarge.fontSize,
@@ -137,7 +139,7 @@ fun EditScreen(
 
             if (wordCount > 0) {
                 Text(
-                    text = "$wordCount palabras",
+                    text = stringResource(R.string.editor_word_count, wordCount),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier
@@ -157,7 +159,7 @@ fun EditScreen(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(4.dp))
-                    Text("Sílabas por verso", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.editor_syllables_per_verse), style = MaterialTheme.typography.labelMedium)
                 }
                 AnimatedVisibility(visible = showSyllables) {
                     Card(
@@ -183,7 +185,7 @@ fun EditScreen(
                                         modifier = Modifier.weight(1f)
                                     )
                                     Text(
-                                        text = "$count sil.",
+                                        text = stringResource(R.string.editor_syllable_count_short, count),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.primary,
                                         fontWeight = FontWeight.Bold
@@ -205,13 +207,13 @@ fun EditScreen(
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("Notas del poema", style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.editor_notes_section), style = MaterialTheme.typography.labelMedium)
             }
             AnimatedVisibility(visible = showNotes) {
                 TextField(
                     value = annotation,
                     onValueChange = { viewModel.onAnnotationChange(it) },
-                    placeholder = { Text("Añade notas o contexto del poema…") },
+                    placeholder = { Text(stringResource(R.string.editor_notes_placeholder)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
@@ -226,8 +228,8 @@ fun EditScreen(
 
             Button(
                 onClick = {
-                    viewModel.saveDraft(userName ?: "Desconocido") {
-                        Toast.makeText(context, "Borrador guardado", Toast.LENGTH_SHORT).show()
+                    viewModel.saveDraft(userName ?: stringResource(R.string.editor_unknown_author)) {
+                        Toast.makeText(context, context.getString(R.string.editor_saved_toast), Toast.LENGTH_SHORT).show()
                     }
                 },
                 enabled = title.isNotBlank() && content.isNotBlank(),
@@ -242,7 +244,7 @@ fun EditScreen(
                     .height(56.dp)
             ) {
                 Text(
-                    text = if (isSaved) "Borrador guardado ✓" else "Guardar borrador",
+                    text = stringResource(if (isSaved) R.string.editor_saved_button else R.string.editor_save_button),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

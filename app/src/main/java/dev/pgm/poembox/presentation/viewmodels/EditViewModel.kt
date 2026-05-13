@@ -1,10 +1,13 @@
 package dev.pgm.poembox.presentation.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
@@ -26,6 +29,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class EditViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val saveDraftUseCase: SaveDraftUseCase,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
     private val sessionManager: UserSessionManager
@@ -131,7 +135,7 @@ class EditViewModel @Inject constructor(
         val isProparoxytone = poemUtils.isProparoxytone(lastWord)
         val countSinhalese = poemUtils.hasSinhalese(lastLine)
         val total = syllables.size + isAcute + isProparoxytone + countSinhalese
-        return "Último verso: $total sílabas"
+        return context.getString(R.string.analysis_last_line_syllables, total)
     }
 
     private fun computeLineSyllables(text: String): List<Pair<String, Int>> {

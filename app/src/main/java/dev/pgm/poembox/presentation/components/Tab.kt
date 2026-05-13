@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -41,12 +42,12 @@ fun Tabs(
                 icon = {
                     Icon(
                         imageVector = tab.icon,
-                        contentDescription = tab.title
+                        contentDescription = stringResource(tab.title)
                     )
                 },
                 text = {
                     Text(
-                        text = tab.title,
+                        text = stringResource(tab.title),
                         style = MaterialTheme.typography.labelMedium
                     )
                 },

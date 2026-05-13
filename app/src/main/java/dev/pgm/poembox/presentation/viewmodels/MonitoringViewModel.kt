@@ -1,10 +1,13 @@
 package dev.pgm.poembox.presentation.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
@@ -33,6 +36,7 @@ data class MonitoringState(
 
 @HiltViewModel
 class MonitoringViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
     private val saveSheetUseCase: SaveSheetUseCase,
     private val sessionManager: UserSessionManager
@@ -108,12 +112,12 @@ class MonitoringViewModel @Inject constructor(
         if (content.isBlank()) return AnalysisResult("", "", "", "")
 
         val predominate = getPredominateNumberSyllables(content)
-        val syllablesText = "Predominan los versos de $predominate sílabas."
+        val syllablesText = context.getString(R.string.analysis_syllable_predominant, predominate)
 
         val numberStanza = poemUtils.getNumberStanza(content)
         val numberVerse = poemUtils.getNumberOfVerse(content)
         val versesPerStanza = if (numberStanza > 0) numberVerse / numberStanza else 0
-        val versesText = "El poema tiene $numberStanza estrofas y $numberVerse versos ($versesPerStanza por estrofa)."
+        val versesText = context.getString(R.string.analysis_structure, numberStanza, numberVerse, versesPerStanza)
 
         val rhymeText = getRhymeType(content)
         val enjambmentText = poemUtils.getEnjambment(content)
@@ -138,9 +142,9 @@ class MonitoringViewModel @Inject constructor(
         val uniqueConsonant = consonantRime.values.distinct().size
 
         return when {
-            uniqueAssonant < uniqueConsonant -> "Rima asonante"
-            uniqueAssonant > uniqueConsonant -> "Rima consonante"
-            else -> "Rima indefinida / mixta"
+            uniqueAssonant < uniqueConsonant -> context.getString(R.string.rhyme_assonant)
+            uniqueAssonant > uniqueConsonant -> context.getString(R.string.rhyme_consonant)
+            else -> context.getString(R.string.rhyme_mixed)
         }
     }
 
