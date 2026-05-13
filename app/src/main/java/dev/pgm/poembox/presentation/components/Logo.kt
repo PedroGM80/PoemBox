@@ -31,21 +31,21 @@ fun Logo() {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.systemBars),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(animateAlpha.value)
+            modifier = Modifier.alpha(animateAlpha.value)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.splash),
                 contentDescription = stringResource(R.string.logo_content_description),
-                modifier = Modifier.size(300.dp)
+                modifier = Modifier.size(260.dp)
             )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.brand_name),
                 style = MaterialTheme.typography.headlineLarge,
@@ -53,7 +53,7 @@ fun Logo() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 16.dp)
             )
         }
     }

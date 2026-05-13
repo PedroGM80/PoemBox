@@ -6,7 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pgm.poembox.domain.SessionManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +22,12 @@ class AuthViewModel @Inject constructor(
         started = SharingStarted.Eagerly,
         initialValue = null
     )
+
+    /** True once DataStore has emitted its first value (distinguishes "loading" from "not registered"). */
+    val isLoaded: StateFlow<Boolean> = sessionManager.userName
+        .take(1)
+        .map { true }
+        .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = false)
 
     fun registerUser(name: String, email: String, onComplete: () -> Unit) {
         viewModelScope.launch {
