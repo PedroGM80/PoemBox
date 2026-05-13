@@ -87,4 +87,11 @@ dependencies {
     // Splash Screen API
     implementation(libs.androidx.core.splashscreen)
 
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.hilt.work)
+
+    // Gemini AI
+    implementation(libs.generativeai)
+
 }

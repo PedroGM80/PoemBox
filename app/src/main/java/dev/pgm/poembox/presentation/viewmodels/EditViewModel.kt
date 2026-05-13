@@ -5,9 +5,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.DailyReminderWorker
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
@@ -20,13 +24,16 @@ import dev.pgm.poembox.domain.usecase.SaveDraftUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -64,6 +71,26 @@ class EditViewModel @Inject constructor(
 
     private val poemUtils = PoemUtils()
     private val utilitySyllables = UtilitySyllables()
+
+    val dailyReminderEnabled = sessionManager.dailyReminderEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    fun setDailyReminder(enabled: Boolean) {
+        viewModelScope.launch {
+            sessionManager.setDailyReminderEnabled(enabled)
+            val workManager = WorkManager.getInstance(context)
+            if (enabled) {
+                val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(1, TimeUnit.DAYS).build()
+                workManager.enqueueUniquePeriodicWork(
+                    "daily_poem_reminder",
+                    ExistingPeriodicWorkPolicy.UPDATE,
+                    request
+                )
+            } else {
+                workManager.cancelUniqueWork("daily_poem_reminder")
+            }
+        }
+    }
 
     // Debounce análisis: no ejecuta en cada pulsación sino 250ms después de parar de escribir
     private val _analysisInput = MutableStateFlow("")

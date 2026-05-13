@@ -15,6 +15,8 @@ materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.8"
 room = "2.8.4"
 splashscreen = "1.0.1"
+workmanager = "2.10.2"
+generativeai = "0.9.0"
 hilt = "2.59.2"
 ksp = "2.3.7"
 navigationComposeJvmstubs = "2.9.8"
@@ -49,6 +51,9 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workmanager" }
+hilt-work = { group = "androidx.hilt", name = "hilt-work", version = "1.3.0" }
+generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

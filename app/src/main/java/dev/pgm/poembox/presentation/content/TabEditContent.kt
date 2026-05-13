@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -118,6 +119,7 @@ fun EditScreen(
     var showInspiration by remember { mutableStateOf(false) }
     val todayPrompt = remember { WritingPrompts.todayPrompt() }
     val userName by authViewModel.userName.collectAsState()
+    val dailyReminderEnabled by viewModel.dailyReminderEnabled.collectAsState()
     val context = LocalContext.current
 
     Surface(
@@ -378,6 +380,24 @@ fun EditScreen(
                         unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
                     ),
                     maxLines = 4
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_daily_reminder),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Switch(
+                    checked = dailyReminderEnabled,
+                    onCheckedChange = { viewModel.setDailyReminder(it) }
                 )
             }
 
