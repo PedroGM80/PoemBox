@@ -15,9 +15,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.viewmodels.ManagerViewModel
 
@@ -54,7 +57,7 @@ fun PoemCard(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Por ${poem.author}",
+                    text = stringResource(R.string.manager_by_author, poem.author),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
@@ -65,15 +68,15 @@ fun PoemCard(
             }
             Row {
                 IconButton(onClick = onViewPoem) {
-                    Icon(Icons.Default.Description, contentDescription = "Ver poema")
+                    Icon(Icons.Default.Description, contentDescription = stringResource(R.string.manager_view_poem_description))
                 }
                 IconButton(onClick = onViewNotes) {
-                    Icon(Icons.Default.Notes, contentDescription = "Ver notas")
+                    Icon(Icons.Default.Notes, contentDescription = stringResource(R.string.manager_view_notes_description))
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Eliminar",
+                        contentDescription = stringResource(R.string.manager_delete_description),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -88,6 +91,7 @@ fun ManagerScreen(
 ) {
     val poems by viewModel.poems
     val isLoading by viewModel.isLoading
+    val context = LocalContext.current
 
     var showContentDialog by remember { mutableStateOf(false) }
     var dialogTitle by remember { mutableStateOf("") }
@@ -108,7 +112,7 @@ fun ManagerScreen(
             ) {
                 Icon(
                     Icons.Default.Refresh,
-                    contentDescription = "Actualizar",
+                    contentDescription = stringResource(R.string.manager_refresh_description),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
@@ -132,11 +136,11 @@ fun ManagerScreen(
                         )
                         Spacer(Modifier.height(12.dp))
                         Text(
-                            text = "Aún no tienes poemas validados.",
+                            text = stringResource(R.string.manager_empty_title),
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
-                            text = "Escribe y valida uno en la pestaña Analizar.",
+                            text = stringResource(R.string.manager_empty_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.outline
                         )
@@ -160,8 +164,8 @@ fun ManagerScreen(
                                     showContentDialog = true
                                 },
                                 onViewNotes = {
-                                    dialogTitle = "Notas: ${poem.title}"
-                                    dialogBody = poem.annotations.ifBlank { "Sin notas." }
+                                    dialogTitle = context.getString(R.string.manager_notes_prefix, poem.title)
+                                    dialogBody = poem.annotations.ifBlank { context.getString(R.string.manager_no_notes) }
                                     showContentDialog = true
                                 }
                             )
@@ -185,7 +189,7 @@ fun ManagerScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showContentDialog = false }) {
-                    Text("Cerrar")
+                    Text(stringResource(R.string.manager_close_button))
                 }
             }
         )
@@ -197,8 +201,8 @@ fun ManagerScreen(
                 showDeleteDialog = false
                 poemToDelete = null
             },
-            title = { Text("¿Eliminar poema?") },
-            text = { Text("Se eliminará \"${poemToDelete!!.title}\" de forma permanente.") },
+            title = { Text(stringResource(R.string.manager_delete_dialog_title)) },
+            text = { Text(context.getString(R.string.manager_delete_dialog_text, poemToDelete!!.title)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -207,7 +211,7 @@ fun ManagerScreen(
                         poemToDelete = null
                     }
                 ) {
-                    Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.manager_delete_dialog_confirm), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
@@ -215,7 +219,7 @@ fun ManagerScreen(
                     showDeleteDialog = false
                     poemToDelete = null
                 }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.manager_cancel_button))
                 }
             }
         )

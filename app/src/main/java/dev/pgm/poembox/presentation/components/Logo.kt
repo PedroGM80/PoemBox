@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,13 +53,13 @@ fun Logo() {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.splash),
-                contentDescription = "My App Logo",
+                contentDescription = stringResource(R.string.logo_content_description),
                 modifier = Modifier
                     .alpha(animateAlpha.value)
                     .size(300.dp)
             )
             Text(
-                text = "TeckelSoft",
+                text = stringResource(R.string.brand_name),
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 35.sp,
                 fontWeight = FontWeight.ExtraBold,

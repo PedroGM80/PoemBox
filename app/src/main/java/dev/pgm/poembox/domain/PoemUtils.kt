@@ -176,15 +176,13 @@ class PoemUtils {
         for (index in syllables.indices) {
             if (syllables[index].contains(",") || syllables[index].contains(".")) {
                 return if (index < 5) {
-                    "Enjambment is abrupt and gives rise to a syncopated, fast, violent rhythm."
+                    "Encabalgamiento abrupto: crea un ritmo sincopado, rápido e intenso."
                 } else {
-                    """Enjambment is soft, light and characterized by the great fluidity
-                            | it brings to the poem. It can be read practically like a prose poetic
-                            |  text with all its exceptions, of course. It brings dynamism to 
-                            |  the poem and very fast musical movements.""".trimMargin()
+                    "Encabalgamiento suave: aporta gran fluidez al poema, que puede leerse " +
+                    "casi como prosa poética. Otorga dinamismo y movimientos musicales ágiles."
                 }
             }
         }
-        return "Enjambment does not exist"
+        return "Sin encabalgamiento."
     }
 }

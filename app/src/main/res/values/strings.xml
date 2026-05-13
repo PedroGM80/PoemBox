@@ -1,3 +1,71 @@
 <resources>
     <string name="app_name">PoemBox</string>
+    <string name="brand_name">TeckelSoft</string>
+
+    <!-- Splash / Logo -->
+    <string name="logo_content_description">Logo de PoemBox</string>
+
+    <!-- Create Account -->
+    <string name="create_account_title">Crear cuenta</string>
+    <string name="create_account_username_label">Nombre de usuario</string>
+    <string name="create_account_email_label">Correo electrónico</string>
+    <string name="create_account_button">Registrarse</string>
+    <string name="create_account_invalid_email">Correo electrónico no válido</string>
+
+    <!-- Login -->
+    <string name="login_title">¡Bienvenido de nuevo!</string>
+    <string name="login_logged_as">Conectado como: %1$s</string>
+    <string name="login_enter_button">Entrar a PoemBox</string>
+
+    <!-- Editor Tab -->
+    <string name="editor_title_label">Título del poema</string>
+    <string name="editor_content_placeholder">Escribe aquí tu poema…</string>
+    <string name="editor_save_button">Guardar borrador</string>
+    <string name="editor_saved_button">Borrador guardado ✓</string>
+    <string name="editor_saved_toast">Borrador guardado</string>
+    <string name="editor_new_poem_description">Nuevo poema</string>
+
+    <!-- Monitor Tab -->
+    <string name="monitor_no_poem_title">Guarda un borrador en el Editor</string>
+    <string name="monitor_no_poem_subtitle">para ver el análisis aquí.</string>
+    <string name="monitor_share_description">Compartir poema</string>
+    <string name="monitor_refresh_description">Actualizar análisis</string>
+    <string name="monitor_share_chooser">Compartir poema</string>
+    <string name="monitor_validate_button">Validar poema</string>
+    <string name="monitor_validated_button">Poema validado ✓</string>
+    <string name="monitor_waiting">Esperando análisis…</string>
+    <string name="monitor_card_metrical">Análisis métrico</string>
+    <string name="monitor_card_structure">Estructura</string>
+    <string name="monitor_card_rhyme">Rima y estilo</string>
+
+    <!-- Manager Tab -->
+    <string name="manager_empty_title">Aún no tienes poemas validados.</string>
+    <string name="manager_empty_subtitle">Escribe y valida uno en la pestaña Analizar.</string>
+    <string name="manager_refresh_description">Actualizar</string>
+    <string name="manager_view_poem_description">Ver poema</string>
+    <string name="manager_view_notes_description">Ver notas</string>
+    <string name="manager_delete_description">Eliminar</string>
+    <string name="manager_delete_dialog_title">¿Eliminar poema?</string>
+    <string name="manager_delete_dialog_text">Se eliminará \"%1$s\" de forma permanente.</string>
+    <string name="manager_delete_dialog_confirm">Eliminar</string>
+    <string name="manager_close_button">Cerrar</string>
+    <string name="manager_cancel_button">Cancelar</string>
+    <string name="manager_no_notes">Sin notas.</string>
+    <string name="manager_by_author">Por %1$s</string>
+    <string name="manager_notes_prefix">Notas: %1$s</string>
+
+    <!-- Poem analysis (returned by domain layer) -->
+    <string name="analysis_syllable_predominant">Predominan los versos de %1$s sílabas.</string>
+    <string name="analysis_structure">El poema tiene %1$d estrofas y %2$d versos (%3$d por estrofa).</string>
+    <string name="analysis_last_line_syllables">Último verso: %1$d sílabas</string>
+
+    <!-- Enjambment -->
+    <string name="enjambment_abrupt">Encabalgamiento abrupto: crea un ritmo sincopado, rápido e intenso.</string>
+    <string name="enjambment_soft">Encabalgamiento suave: aporta gran fluidez al poema, que puede leerse casi como prosa poética. Otorga dinamismo y movimientos musicales ágiles.</string>
+    <string name="enjambment_none">Sin encabalgamiento.</string>
+
+    <!-- Rhyme -->
+    <string name="rhyme_assonant">Rima asonante</string>
+    <string name="rhyme_consonant">Rima consonante</string>
+    <string name="rhyme_mixed">Rima indefinida / mixta</string>
 </resources>
