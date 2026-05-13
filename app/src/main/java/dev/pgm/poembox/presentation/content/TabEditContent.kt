@@ -5,12 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -18,21 +19,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.pgm.poembox.R
-import dev.pgm.poembox.domain.ContextContentProvider
-import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
+import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
+import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 
 @Composable
 fun EditScreen(
-    userData: String,
-    viewModel: EditViewModel = hiltViewModel()
+    viewModel: EditViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val title by viewModel.title
     val content by viewModel.content
     val analysisResult by viewModel.analysisResult
-    var isSaved by remember { mutableStateOf(false) }
+    val isSaved by viewModel.isSaved
+    val userName by authViewModel.userName.collectAsState()
+    val context = LocalContext.current
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -44,45 +46,58 @@ fun EditScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextField(
-                value = title,
-                onValueChange = { viewModel.onTitleChange(it) },
-                label = { Text(text = "Poem Title") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                textStyle = TextStyle(
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = Shapes.medium,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = title,
+                    onValueChange = { viewModel.onTitleChange(it) },
+                    label = { Text(text = "Título del poema") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    textStyle = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    ),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    shape = Shapes.medium,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                    )
                 )
-            )
+                IconButton(onClick = { viewModel.clearPoem() }) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Nuevo poema",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
 
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             ) {
                 TextField(
                     value = content,
                     onValueChange = { viewModel.onContentChange(it) },
-                    placeholder = { Text(text = "Start writing your poem here...") },
+                    placeholder = { Text(text = "Escribe aquí tu poema...") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     textStyle = TextStyle(
                         fontSize = Typography.bodyLarge.fontSize,
-                        lineHeight = 24.sp
+                        lineHeight = 28.sp
                     ),
                     modifier = Modifier.fillMaxSize(),
                     shape = Shapes.medium,
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = colorResource(id = R.color.white).copy(alpha = 0.5f),
-                        unfocusedContainerColor = colorResource(id = R.color.white).copy(alpha = 0.3f)
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
                     )
                 )
 
@@ -96,7 +111,7 @@ fun EditScreen(
                                 MaterialTheme.colorScheme.secondaryContainer,
                                 RoundedCornerShape(8.dp)
                             )
-                            .padding(8.dp),
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -105,19 +120,14 @@ fun EditScreen(
 
             Button(
                 onClick = {
-                    val dataSplit = userData.split("#")
-                    val userLoaded = if (dataSplit.size > 1) dataSplit[1] else "Unknown"
-                    viewModel.saveDraft(userLoaded) {
-                        isSaved = true
-                        Toast.makeText(
-                            ContextContentProvider.applicationContext(),
-                            "Poem draft saved successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    viewModel.saveDraft(userName ?: "Desconocido") {
+                        Toast.makeText(context, "Borrador guardado", Toast.LENGTH_SHORT).show()
                     }
                 },
+                enabled = title.isNotBlank() && content.isNotBlank(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSaved) Color.Gray else MaterialTheme.colorScheme.primary
+                    containerColor = if (isSaved) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -126,7 +136,7 @@ fun EditScreen(
                     .height(56.dp)
             ) {
                 Text(
-                    text = if (isSaved) "Draft Saved" else "Save Poem Draft",
+                    text = if (isSaved) "Borrador guardado ✓" else "Guardar borrador",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

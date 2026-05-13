@@ -1,5 +1,6 @@
 package dev.pgm.poembox.presentation.content
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -7,13 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,10 +27,7 @@ fun MonitoringScreen(
     viewModel: MonitoringViewModel = hiltViewModel()
 ) {
     val state by viewModel.state
-
-    LaunchedEffect(Unit) {
-        viewModel.loadPoem()
-    }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -37,75 +36,137 @@ fun MonitoringScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (state.title.isBlank()) {
+        if (state.isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    "No poem loaded. Save a draft in the Editor first.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                CircularProgressIndicator()
+            }
+        } else if (state.title.isBlank()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 80.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("📝", style = MaterialTheme.typography.displayMedium)
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        "Guarda un borrador en el Editor",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        "para ver el análisis aquí.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
             }
         } else {
-            Text(
-                text = state.title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = state.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Row {
+                    IconButton(onClick = { viewModel.loadPoem() }) {
+                        Icon(
+                            Icons.Default.Refresh,
+                            contentDescription = "Actualizar análisis",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    IconButton(onClick = {
+                        val shareText = buildString {
+                            appendLine(state.title)
+                            appendLine()
+                            append(state.body)
+                        }
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, shareText)
+                            putExtra(Intent.EXTRA_SUBJECT, state.title)
+                        }
+                        context.startActivity(Intent.createChooser(intent, "Compartir poema"))
+                    }) {
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = "Compartir poema",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             ) {
                 Text(
                     text = state.body,
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.bodyLarge,
-                    lineHeight = 24.sp
+                    lineHeight = 28.sp
                 )
             }
 
-            Button(
-                onClick = { viewModel.loadPoem() },
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                Icon(Icons.Default.Refresh, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text("Refresh Analysis")
-            }
-
             AnalysisCard(
-                title = "Metrical Analysis",
+                title = "Análisis métrico",
                 content = state.syllablesAnalysis,
                 icon = Icons.Default.Straighten
             )
 
             AnalysisCard(
-                title = "Structure",
+                title = "Estructura",
                 content = state.versesAnalysis,
                 icon = Icons.Default.Analytics
             )
 
             AnalysisCard(
-                title = "Rhyme & Style",
-                content = "${state.rhymeAnalysis}\n\n${state.enjambmentAnalysis}",
+                title = "Rima y estilo",
+                content = buildString {
+                    if (state.rhymeAnalysis.isNotBlank()) appendLine(state.rhymeAnalysis)
+                    if (state.enjambmentAnalysis.isNotBlank()) append(state.enjambmentAnalysis)
+                },
                 icon = Icons.Default.Brush
             )
+
+            Spacer(Modifier.height(8.dp))
 
             Button(
                 onClick = { viewModel.validatePoem() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
                     .height(56.dp),
                 enabled = !state.isValidated,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (state.isValidated) Color.Gray else MaterialTheme.colorScheme.primary
+                    containerColor = if (state.isValidated)
+                        MaterialTheme.colorScheme.secondary
+                    else
+                        MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary
                 )
             ) {
-                Text(if (state.isValidated) "Poem Validated" else "Validate Poem")
+                Text(
+                    text = if (state.isValidated) "Poema validado ✓" else "Validar poema",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
+
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -116,27 +177,38 @@ fun AnalysisCard(title: String, content: String, icon: ImageVector) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(top = 2.dp)
             )
             Spacer(Modifier.width(16.dp))
             Column {
-                Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(4.dp))
                 if (content.isNotBlank()) {
                     Text(text = content, style = MaterialTheme.typography.bodyMedium)
                 } else {
-                    Text(text = "Waiting for analysis...", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        text = "Esperando análisis...",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 }
             }
         }

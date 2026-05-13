@@ -1,15 +1,10 @@
 package dev.pgm.poembox.presentation.content
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -20,11 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.viewmodels.ManagerViewModel
@@ -46,7 +38,7 @@ fun PoemCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(16.dp)
@@ -62,7 +54,7 @@ fun PoemCard(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "By ${poem.author}",
+                    text = "Por ${poem.author}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
@@ -73,15 +65,15 @@ fun PoemCard(
             }
             Row {
                 IconButton(onClick = onViewPoem) {
-                    Icon(Icons.Default.Description, contentDescription = "View Poem")
+                    Icon(Icons.Default.Description, contentDescription = "Ver poema")
                 }
                 IconButton(onClick = onViewNotes) {
-                    Icon(Icons.Default.Notes, contentDescription = "View Notes")
+                    Icon(Icons.Default.Notes, contentDescription = "Ver notas")
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Delete",
+                        contentDescription = "Eliminar",
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -96,9 +88,13 @@ fun ManagerScreen(
 ) {
     val poems by viewModel.poems
     val isLoading by viewModel.isLoading
-    val showDialog = remember { mutableStateOf(false) }
-    val dialogTitle = remember { mutableStateOf("") }
-    val dialogBody = remember { mutableStateOf("") }
+
+    var showContentDialog by remember { mutableStateOf(false) }
+    var dialogTitle by remember { mutableStateOf("") }
+    var dialogBody by remember { mutableStateOf("") }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var poemToDelete by remember { mutableStateOf<PoemDetails?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadPoems()
@@ -106,54 +102,120 @@ fun ManagerScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.loadPoems() }) {
-                Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            FloatingActionButton(
+                onClick = { viewModel.loadPoems() },
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Icon(
+                    Icons.Default.Refresh,
+                    contentDescription = "Actualizar",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            if (isLoading) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else if (poems.isEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No validated poems yet.")
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-                    items(poems) { poem ->
-                        PoemCard(
-                            poem = poem,
-                            onDelete = { viewModel.deletePoem(poem) },
-                            onViewPoem = {
-                                dialogTitle.value = poem.title
-                                dialogBody.value = poem.poem
-                                showDialog.value = true
-                            },
-                            onViewNotes = {
-                                dialogTitle.value = "Notes: ${poem.title}"
-                                dialogBody.value = poem.annotations.ifBlank { "No notes available." }
-                                showDialog.value = true
-                            }
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            when {
+                isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                poems.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "📜",
+                            style = MaterialTheme.typography.displayMedium
                         )
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = "Aún no tienes poemas validados.",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "Escribe y valida uno en la pestaña Analizar.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = 12.dp)
+                    ) {
+                        items(poems) { poem ->
+                            PoemCard(
+                                poem = poem,
+                                onDelete = {
+                                    poemToDelete = poem
+                                    showDeleteDialog = true
+                                },
+                                onViewPoem = {
+                                    dialogTitle = poem.title
+                                    dialogBody = poem.poem
+                                    showContentDialog = true
+                                },
+                                onViewNotes = {
+                                    dialogTitle = "Notas: ${poem.title}"
+                                    dialogBody = poem.annotations.ifBlank { "Sin notas." }
+                                    showContentDialog = true
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    if (showDialog.value) {
+    if (showContentDialog) {
         AlertDialog(
-            onDismissRequest = { showDialog.value = false },
-            title = { Text(dialogTitle.value) },
-            text = { Text(dialogBody.value) },
+            onDismissRequest = { showContentDialog = false },
+            title = { Text(dialogTitle, style = MaterialTheme.typography.titleLarge) },
+            text = {
+                Text(
+                    dialogBody,
+                    style = MaterialTheme.typography.bodyLarge,
+                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+                )
+            },
             confirmButton = {
-                TextButton(onClick = { showDialog.value = false }) {
-                    Text("Close")
+                TextButton(onClick = { showContentDialog = false }) {
+                    Text("Cerrar")
+                }
+            }
+        )
+    }
+
+    if (showDeleteDialog && poemToDelete != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = false
+                poemToDelete = null
+            },
+            title = { Text("¿Eliminar poema?") },
+            text = { Text("Se eliminará \"${poemToDelete!!.title}\" de forma permanente.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deletePoem(poemToDelete!!)
+                        showDeleteDialog = false
+                        poemToDelete = null
+                    }
+                ) {
+                    Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    poemToDelete = null
+                }) {
+                    Text("Cancelar")
                 }
             }
         )
