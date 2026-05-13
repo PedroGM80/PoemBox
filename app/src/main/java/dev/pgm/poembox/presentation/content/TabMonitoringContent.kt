@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
@@ -34,6 +35,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.PdfExporter
+import dev.pgm.poembox.domain.PoemCardRenderer
 import dev.pgm.poembox.presentation.theme.PoeticFont
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
 
@@ -262,6 +264,21 @@ fun MonitoringScreen(
                         Icon(
                             Icons.Default.PictureAsPdf,
                             contentDescription = stringResource(R.string.monitor_export_pdf_description),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    IconButton(onClick = {
+                        val uri = PoemCardRenderer.createAndShare(context, state.title, state.body, darkMode = true)
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "image/png"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+                        context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
+                    }) {
+                        Icon(
+                            Icons.Default.Image,
+                            contentDescription = stringResource(R.string.monitor_share_image_description),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
