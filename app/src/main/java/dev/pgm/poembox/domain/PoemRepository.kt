@@ -6,6 +6,7 @@ import dev.pgm.poembox.domain.model.Sheet
 interface PoemRepository {
     suspend fun saveDraft(draft: Draft)
     suspend fun getDraftByTitle(title: String): Draft?
+    suspend fun getAllDrafts(): List<Draft>
     suspend fun getAllSheets(): List<Sheet>
     suspend fun saveSheet(sheet: Sheet)
     suspend fun getSheetByDate(date: String): Sheet?

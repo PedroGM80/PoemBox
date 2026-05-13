@@ -22,6 +22,10 @@ class PoemRepositoryImpl @Inject constructor(
         return draftDao.findByTitle(title)?.toDomain()
     }
 
+    override suspend fun getAllDrafts(): List<Draft> {
+        return draftDao.getAllDrafts().map { it.toDomain() }
+    }
+
     override suspend fun getAllSheets(): List<Sheet> {
         return sheetDao.getAllSheet().map { it.toDomain() }
     }
