@@ -1,12 +1,15 @@
 package dev.pgm.poembox.presentation.content
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,6 +37,8 @@ fun EditScreen(
     val analysisResult by viewModel.analysisResult
     val isSaved by viewModel.isSaved
     val wordCount by viewModel.wordCount
+    val annotation by viewModel.annotation
+    var showNotes by remember { mutableStateOf(false) }
     val userName by authViewModel.userName.collectAsState()
     val context = LocalContext.current
 
@@ -136,6 +141,35 @@ fun EditScreen(
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(end = 4.dp, top = 2.dp)
+                )
+            }
+
+            TextButton(
+                onClick = { showNotes = !showNotes },
+                modifier = Modifier.align(Alignment.Start)
+            ) {
+                Icon(
+                    imageVector = if (showNotes) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+                Text("Notas del poema", style = MaterialTheme.typography.labelMedium)
+            }
+            AnimatedVisibility(visible = showNotes) {
+                TextField(
+                    value = annotation,
+                    onValueChange = { viewModel.onAnnotationChange(it) },
+                    placeholder = { Text("Añade notas o contexto del poema…") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    shape = Shapes.medium,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                    ),
+                    maxLines = 4
                 )
             }
 

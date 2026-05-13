@@ -44,6 +44,9 @@ class EditViewModel @Inject constructor(
     private val _wordCount = mutableStateOf(0)
     val wordCount: State<Int> = _wordCount
 
+    private val _annotation = mutableStateOf("")
+    val annotation: State<String> = _annotation
+
     private val poemUtils = PoemUtils()
     private val utilitySyllables = UtilitySyllables()
 
@@ -80,10 +83,16 @@ class EditViewModel @Inject constructor(
         }
     }
 
+    fun onAnnotationChange(newAnnotation: String) {
+        _annotation.value = newAnnotation
+        _isSaved.value = false
+    }
+
     fun clearPoem() {
         _title.value = ""
         _content.value = ""
         _analysisResult.value = ""
+        _annotation.value = ""
         _isSaved.value = false
         _wordCount.value = 0
         _analysisInput.value = ""
@@ -108,6 +117,7 @@ class EditViewModel @Inject constructor(
                 title = _title.value,
                 content = _content.value,
                 author = userName,
+                annotation = _annotation.value,
                 date = getDate()
             )
             saveDraftUseCase(draft)
