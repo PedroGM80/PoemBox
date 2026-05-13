@@ -19,9 +19,11 @@ data class LineValidation(
     val index: Int,
     val lineText: String,
     val actualSyllables: Int,
-    val expectedSyllables: Int?,  // null = free
-    val rhymeLetter: Char?,       // null = no scheme for this line
-    val syllableOk: Boolean       // true if free or matches expected
+    val expectedSyllables: Int?,   // null = free
+    val rhymeLetter: Char?,        // null = no scheme
+    val syllableOk: Boolean,       // true if free or matches expected
+    val rhymesOk: Boolean? = null, // null = pending (first line with letter), true/false = result
+    val rhymeHint: String? = null  // e.g. "-or" — ending the line should match
 )
 
 object PoeticForms {

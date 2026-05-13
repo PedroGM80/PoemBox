@@ -36,10 +36,15 @@ import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 
 @Composable
 private fun LineValidationRow(v: LineValidation) {
-    val accentColor = when {
+    val syllableColor = when {
         v.expectedSyllables == null -> MaterialTheme.colorScheme.primary
         v.syllableOk -> MaterialTheme.colorScheme.tertiary
         else -> MaterialTheme.colorScheme.error
+    }
+    val rhymeBadgeColor: Color = when (v.rhymesOk) {
+        true -> MaterialTheme.colorScheme.tertiary
+        false -> MaterialTheme.colorScheme.error
+        null -> MaterialTheme.colorScheme.outline
     }
     val syllableLabel = when {
         v.expectedSyllables == null -> stringResource(R.string.form_syllable_free, v.actualSyllables)
@@ -50,20 +55,19 @@ private fun LineValidationRow(v: LineValidation) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 3.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Rhyme letter badge
         if (v.rhymeLetter != null) {
             Surface(
                 shape = RoundedCornerShape(4.dp),
-                color = accentColor.copy(alpha = 0.15f),
+                color = rhymeBadgeColor.copy(alpha = 0.15f),
                 modifier = Modifier.padding(end = 6.dp)
             ) {
                 Text(
                     text = v.rhymeLetter.uppercase(),
                     style = MaterialTheme.typography.labelSmall,
-                    color = accentColor,
+                    color = rhymeBadgeColor,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
                 )
@@ -72,15 +76,24 @@ private fun LineValidationRow(v: LineValidation) {
             Spacer(Modifier.width(24.dp))
         }
         Text(
-            text = "${v.index + 1}. ${v.lineText.take(28)}${if (v.lineText.length > 28) "…" else ""}",
+            text = "${v.index + 1}. ${v.lineText.take(26)}${if (v.lineText.length > 26) "…" else ""}",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f)
         )
+        // Rhyme hint if needed
+        if (v.rhymeHint != null && v.rhymesOk == false) {
+            Text(
+                text = v.rhymeHint,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
+                modifier = Modifier.padding(end = 6.dp)
+            )
+        }
         Text(
             text = syllableLabel,
             style = MaterialTheme.typography.labelSmall,
-            color = accentColor,
+            color = syllableColor,
             fontWeight = FontWeight.Bold
         )
     }

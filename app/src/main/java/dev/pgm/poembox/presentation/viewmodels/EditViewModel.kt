@@ -150,9 +150,11 @@ class EditViewModel @Inject constructor(
     }
 
     private fun computeLineValidations(text: String, form: PoeticFormDef): List<LineValidation> {
-        return text.split("\n").filter { it.isNotBlank() }.mapIndexed { index, line ->
+        val lines = text.split("\n").filter { it.isNotBlank() }
+
+        val basic = lines.mapIndexed { index, line ->
             val syllables = utilitySyllables.getSyllables(line)
-            val lastWord = line.trim().split(" ").last()
+            val lastWord = line.trim().split(" ").lastOrNull() ?: ""
             val isAcute = poemUtils.isAcute(lastWord)
             val isProparoxytone = poemUtils.isProparoxytone(lastWord)
             val countSinhalese = poemUtils.hasSinhalese(line)
@@ -165,6 +167,39 @@ class EditViewModel @Inject constructor(
                 expectedSyllables = expected,
                 rhymeLetter = form.getRhymeLetterForLine(index),
                 syllableOk = expected == null || actual == expected
+            )
+        }
+
+        if (form.rhymeScheme.isEmpty()) return basic
+
+        // Build map: rhymeLetter → list of (lineText, ending) for lines already written
+        val letterToEndings: Map<Char, List<Pair<Int, String>>> = basic
+            .filter { it.rhymeLetter != null && it.lineText.isNotBlank() }
+            .groupBy { it.rhymeLetter!! }
+            .mapValues { (_, group) ->
+                group.map { v ->
+                    val lastWord = v.lineText.trim().split(" ").lastOrNull() ?: ""
+                    v.index to utilitySyllables.getLastSyllable(lastWord)
+                }
+            }
+
+        return basic.map { v ->
+            val letter = v.rhymeLetter ?: return@map v
+            val endings = letterToEndings[letter] ?: return@map v
+            val others = endings.filter { it.first != v.index }
+            if (others.isEmpty()) return@map v  // first line with this letter, pending
+
+            val referenceEnding = others.first().second
+            val myLastWord = v.lineText.trim().split(" ").lastOrNull() ?: ""
+            val myEnding = utilitySyllables.getLastSyllable(myLastWord)
+            val myVowel = utilitySyllables.getLastVowel(myLastWord)
+            val refVowel = utilitySyllables.getLastVowel(
+                others.first().let { lines.getOrNull(it.first)?.trim()?.split(" ")?.lastOrNull() ?: "" }
+            )
+
+            v.copy(
+                rhymesOk = myEnding == referenceEnding || (myVowel.isNotEmpty() && myVowel == refVowel),
+                rhymeHint = if (referenceEnding.isNotEmpty()) "-$referenceEnding" else null
             )
         }
     }
