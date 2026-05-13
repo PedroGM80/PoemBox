@@ -6,14 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pgm.poembox.domain.PoemUtils
+import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Sheet
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.domain.usecase.SaveSheetUseCase
-import dev.pgm.poembox.presentation.MainActivity
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -33,7 +32,8 @@ data class MonitoringState(
 @HiltViewModel
 class MonitoringViewModel @Inject constructor(
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
-    private val saveSheetUseCase: SaveSheetUseCase
+    private val saveSheetUseCase: SaveSheetUseCase,
+    private val sessionManager: UserSessionManager
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MonitoringState())
@@ -42,21 +42,36 @@ class MonitoringViewModel @Inject constructor(
     private val poemUtils = PoemUtils()
     private val utilitySyllables = UtilitySyllables()
 
-    fun loadPoem() {
+    init {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
-            val titleToLoad = MainActivity.POEM_TITLE
-            if (titleToLoad.isNotBlank()) {
-                val draft = getDraftByTitleUseCase(titleToLoad)
-                if (draft != null) {
-                    _state.value = _state.value.copy(
-                        title = draft.title,
-                        body = draft.content,
-                        isLoading = false
-                    )
-                    analyzePoem(draft.content)
+            sessionManager.currentPoemTitle.collect { title ->
+                if (title.isNotBlank()) {
+                    loadPoemByTitle(title)
                 }
             }
+        }
+    }
+
+    fun loadPoem() {
+        viewModelScope.launch {
+            val title = sessionManager.currentPoemTitle.first()
+            if (title.isNotBlank()) {
+                loadPoemByTitle(title)
+            }
+        }
+    }
+
+    private suspend fun loadPoemByTitle(title: String) {
+        _state.value = _state.value.copy(isLoading = true, isValidated = false)
+        val draft = getDraftByTitleUseCase(title)
+        if (draft != null) {
+            _state.value = _state.value.copy(
+                title = draft.title,
+                body = draft.content,
+                isLoading = false
+            )
+            analyzePoem(draft.content)
+        } else {
             _state.value = _state.value.copy(isLoading = false)
         }
     }
@@ -73,21 +88,20 @@ class MonitoringViewModel @Inject constructor(
     }
 
     private fun getDate(): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return formatter.format(Date())
     }
 
     private fun analyzePoem(content: String) {
         if (content.isBlank()) return
 
-        val schema = "Analysis complete" 
         val predominate = getPredominateNumberSyllables(content)
-        val syllablesAnalysis = "$predominate syllable verses predominate."
+        val syllablesAnalysis = "Predominan los versos de $predominate sílabas."
 
         val numberStanza = poemUtils.getNumberStanza(content)
         val numberVerse = poemUtils.getNumberOfVerse(content)
         val versesPerStanza = if (numberStanza > 0) numberVerse / numberStanza else 0
-        val versesAnalysis = "The poem is made up of $numberStanza stanzas, $numberVerse verses ($versesPerStanza per stanza)."
+        val versesAnalysis = "El poema tiene $numberStanza estrofas y $numberVerse versos ($versesPerStanza por estrofa)."
 
         val rhymeAnalysis = getRhymeType(content)
         val enjambment = poemUtils.getEnjambment(content)
@@ -104,7 +118,7 @@ class MonitoringViewModel @Inject constructor(
         val lines = content.split("\n").filter { it.isNotBlank() }
         val consonantRime = mutableMapOf<String, String>()
         val assonantRime = mutableMapOf<String, String>()
-        
+
         lines.forEachIndexed { index, line ->
             val lastWord = line.trim().split(" ").lastOrNull() ?: ""
             if (lastWord.isNotBlank()) {
@@ -112,14 +126,14 @@ class MonitoringViewModel @Inject constructor(
                 assonantRime[index.toString()] = utilitySyllables.getLastVowel(lastWord)
             }
         }
-        
+
         val uniqueAssonant = assonantRime.values.distinct().size
         val uniqueConsonant = consonantRime.values.distinct().size
-        
+
         return when {
-            uniqueAssonant < uniqueConsonant -> "Rhyme is Assonance"
-            uniqueAssonant > uniqueConsonant -> "Rhyme is Consonance"
-            else -> "Rhyme is Undefined/Mixed"
+            uniqueAssonant < uniqueConsonant -> "Rima asonante"
+            uniqueAssonant > uniqueConsonant -> "Rima consonante"
+            else -> "Rima indefinida / mixta"
         }
     }
 
