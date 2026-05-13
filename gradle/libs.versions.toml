@@ -14,6 +14,7 @@ composeBom = "2026.05.00"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.8"
 room = "2.8.4"
+splashscreen = "1.0.1"
 hilt = "2.59.2"
 ksp = "2.3.7"
 navigationComposeJvmstubs = "2.9.8"
@@ -47,6 +48,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
