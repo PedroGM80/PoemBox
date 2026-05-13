@@ -38,8 +38,9 @@ import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 
 @Composable
 private fun LineValidationRow(v: LineValidation) {
+    val expected = v.expectedSyllables
     val syllableColor = when {
-        v.expectedSyllables == null -> MaterialTheme.colorScheme.primary
+        expected == null -> MaterialTheme.colorScheme.primary
         v.syllableOk -> MaterialTheme.colorScheme.tertiary
         else -> MaterialTheme.colorScheme.error
     }
@@ -49,9 +50,9 @@ private fun LineValidationRow(v: LineValidation) {
         null -> MaterialTheme.colorScheme.outline
     }
     val syllableLabel = when {
-        v.expectedSyllables == null -> stringResource(R.string.form_syllable_free, v.actualSyllables)
+        expected == null -> stringResource(R.string.form_syllable_free, v.actualSyllables)
         v.syllableOk -> stringResource(R.string.form_syllable_ok, v.actualSyllables)
-        else -> stringResource(R.string.form_syllable_error, v.actualSyllables, v.expectedSyllables)
+        else -> stringResource(R.string.form_syllable_error, v.actualSyllables, expected)
     }
     Row(
         modifier = Modifier
@@ -60,14 +61,15 @@ private fun LineValidationRow(v: LineValidation) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Rhyme letter badge
-        if (v.rhymeLetter != null) {
+        val rhymeLetter = v.rhymeLetter
+        if (rhymeLetter != null) {
             Surface(
                 shape = RoundedCornerShape(4.dp),
                 color = rhymeBadgeColor.copy(alpha = 0.15f),
                 modifier = Modifier.padding(end = 6.dp)
             ) {
                 Text(
-                    text = v.rhymeLetter.uppercase(),
+                    text = rhymeLetter.uppercase(),
                     style = MaterialTheme.typography.labelSmall,
                     color = rhymeBadgeColor,
                     fontWeight = FontWeight.Bold,
@@ -84,9 +86,10 @@ private fun LineValidationRow(v: LineValidation) {
             modifier = Modifier.weight(1f)
         )
         // Rhyme hint if needed
-        if (v.rhymeHint != null && v.rhymesOk == false) {
+        val rhymeHint = v.rhymeHint
+        if (rhymeHint != null && v.rhymesOk == false) {
             Text(
-                text = v.rhymeHint,
+                text = rhymeHint,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
                 modifier = Modifier.padding(end = 6.dp)
@@ -165,6 +168,8 @@ fun EditScreen(
             }
         )
     }
+
+    val unknownAuthor = stringResource(R.string.editor_unknown_author)
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -529,7 +534,7 @@ fun EditScreen(
 
             Button(
                 onClick = {
-                    viewModel.saveDraft(userName ?: stringResource(R.string.editor_unknown_author)) {
+                    viewModel.saveDraft(userName ?: unknownAuthor) {
                         Toast.makeText(context, context.getString(R.string.editor_saved_toast), Toast.LENGTH_SHORT).show()
                     }
                 },

@@ -7,7 +7,7 @@ import com.google.ai.client.generativeai.GenerativeModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
-import dev.pgm.poembox.domain.UserSessionManager
+import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.domain.model.PoeticFormDef
 import dev.pgm.poembox.domain.model.PoeticForms
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +27,7 @@ data class GeminiUiState(
 @HiltViewModel
 class GeminiViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val sessionManager: UserSessionManager
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(GeminiUiState())

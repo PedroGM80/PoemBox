@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.pgm.poembox.domain.UserSessionManager
+import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.domain.usecase.DeletePoemUseCase
 import dev.pgm.poembox.domain.usecase.GetAllSheetsUseCase
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
@@ -22,7 +22,7 @@ class ManagerViewModel @Inject constructor(
     private val getAllSheetsUseCase: GetAllSheetsUseCase,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
     private val deletePoemUseCase: DeletePoemUseCase,
-    private val sessionManager: UserSessionManager
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _allPoems = mutableStateOf<List<PoemDetails>>(emptyList())

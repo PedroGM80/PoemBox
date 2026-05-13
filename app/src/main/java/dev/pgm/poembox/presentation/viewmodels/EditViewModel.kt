@@ -11,9 +11,9 @@ import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
-import dev.pgm.poembox.domain.DailyReminderWorker
 import dev.pgm.poembox.domain.PoemUtils
-import dev.pgm.poembox.domain.UserSessionManager
+import dev.pgm.poembox.domain.SessionManager
+import dev.pgm.poembox.worker.DailyReminderWorker
 import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Draft
 import dev.pgm.poembox.domain.model.LineValidation
@@ -42,7 +42,7 @@ class EditViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val saveDraftUseCase: SaveDraftUseCase,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
-    private val sessionManager: UserSessionManager
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _title = mutableStateOf("")

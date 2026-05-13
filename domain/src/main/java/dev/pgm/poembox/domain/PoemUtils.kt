@@ -87,7 +87,7 @@ class PoemUtils {
                     vowels.add(index)
                 }
             }
-            vowels.removeLast()
+            vowels.removeAt(vowels.size - 1)
             check = vowels.last()
         }
         return check
@@ -148,8 +148,8 @@ class PoemUtils {
             firstsLetters.add(word.toCharArray().first())
             lastLetters.add(word.toCharArray().last())
         }
-        firstsLetters.removeFirst()
-        lastLetters.removeLast()
+        firstsLetters.removeAt(0)
+        lastLetters.removeAt(lastLetters.size - 1)
         val utilitySyllables = UtilitySyllables()
         for (index in firstsLetters.indices) {
             if (utilitySyllables.isVowel(firstsLetters[index]) && utilitySyllables.isVowel(

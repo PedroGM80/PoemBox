@@ -7,5 +7,7 @@ import javax.inject.Inject
 class GetAllDraftsUseCase @Inject constructor(
     private val repository: PoemRepository
 ) {
-    suspend operator fun invoke(): List<Draft> = repository.getAllDrafts()
+    suspend operator fun invoke(): List<Draft> {
+        return repository.getAllDrafts()
+    }
 }

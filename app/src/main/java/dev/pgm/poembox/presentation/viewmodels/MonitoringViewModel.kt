@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.PoemUtils
-import dev.pgm.poembox.domain.UserSessionManager
+import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Sheet
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
@@ -39,7 +39,7 @@ class MonitoringViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
     private val saveSheetUseCase: SaveSheetUseCase,
-    private val sessionManager: UserSessionManager
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MonitoringState())

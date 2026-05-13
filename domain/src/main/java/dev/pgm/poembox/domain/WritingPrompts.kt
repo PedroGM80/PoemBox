@@ -5,7 +5,7 @@ import java.util.Calendar
 object WritingPrompts {
 
     private val prompts = listOf(
-        "El último tren de medianoche",
+        "El último tren de midnight",
         "Lluvia sobre el tejado de mi infancia",
         "Una carta que nunca envié",
         "El silencio entre dos palabras",

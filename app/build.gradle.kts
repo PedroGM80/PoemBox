@@ -94,4 +94,7 @@ dependencies {
     // Gemini AI
     implementation(libs.generativeai)
 
+    // Modules
+    implementation(project(":domain"))
+    implementation(project(":data"))
 }

@@ -1,4 +1,4 @@
-package dev.pgm.poembox.domain
+package dev.pgm.poembox.worker
 
 import android.app.PendingIntent
 import android.content.Context

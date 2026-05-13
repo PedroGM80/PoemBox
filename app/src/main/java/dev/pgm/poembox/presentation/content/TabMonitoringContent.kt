@@ -34,8 +34,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
-import dev.pgm.poembox.domain.PdfExporter
-import dev.pgm.poembox.domain.PoemCardRenderer
+import dev.pgm.poembox.presentation.util.PdfExporter
+import dev.pgm.poembox.presentation.util.PoemCardRenderer
 import dev.pgm.poembox.presentation.theme.PoeticFont
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
 

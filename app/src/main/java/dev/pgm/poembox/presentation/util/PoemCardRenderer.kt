@@ -1,4 +1,4 @@
-package dev.pgm.poembox.domain
+package dev.pgm.poembox.presentation.util
 
 import android.content.Context
 import android.graphics.Bitmap
