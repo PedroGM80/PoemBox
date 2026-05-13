@@ -11,8 +11,10 @@ import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Sheet
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.domain.usecase.SaveSheetUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -45,9 +47,7 @@ class MonitoringViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             sessionManager.currentPoemTitle.collect { title ->
-                if (title.isNotBlank()) {
-                    loadPoemByTitle(title)
-                }
+                if (title.isNotBlank()) loadPoemByTitle(title)
             }
         }
     }
@@ -55,9 +55,7 @@ class MonitoringViewModel @Inject constructor(
     fun loadPoem() {
         viewModelScope.launch {
             val title = sessionManager.currentPoemTitle.first()
-            if (title.isNotBlank()) {
-                loadPoemByTitle(title)
-            }
+            if (title.isNotBlank()) loadPoemByTitle(title)
         }
     }
 
@@ -65,12 +63,19 @@ class MonitoringViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true, isValidated = false)
         val draft = getDraftByTitleUseCase(title)
         if (draft != null) {
+            // Análisis pesado en hilo CPU, no en Main
+            val analysis = withContext(Dispatchers.Default) {
+                computeAnalysis(draft.content)
+            }
             _state.value = _state.value.copy(
                 title = draft.title,
                 body = draft.content,
+                syllablesAnalysis = analysis.syllables,
+                versesAnalysis = analysis.verses,
+                rhymeAnalysis = analysis.rhyme,
+                enjambmentAnalysis = analysis.enjambment,
                 isLoading = false
             )
-            analyzePoem(draft.content)
         } else {
             _state.value = _state.value.copy(isLoading = false)
         }
@@ -92,26 +97,28 @@ class MonitoringViewModel @Inject constructor(
         return formatter.format(Date())
     }
 
-    private fun analyzePoem(content: String) {
-        if (content.isBlank()) return
+    private data class AnalysisResult(
+        val syllables: String,
+        val verses: String,
+        val rhyme: String,
+        val enjambment: String
+    )
+
+    private fun computeAnalysis(content: String): AnalysisResult {
+        if (content.isBlank()) return AnalysisResult("", "", "", "")
 
         val predominate = getPredominateNumberSyllables(content)
-        val syllablesAnalysis = "Predominan los versos de $predominate sílabas."
+        val syllablesText = "Predominan los versos de $predominate sílabas."
 
         val numberStanza = poemUtils.getNumberStanza(content)
         val numberVerse = poemUtils.getNumberOfVerse(content)
         val versesPerStanza = if (numberStanza > 0) numberVerse / numberStanza else 0
-        val versesAnalysis = "El poema tiene $numberStanza estrofas y $numberVerse versos ($versesPerStanza por estrofa)."
+        val versesText = "El poema tiene $numberStanza estrofas y $numberVerse versos ($versesPerStanza por estrofa)."
 
-        val rhymeAnalysis = getRhymeType(content)
-        val enjambment = poemUtils.getEnjambment(content)
+        val rhymeText = getRhymeType(content)
+        val enjambmentText = poemUtils.getEnjambment(content)
 
-        _state.value = _state.value.copy(
-            syllablesAnalysis = syllablesAnalysis,
-            versesAnalysis = versesAnalysis,
-            rhymeAnalysis = rhymeAnalysis,
-            enjambmentAnalysis = enjambment
-        )
+        return AnalysisResult(syllablesText, versesText, rhymeText, enjambmentText)
     }
 
     private fun getRhymeType(content: String): String {
@@ -142,8 +149,9 @@ class MonitoringViewModel @Inject constructor(
         val counts = lines.map { line ->
             val clean = line.replace(Regex("[.,;:]"), "")
             val syllables = utilitySyllables.getSyllables(clean)
-            val isAcute = poemUtils.isAcute(clean.split(" ").last())
-            val isProparoxytone = poemUtils.isProparoxytone(clean.split(" ").last())
+            val lastWord = clean.trim().split(" ").last()
+            val isAcute = poemUtils.isAcute(lastWord)
+            val isProparoxytone = poemUtils.isProparoxytone(lastWord)
             val countSinhalese = poemUtils.hasSinhalese(clean)
             syllables.size + isAcute + isProparoxytone + countSinhalese
         }
