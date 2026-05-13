@@ -38,7 +38,9 @@ fun EditScreen(
     val isSaved by viewModel.isSaved
     val wordCount by viewModel.wordCount
     val annotation by viewModel.annotation
+    val lineSyllables by viewModel.lineSyllables
     var showNotes by remember { mutableStateOf(false) }
+    var showSyllables by remember { mutableStateOf(false) }
     val userName by authViewModel.userName.collectAsState()
     val context = LocalContext.current
 
@@ -142,6 +144,55 @@ fun EditScreen(
                         .align(Alignment.End)
                         .padding(end = 4.dp, top = 2.dp)
                 )
+            }
+
+            if (lineSyllables.isNotEmpty()) {
+                TextButton(
+                    onClick = { showSyllables = !showSyllables },
+                    modifier = Modifier.align(Alignment.Start)
+                ) {
+                    Icon(
+                        imageVector = if (showSyllables) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text("Sílabas por verso", style = MaterialTheme.typography.labelMedium)
+                }
+                AnimatedVisibility(visible = showSyllables) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                            lineSyllables.forEachIndexed { index, (line, count) ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 2.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "${index + 1}. ${line.take(30)}${if (line.length > 30) "…" else ""}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Text(
+                                        text = "$count sil.",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             TextButton(

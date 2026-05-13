@@ -47,6 +47,9 @@ class EditViewModel @Inject constructor(
     private val _annotation = mutableStateOf("")
     val annotation: State<String> = _annotation
 
+    private val _lineSyllables = mutableStateOf<List<Pair<String, Int>>>(emptyList())
+    val lineSyllables: State<List<Pair<String, Int>>> = _lineSyllables
+
     private val poemUtils = PoemUtils()
     private val utilitySyllables = UtilitySyllables()
 
@@ -59,8 +62,11 @@ class EditViewModel @Inject constructor(
                 .debounce(250L)
                 .filter { it.isNotBlank() }
                 .collect { text ->
-                    val result = withContext(Dispatchers.Default) { computeAnalysis(text) }
+                    val (result, lines) = withContext(Dispatchers.Default) {
+                        computeAnalysis(text) to computeLineSyllables(text)
+                    }
                     _analysisResult.value = result
+                    _lineSyllables.value = lines
                 }
         }
     }
@@ -93,6 +99,7 @@ class EditViewModel @Inject constructor(
         _content.value = ""
         _analysisResult.value = ""
         _annotation.value = ""
+        _lineSyllables.value = emptyList()
         _isSaved.value = false
         _wordCount.value = 0
         _analysisInput.value = ""
@@ -108,6 +115,17 @@ class EditViewModel @Inject constructor(
         val countSinhalese = poemUtils.hasSinhalese(lastLine)
         val total = syllables.size + isAcute + isProparoxytone + countSinhalese
         return "Último verso: $total sílabas"
+    }
+
+    private fun computeLineSyllables(text: String): List<Pair<String, Int>> {
+        return text.split("\n").filter { it.isNotBlank() }.map { line ->
+            val syllables = utilitySyllables.getSyllables(line)
+            val lastWord = line.trim().split(" ").last()
+            val isAcute = poemUtils.isAcute(lastWord)
+            val isProparoxytone = poemUtils.isProparoxytone(lastWord)
+            val countSinhalese = poemUtils.hasSinhalese(line)
+            line to (syllables.size + isAcute + isProparoxytone + countSinhalese)
+        }
     }
 
     fun saveDraft(userName: String, onSuccess: () -> Unit) {
