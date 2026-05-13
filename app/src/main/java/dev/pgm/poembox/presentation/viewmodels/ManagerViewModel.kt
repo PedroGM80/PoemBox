@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.usecase.DeletePoemUseCase
 import dev.pgm.poembox.domain.usecase.GetAllSheetsUseCase
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
@@ -20,7 +21,8 @@ enum class SortOrder { DATE_DESC, DATE_ASC, TITLE_ASC }
 class ManagerViewModel @Inject constructor(
     private val getAllSheetsUseCase: GetAllSheetsUseCase,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
-    private val deletePoemUseCase: DeletePoemUseCase
+    private val deletePoemUseCase: DeletePoemUseCase,
+    private val sessionManager: UserSessionManager
 ) : ViewModel() {
 
     private val _allPoems = mutableStateOf<List<PoemDetails>>(emptyList())
@@ -89,5 +91,9 @@ class ManagerViewModel @Inject constructor(
             deletePoemUseCase(poem.title, poem.date)
             loadPoems()
         }
+    }
+
+    fun requestEditPoem(title: String) {
+        sessionManager.requestEditPoem(title)
     }
 }

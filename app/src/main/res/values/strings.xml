@@ -46,6 +46,7 @@
     <string name="manager_empty_title">Aún no tienes poemas validados.</string>
     <string name="manager_empty_subtitle">Escribe y valida uno en la pestaña Analizar.</string>
     <string name="manager_refresh_description">Actualizar</string>
+    <string name="manager_edit_description">Editar poema</string>
     <string name="manager_view_poem_description">Ver poema</string>
     <string name="manager_view_notes_description">Ver notas</string>
     <string name="manager_delete_description">Eliminar</string>

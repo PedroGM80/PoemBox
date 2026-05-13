@@ -9,6 +9,7 @@ import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.UserSessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Draft
+import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.domain.usecase.SaveDraftUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditViewModel @Inject constructor(
     private val saveDraftUseCase: SaveDraftUseCase,
+    private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
     private val sessionManager: UserSessionManager
 ) : ViewModel() {
 
@@ -68,6 +70,21 @@ class EditViewModel @Inject constructor(
                     _analysisResult.value = result
                     _lineSyllables.value = lines
                 }
+        }
+        viewModelScope.launch {
+            sessionManager.pendingEditTitle.filter { it.isNotBlank() }.collect { title ->
+                val draft = getDraftByTitleUseCase(title)
+                draft?.let {
+                    _title.value = it.title
+                    _content.value = it.content
+                    _annotation.value = it.annotation
+                    _isSaved.value = true
+                    _wordCount.value = if (it.content.isBlank()) 0
+                                       else it.content.trim().split(Regex("\\s+")).size
+                    _analysisInput.value = it.content
+                }
+                sessionManager.consumeEditRequest()
+            }
         }
     }
 

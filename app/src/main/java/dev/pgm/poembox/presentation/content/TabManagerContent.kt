@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -39,7 +40,8 @@ fun PoemCard(
     poem: PoemDetails,
     onDelete: () -> Unit,
     onViewPoem: () -> Unit,
-    onViewNotes: () -> Unit
+    onViewNotes: () -> Unit,
+    onEdit: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -69,6 +71,13 @@ fun PoemCard(
                 )
             }
             Row {
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.manager_edit_description),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
                 IconButton(onClick = onViewPoem) {
                     Icon(Icons.Default.Description, contentDescription = stringResource(R.string.manager_view_poem_description))
                 }
@@ -187,6 +196,7 @@ fun ManagerScreen(
                             items(poems) { poem ->
                                 PoemCard(
                                     poem = poem,
+                                    onEdit = { viewModel.requestEditPoem(poem.title) },
                                     onDelete = {
                                         poemToDelete = poem
                                         showDeleteDialog = true

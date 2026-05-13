@@ -13,20 +13,35 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.components.Tabs
 import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
+import dev.pgm.poembox.presentation.viewmodels.ScreenTabsViewModel
 
 @Composable
-fun ScreenTabs(navController: NavController) {
+fun ScreenTabs(
+    navController: NavController,
+    viewModel: ScreenTabsViewModel = hiltViewModel()
+) {
     val tabs: List<TabItem> = listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager)
     val pagerState = rememberPagerState { tabs.size }
+    val pendingEditTitle by viewModel.pendingEditTitle.collectAsState()
+
+    LaunchedEffect(pendingEditTitle) {
+        if (pendingEditTitle.isNotBlank()) {
+            pagerState.animateScrollToPage(0)
+        }
+    }
 
     Scaffold(
         topBar = {
