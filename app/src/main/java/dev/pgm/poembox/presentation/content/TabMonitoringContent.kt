@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Straighten
@@ -32,6 +33,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.PdfExporter
 import dev.pgm.poembox.presentation.theme.PoeticFont
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
 
@@ -124,6 +126,19 @@ fun MonitoringScreen(
             body = state.body,
             onDismiss = { showImmersive = false }
         )
+    }
+
+    val exportPdfLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/pdf")
+    ) { uri ->
+        uri?.let {
+            PdfExporter.exportToPdf(
+                context, it,
+                state.title, state.body,
+                state.syllablesAnalysis, state.versesAnalysis,
+                state.rhymeAnalysis, state.enjambmentAnalysis
+            )
+        }
     }
 
     val exportLauncher = rememberLauncherForActivityResult(
@@ -237,6 +252,16 @@ fun MonitoringScreen(
                         Icon(
                             Icons.Default.Download,
                             contentDescription = stringResource(R.string.monitor_export_description),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    IconButton(onClick = {
+                        val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
+                        exportPdfLauncher.launch("$safeName.pdf")
+                    }) {
+                        Icon(
+                            Icons.Default.PictureAsPdf,
+                            contentDescription = stringResource(R.string.monitor_export_pdf_description),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
