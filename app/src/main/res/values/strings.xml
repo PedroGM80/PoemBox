@@ -127,17 +127,6 @@
     <!-- Share as image -->
     <string name="monitor_share_image_description">Compartir como imagen</string>
 
-    <!-- Gemini AI -->
-    <string name="gemini_continue_verse">✨ Sugerir siguiente verso</string>
-    <string name="gemini_generating">Generando…</string>
-    <string name="gemini_error">Error: %1$s</string>
-    <string name="gemini_api_key_label">Clave API de Gemini</string>
-    <string name="gemini_api_key_hint">Introduce tu clave API de Google AI Studio</string>
-    <string name="gemini_api_key_save">Guardar clave</string>
-    <string name="gemini_api_key_dialog_title">Configurar IA</string>
-    <string name="gemini_suggestion_label">Sugerencia IA:</string>
-    <string name="gemini_use_suggestion">Usar sugerencia</string>
-
     <!-- Poem analysis (returned by domain layer) -->
     <string name="analysis_syllable_predominant">Predominan los versos de %1$s sílabas.</string>
     <string name="analysis_structure">El poema tiene %1$d estrofas y %2$d versos (%3$d por estrofa).</string>

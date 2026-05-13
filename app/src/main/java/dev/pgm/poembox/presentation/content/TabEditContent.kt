@@ -35,7 +35,6 @@ import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.EditViewModel
-import dev.pgm.poembox.presentation.viewmodels.GeminiViewModel
 
 @Composable
 private fun LineValidationRow(v: LineValidation) {
@@ -108,8 +107,7 @@ private fun LineValidationRow(v: LineValidation) {
 @Composable
 fun EditScreen(
     viewModel: EditViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel(),
-    geminiViewModel: GeminiViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val title by viewModel.title
     val content by viewModel.content
@@ -125,50 +123,7 @@ fun EditScreen(
     val todayPrompt = remember { WritingPrompts.todayPrompt() }
     val userName by authViewModel.userName.collectAsState()
     val dailyReminderEnabled by viewModel.dailyReminderEnabled.collectAsState()
-    val geminiState by geminiViewModel.state.collectAsState()
-    val geminiApiKey by geminiViewModel.apiKey.collectAsState()
-    var showApiKeyDialog by remember { mutableStateOf(false) }
-    var apiKeyInput by remember { mutableStateOf("") }
     val context = LocalContext.current
-
-    if (showApiKeyDialog) {
-        AlertDialog(
-            onDismissRequest = { showApiKeyDialog = false },
-            title = { Text(stringResource(R.string.gemini_api_key_dialog_title)) },
-            text = {
-                Column {
-                    Text(
-                        stringResource(R.string.gemini_api_key_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    TextField(
-                        value = apiKeyInput,
-                        onValueChange = { apiKeyInput = it },
-                        label = { Text(stringResource(R.string.gemini_api_key_label)) },
-                        singleLine = true,
-                        shape = Shapes.medium,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    )
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    geminiViewModel.saveApiKey(apiKeyInput)
-                    showApiKeyDialog = false
-                }) { Text(stringResource(R.string.gemini_api_key_save)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { showApiKeyDialog = false }) {
-                    Text(stringResource(android.R.string.cancel))
-                }
-            }
-        )
-    }
 
     val unknownAuthor = stringResource(R.string.editor_unknown_author)
 
@@ -431,88 +386,6 @@ fun EditScreen(
                     ),
                     maxLines = 4
                 )
-            }
-
-            // Gemini AI verse suggestion
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                OutlinedButton(
-                    onClick = {
-                        if (geminiApiKey.isBlank()) {
-                            showApiKeyDialog = true
-                        } else {
-                            geminiViewModel.suggestNextVerse(content, selectedForm, geminiApiKey)
-                        }
-                    },
-                    enabled = content.isNotBlank() && !geminiState.isLoading
-                ) {
-                    if (geminiState.isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.gemini_generating), style = MaterialTheme.typography.labelMedium)
-                    } else {
-                        Text(stringResource(R.string.gemini_continue_verse), style = MaterialTheme.typography.labelMedium)
-                    }
-                }
-                if (geminiApiKey.isNotBlank()) {
-                    TextButton(onClick = { showApiKeyDialog = true }) {
-                        Text("⚙", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.outline)
-                    }
-                }
-            }
-
-            AnimatedVisibility(visible = geminiState.suggestion.isNotBlank() || geminiState.error.isNotBlank()) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (geminiState.error.isNotBlank())
-                            MaterialTheme.colorScheme.errorContainer
-                        else
-                            MaterialTheme.colorScheme.tertiaryContainer
-                    )
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        if (geminiState.error.isNotBlank()) {
-                            Text(
-                                geminiState.error,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                        } else {
-                            Text(
-                                stringResource(R.string.gemini_suggestion_label),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
-                            )
-                            Text(
-                                "\"${geminiState.suggestion}\"",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            )
-                            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                                TextButton(onClick = { geminiViewModel.clearSuggestion() }) {
-                                    Text(stringResource(android.R.string.cancel), style = MaterialTheme.typography.labelSmall)
-                                }
-                                TextButton(onClick = {
-                                    val newContent = if (content.endsWith("\n")) content + geminiState.suggestion
-                                                     else "$content\n${geminiState.suggestion}"
-                                    viewModel.onContentChange(newContent)
-                                    geminiViewModel.clearSuggestion()
-                                }) {
-                                    Text(stringResource(R.string.gemini_use_suggestion), style = MaterialTheme.typography.labelSmall)
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             Row(

@@ -26,7 +26,6 @@ class UserSessionManager @Inject constructor(
         val USER_EMAIL = stringPreferencesKey("user_email")
         val CURRENT_POEM_TITLE = stringPreferencesKey("current_poem_title")
         val DAILY_REMINDER_ENABLED = booleanPreferencesKey("daily_reminder_enabled")
-        val GEMINI_API_KEY = stringPreferencesKey("gemini_api_key")
     }
 
     override val userName: Flow<String?> = context.dataStore.data.map { prefs ->
@@ -41,16 +40,8 @@ class UserSessionManager @Inject constructor(
         prefs[DAILY_REMINDER_ENABLED] ?: false
     }
 
-    override val geminiApiKey: Flow<String> = context.dataStore.data.map { prefs ->
-        prefs[GEMINI_API_KEY] ?: ""
-    }
-
     override suspend fun setDailyReminderEnabled(enabled: Boolean) {
         context.dataStore.edit { prefs -> prefs[DAILY_REMINDER_ENABLED] = enabled }
-    }
-
-    override suspend fun setGeminiApiKey(key: String) {
-        context.dataStore.edit { prefs -> prefs[GEMINI_API_KEY] = key }
     }
 
     override suspend fun saveUser(name: String, email: String) {

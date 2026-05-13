@@ -92,9 +92,6 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.hilt.work)
 
-    // Gemini AI
-    implementation(libs.generativeai)
-
     // Modules
     implementation(project(":domain"))
     implementation(project(":data"))

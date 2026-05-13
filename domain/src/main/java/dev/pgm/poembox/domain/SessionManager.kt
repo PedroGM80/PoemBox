@@ -7,11 +7,9 @@ interface SessionManager {
     val userName: Flow<String?>
     val currentPoemTitle: Flow<String>
     val dailyReminderEnabled: Flow<Boolean>
-    val geminiApiKey: Flow<String>
     val pendingEditTitle: StateFlow<String>
 
     suspend fun setDailyReminderEnabled(enabled: Boolean)
-    suspend fun setGeminiApiKey(key: String)
     suspend fun saveUser(name: String, email: String)
     suspend fun setCurrentPoemTitle(title: String)
     suspend fun clearSession()
