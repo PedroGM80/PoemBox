@@ -1,6 +1,8 @@
 package dev.pgm.poembox.presentation.components
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -21,42 +23,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.R
 
-/** Logo */
 @Composable
 fun Logo() {
-    val animateAlpha = remember { Animatable(0.1f) }
-    LaunchedEffect(animateAlpha) {
+    // Fade-in suave único: targetValue 1f (no 2f), sin repetición
+    // Antes: targetValue=2f + RepeatMode.Restart creaba un parpadeo de 3 ciclos bruscos
+    val animateAlpha = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
         animateAlpha.animateTo(
-            targetValue = 2f,
-            animationSpec = repeatable(
-                animation = tween(
-                    durationMillis = 2000,
-                    easing = LinearEasing,
-                    delayMillis = 100
-                ),
-                repeatMode = RepeatMode.Restart,
-                iterations = 3
-            )
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 1200, easing = FastOutSlowInEasing)
         )
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center,
 
-        ) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
+                .alpha(animateAlpha.value)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.splash),
                 contentDescription = stringResource(R.string.logo_content_description),
-                modifier = Modifier
-                    .alpha(animateAlpha.value)
-                    .size(300.dp)
+                modifier = Modifier.size(300.dp)
             )
             Text(
                 text = stringResource(R.string.brand_name),
@@ -66,7 +59,6 @@ fun Logo() {
                 fontFamily = FontFamily.Serif,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .alpha(animateAlpha.value)
                     .fillMaxWidth()
                     .padding(5.dp)
             )

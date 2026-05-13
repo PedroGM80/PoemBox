@@ -60,6 +60,15 @@ fun EditScreen(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     ),
+                    supportingText = {
+                        Text(
+                            text = "${title.length}/60",
+                            color = if (title.length >= 55)
+                                MaterialTheme.colorScheme.error
+                            else
+                                MaterialTheme.colorScheme.outline
+                        )
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp),

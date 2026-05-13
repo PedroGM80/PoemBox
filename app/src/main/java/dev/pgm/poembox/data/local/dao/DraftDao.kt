@@ -13,7 +13,7 @@ interface DraftDao {
     @Query("SELECT * FROM drafts WHERE title=:title")
     suspend fun findByTitle(title: String): DraftEntity?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addDraft(draft: DraftEntity)
 
     @Query("SELECT * FROM drafts ORDER BY writtenDate DESC")

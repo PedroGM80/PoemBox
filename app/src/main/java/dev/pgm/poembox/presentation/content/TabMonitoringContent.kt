@@ -109,6 +109,7 @@ fun MonitoringScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .heightIn(max = 260.dp)
                     .padding(vertical = 8.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
@@ -116,7 +117,9 @@ fun MonitoringScreen(
             ) {
                 Text(
                     text = state.body,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
                     style = MaterialTheme.typography.bodyLarge,
                     lineHeight = 28.sp
                 )
