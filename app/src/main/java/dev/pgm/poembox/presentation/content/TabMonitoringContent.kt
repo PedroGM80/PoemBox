@@ -1,12 +1,15 @@
 package dev.pgm.poembox.presentation.content
 
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Straighten
@@ -28,6 +31,31 @@ fun MonitoringScreen(
 ) {
     val state by viewModel.state
     val context = LocalContext.current
+
+    val exportLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri ->
+        uri?.let {
+            val exportContent = buildString {
+                appendLine(state.title)
+                appendLine()
+                appendLine(state.body)
+                if (state.syllablesAnalysis.isNotBlank()) {
+                    appendLine()
+                    appendLine("--- Análisis métrico ---")
+                    appendLine(state.syllablesAnalysis)
+                }
+                if (state.versesAnalysis.isNotBlank()) {
+                    appendLine()
+                    appendLine("--- Estructura ---")
+                    appendLine(state.versesAnalysis)
+                }
+            }
+            context.contentResolver.openOutputStream(it)?.use { stream ->
+                stream.write(exportContent.toByteArray())
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -98,6 +126,16 @@ fun MonitoringScreen(
                         Icon(
                             Icons.Default.Share,
                             contentDescription = "Compartir poema",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    IconButton(onClick = {
+                        val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
+                        exportLauncher.launch("$safeName.txt")
+                    }) {
+                        Icon(
+                            Icons.Default.Download,
+                            contentDescription = "Exportar como .txt",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
