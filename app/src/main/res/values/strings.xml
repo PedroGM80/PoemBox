@@ -94,6 +94,50 @@
     <string name="manager_sort_oldest">Antiguo</string>
     <string name="manager_sort_title">A→Z</string>
 
+    <!-- Immersive reading -->
+    <string name="monitor_read_description">Modo lectura</string>
+    <string name="monitor_immersive_close">Cerrar lectura</string>
+    <string name="monitor_immersive_bg_dark">Oscuro</string>
+    <string name="monitor_immersive_bg_warm">Cálido</string>
+
+    <!-- Daily inspiration -->
+    <string name="editor_inspiration_title">Inspiración de hoy</string>
+    <string name="editor_inspiration_use_title">Usar como título</string>
+
+    <!-- Stats dashboard -->
+    <string name="stats_title">Mi perfil de poeta</string>
+    <string name="stats_total_drafts">Borradores</string>
+    <string name="stats_validated">Validados</string>
+    <string name="stats_total_words">Palabras escritas</string>
+    <string name="stats_longest_poem">Poema más largo</string>
+    <string name="stats_words_unit">palabras</string>
+    <string name="topbar_stats_description">Ver estadísticas</string>
+
+    <!-- Daily reminder notification -->
+    <string name="notif_channel_name">Escritura diaria</string>
+    <string name="notif_channel_description">Recordatorio diario para escribir un poema</string>
+    <string name="notif_title">¡Es hora de escribir!</string>
+    <string name="notif_text">Tu musa te espera. Abre PoemBox y escribe algo hoy.</string>
+    <string name="settings_daily_reminder">Recordatorio diario</string>
+
+    <!-- PDF export -->
+    <string name="monitor_export_pdf_description">Exportar como PDF</string>
+    <string name="monitor_export_pdf_error">Error al exportar PDF</string>
+
+    <!-- Share as image -->
+    <string name="monitor_share_image_description">Compartir como imagen</string>
+
+    <!-- Gemini AI -->
+    <string name="gemini_continue_verse">✨ Sugerir siguiente verso</string>
+    <string name="gemini_generating">Generando…</string>
+    <string name="gemini_error">Error: %1$s</string>
+    <string name="gemini_api_key_label">Clave API de Gemini</string>
+    <string name="gemini_api_key_hint">Introduce tu clave API de Google AI Studio</string>
+    <string name="gemini_api_key_save">Guardar clave</string>
+    <string name="gemini_api_key_dialog_title">Configurar IA</string>
+    <string name="gemini_suggestion_label">Sugerencia IA:</string>
+    <string name="gemini_use_suggestion">Usar sugerencia</string>
+
     <!-- Poem analysis (returned by domain layer) -->
     <string name="analysis_syllable_predominant">Predominan los versos de %1$s sílabas.</string>
     <string name="analysis_structure">El poema tiene %1$d estrofas y %2$d versos (%3$d por estrofa).</string>

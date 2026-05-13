@@ -3,13 +3,16 @@ package dev.pgm.poembox.presentation.content
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Straighten
@@ -17,15 +20,95 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.presentation.theme.PoeticFont
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
+
+@Composable
+private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () -> Unit) {
+    var warmBackground by remember { mutableStateOf(false) }
+    val bgColor = if (warmBackground) Color(0xFFFAF3E0) else Color(0xFF1A1A2E)
+    val textColor = if (warmBackground) Color(0xFF3E2723) else Color(0xFFF5F0E8)
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(bgColor)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(72.dp))
+                Text(
+                    text = title,
+                    fontFamily = PoeticFont,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp,
+                    color = textColor,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(32.dp))
+                Text(
+                    text = body,
+                    fontFamily = PoeticFont,
+                    fontSize = 22.sp,
+                    lineHeight = 38.sp,
+                    color = textColor,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(80.dp))
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.monitor_immersive_close), tint = textColor)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = if (warmBackground) stringResource(R.string.monitor_immersive_bg_warm)
+                               else stringResource(R.string.monitor_immersive_bg_dark),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = textColor
+                    )
+                    Switch(
+                        checked = warmBackground,
+                        onCheckedChange = { warmBackground = it },
+                        modifier = Modifier.padding(start = 8.dp, end = 4.dp)
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun MonitoringScreen(
@@ -33,6 +116,15 @@ fun MonitoringScreen(
 ) {
     val state by viewModel.state
     val context = LocalContext.current
+    var showImmersive by remember { mutableStateOf(false) }
+
+    if (showImmersive) {
+        ImmersiveReadingDialog(
+            title = state.title,
+            body = state.body,
+            onDismiss = { showImmersive = false }
+        )
+    }
 
     val exportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/plain")
@@ -105,6 +197,13 @@ fun MonitoringScreen(
                     modifier = Modifier.weight(1f)
                 )
                 Row {
+                    IconButton(onClick = { showImmersive = true }) {
+                        Icon(
+                            Icons.Default.MenuBook,
+                            contentDescription = stringResource(R.string.monitor_read_description),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     IconButton(onClick = { viewModel.loadPoem() }) {
                         Icon(
                             Icons.Default.Refresh,
