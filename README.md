@@ -1,59 +1,86 @@
 # PoemBox
 
-**PoemBox** es una aplicación Android avanzada diseñada para poetas y escritores. No solo permite la creación y almacenamiento de poemas, sino que también ofrece herramientas de análisis métrico y estructural en tiempo real.
+**PoemBox** es una aplicación Android para poetas y escritores. Permite crear, analizar y gestionar poemas con herramientas de análisis métrico en tiempo real, asistencia por IA y exportación a múltiples formatos.
 
-![Logo](./poemform.png)
+![Diagrama de arquitectura](./DiagramPoemBox.png)
+
+---
 
 ## Características
 
-- **Análisis Métrico:** Conteo automático de sílabas, identificación de rimas y clasificación de versos.
-- **Análisis Estructural:** Detección de encabalgamientos y esticomitia.
-- **Gestión de Borradores:** Guarda tus ideas y poemas en progreso de forma local y segura.
-- **Autenticación de Usuarios:** Sistema de gestión de sesiones para mantener tu contenido organizado.
-- **Interfaz Moderna:** Desarrollada íntegramente con **Jetpack Compose** siguiendo las guías de Material Design 3.
-- **Navegación Intuitiva:** Sistema de pestañas para alternar entre edición, gestión y monitoreo.
+| Categoría | Funcionalidad |
+|-----------|---------------|
+| **Editor** | Escritura con contador de palabras, notas por poema y selector de forma poética |
+| **Validación de forma** | Verificación en tiempo real de sílabas y esquema de rima (Haiku, Soneto, Redondilla, Décima…) |
+| **Análisis métrico** | Conteo de sílabas por verso, rima consonante/asonante, encabalgamiento y esticomitia |
+| **IA Gemini** | Sugerencia del siguiente verso respetando ritmo y forma (requiere API key) |
+| **Exportación** | PDF con análisis completo · Tarjeta visual PNG para compartir en redes |
+| **Gestor de poemas** | Búsqueda, ordenación y eliminación de poemas guardados |
+| **Monitor** | Vista de análisis completo con modo lectura inmersiva |
+| **Recordatorio diario** | Notificación periódica configurable mediante WorkManager |
+| **Estadísticas** | Borradores, poemas validados, palabras escritas y poema más largo |
 
-## Stack Tecnológico
+---
 
-- **Lenguaje:** [Kotlin](https://kotlinlang.org/)
-- **UI:** [Jetpack Compose](https://developer.android.com/jetpack/compose) (Material 3)
+## Stack tecnológico
+
+- **Lenguaje:** Kotlin
+- **UI:** Jetpack Compose + Material Design 3
 - **Arquitectura:** Clean Architecture + MVVM
-- **Inyección de Dependencias:** [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
-- **Base de Datos:** [Room](https://developer.android.com/training/data-storage/room)
-- **Navegación:** [Compose Navigation](https://developer.android.com/jetpack/compose/navigation)
-- **Procesamiento:** KSP (Kotlin Symbol Processing)
-- **Asincronía:** Corrutinas y Flow
-- **Gestión de Datos:** DataStore para sesiones de usuario.
+- **DI:** Hilt
+- **Base de datos:** Room (local, sin servidor)
+- **Preferencias:** DataStore
+- **Asincronía:** Corrutinas + Flow
+- **Background work:** WorkManager
+- **IA:** Google Gemini (`generativeai`)
+- **Build:** Gradle con Version Catalog (`libs.versions.toml`) + KSP
 
-## Estructura del Proyecto
+---
 
-El proyecto sigue los principios de **Clean Architecture**, dividido en tres módulos principales:
+## Arquitectura
 
-- **`:app`:** Contiene la capa de presentación (UI, ViewModels, Composables) y la configuración de Hilt.
-- **`:domain`:** Contiene la lógica de negocio pura: modelos de dominio, interfaces de repositorios y casos de uso. No tiene dependencias de Android.
-- **`:data`:** Implementación de los repositorios, acceso a base de datos Room, mappers y fuentes de datos locales.
+El proyecto se divide en tres módulos Gradle:
 
-## Instalación y Uso
+```
+:domain   —  Modelos, interfaces de repositorio y casos de uso (Kotlin puro, sin Android)
+:data     —  Room, DAOs, DataStore, mappers e implementaciones de repositorio
+:app      —  UI (Compose), ViewModels, DI y workers WorkManager
+```
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/PedroGM80/PoemBox.git
-   ```
-2. **Abrir en Android Studio:**
-   Asegúrate de tener la versión más reciente de Android Studio (Ladybug o superior preferiblemente).
-3. **Sincronizar Gradle:**
-   El proyecto utiliza Version Catalogs (`libs.versions.toml`) para la gestión de dependencias.
-4. **Ejecutar:**
-   Conecta un dispositivo físico o inicia un emulador con API 24 o superior.
+Flujo de dependencias: `:app` → `:domain` ← `:data`
+
+---
+
+## Requisitos
+
+- Android Studio Ladybug o superior
+- JDK 17
+- API 24+ (minSdk 24, targetSdk 37)
+
+---
+
+## Instalación
+
+```bash
+git clone https://github.com/PedroGM80/PoemBox.git
+```
+
+1. Abrir en Android Studio
+2. Sincronizar Gradle (`Sync Project with Gradle Files`)
+3. Ejecutar en dispositivo o emulador con API 24+
+
+> Para usar la sugerencia de verso con IA, introduce tu [Google Gemini API key](https://aistudio.google.com/app/apikey) desde la pantalla de edición → botón IA.
+
+---
 
 ## Licencia
 
-Este proyecto es de uso personal/educativo. Consulta al autor para más detalles sobre su distribución.
+Uso personal / educativo. Contactar al autor para distribución.
 
 ---
 
 ## Autor
 
-**Pedro Gallego Morales**
-- GitHub: [@PedroGM80](https://github.com/PedroGM80)
-- [Descargar APK](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk)
+**Pedro Gallego Morales** · [@PedroGM80](https://github.com/PedroGM80)
+
+[Descargar APK](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk)

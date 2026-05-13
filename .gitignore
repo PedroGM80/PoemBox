@@ -1,15 +1,45 @@
+# ============================================================
+# Android / Gradle
+# ============================================================
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.gradle/
 local.properties
+/build/
+*/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# APKs, bundles y librerías compiladas
+*.apk
+*.aab
+*.aar
+*.ap_
+
+# Keystore / firma (nunca commitear secretos)
+*.jks
+*.keystore
+keystore.properties
+
+# ============================================================
+# IntelliJ / Android Studio — estado personal del IDE
+# ============================================================
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/deploymentTargetDropDown.xml
+.idea/deviceManager.xml
+.idea/planningMode.xml
+.idea/appInsightsSettings.xml
+.idea/sqlandroid.xml
+.idea/dbnavigator.xml
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+
+# ============================================================
+# macOS
+# ============================================================
+.DS_Store
+**/.DS_Store
