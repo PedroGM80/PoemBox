@@ -12,30 +12,8 @@ import dev.pgm.poembox.presentation.content.MonitoringScreen
 
 typealias ComposableFun = @Composable () -> Unit
 
-/**
- * Tab item
- *
- * @constructor Create empty Tab item
- * @property icon
- * @property title
- * @property screen
- */
 sealed class TabItem(var icon: ImageVector, var title: String, var screen: ComposableFun) {
-    companion object {
-        var userDataString: String = ""
-    }
-
-    /**
-     * Set user data
-     *
-     * @param data
-     */
-    @JvmName("setUserData1")
-    fun setUserData(data: String) {
-        userDataString = data
-    }
-
-    object Editor : TabItem(Icons.Filled.Edit, "Edit", { EditScreen(userData = userDataString) })
-    object Monitor : TabItem(Icons.Filled.Analytics, "Analyze", { MonitoringScreen() })
-    object Manager : TabItem(Icons.Filled.List, "Manager", { ManagerScreen() })
+    object Editor : TabItem(Icons.Filled.Edit, "Editor", { EditScreen() })
+    object Monitor : TabItem(Icons.Filled.Analytics, "Analizar", { MonitoringScreen() })
+    object Manager : TabItem(Icons.Filled.List, "Mis poemas", { ManagerScreen() })
 }
