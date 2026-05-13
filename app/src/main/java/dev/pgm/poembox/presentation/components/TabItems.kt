@@ -14,7 +14,7 @@ import dev.pgm.poembox.presentation.content.MonitoringScreen
 
 typealias ComposableFun = @Composable () -> Unit
 
-sealed class TabItem(var icon: ImageVector, @StringRes var title: Int, var screen: ComposableFun) {
+sealed class TabItem(val icon: ImageVector, @StringRes val title: Int, val screen: ComposableFun) {
     object Editor : TabItem(Icons.Filled.Edit, R.string.tab_editor, { EditScreen() })
     object Monitor : TabItem(Icons.Filled.Analytics, R.string.tab_monitor, { MonitoringScreen() })
     object Manager : TabItem(Icons.Filled.List, R.string.tab_manager, { ManagerScreen() })

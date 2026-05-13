@@ -7,8 +7,8 @@ package dev.pgm.poembox.presentation.screens
  * @property route
  */
 sealed class ScreensRouteList(val route: String) {
-    object RouteScreenSplash : ScreensRouteList("S")
-    object RouteScreenTabs : ScreensRouteList("T")
-    object RouteScreenLogin : ScreensRouteList("L")
-    object RouteScreenCreateAccount : ScreensRouteList("C")
+    object RouteScreenSplash : ScreensRouteList("splash")
+    object RouteScreenTabs : ScreensRouteList("tabs")
+    object RouteScreenLogin : ScreensRouteList("login")
+    object RouteScreenCreateAccount : ScreensRouteList("create_account")
 }

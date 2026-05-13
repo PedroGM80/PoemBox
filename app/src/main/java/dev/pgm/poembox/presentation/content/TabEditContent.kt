@@ -35,6 +35,7 @@ import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.EditViewModel
+import dev.pgm.poembox.presentation.viewmodels.GeminiViewModel
 
 @Composable
 private fun LineValidationRow(v: LineValidation) {
@@ -108,7 +109,7 @@ private fun LineValidationRow(v: LineValidation) {
 fun EditScreen(
     viewModel: EditViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
-    geminiViewModel: dev.pgm.poembox.presentation.viewmodels.GeminiViewModel = hiltViewModel()
+    geminiViewModel: GeminiViewModel = hiltViewModel()
 ) {
     val title by viewModel.title
     val content by viewModel.content

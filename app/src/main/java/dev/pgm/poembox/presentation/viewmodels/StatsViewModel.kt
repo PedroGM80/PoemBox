@@ -32,17 +32,16 @@ class StatsViewModel @Inject constructor(
         viewModelScope.launch {
             val drafts = getAllDraftsUseCase()
             val sheets = getAllSheetsUseCase()
-            val longest = drafts.maxByOrNull { it.content.split(Regex("\\s+")).size }
+            val wordCounts = drafts.map { d ->
+                if (d.content.isBlank()) 0 else d.content.trim().split(Regex("\\s+")).size
+            }
+            val longestIndex = wordCounts.indices.maxByOrNull { wordCounts[it] }
             _stats.value = PoetStats(
                 totalDrafts = drafts.size,
                 validatedPoems = sheets.size,
-                totalWords = drafts.sumOf { d ->
-                    if (d.content.isBlank()) 0 else d.content.trim().split(Regex("\\s+")).size
-                },
-                longestPoemWords = longest?.let {
-                    if (it.content.isBlank()) 0 else it.content.trim().split(Regex("\\s+")).size
-                } ?: 0,
-                longestPoemTitle = longest?.title ?: ""
+                totalWords = wordCounts.sum(),
+                longestPoemWords = longestIndex?.let { wordCounts[it] } ?: 0,
+                longestPoemTitle = longestIndex?.let { drafts[it].title } ?: ""
             )
         }
     }

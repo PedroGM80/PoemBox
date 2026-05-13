@@ -33,7 +33,7 @@ fun ScreenTabs(
     navController: NavController,
     viewModel: ScreenTabsViewModel = hiltViewModel()
 ) {
-    val tabs: List<TabItem> = listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager)
+    val tabs = remember { listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager) }
     val pagerState = rememberPagerState { tabs.size }
     val pendingEditTitle by viewModel.pendingEditTitle.collectAsState()
 

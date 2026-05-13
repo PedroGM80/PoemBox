@@ -21,7 +21,7 @@ private val Context.dataStore by preferencesDataStore(name = "user_prefs")
 class UserSessionManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SessionManager {
-    companion object {
+    private companion object {
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_EMAIL = stringPreferencesKey("user_email")
         val CURRENT_POEM_TITLE = stringPreferencesKey("current_poem_title")

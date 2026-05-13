@@ -39,14 +39,13 @@ class MonitoringViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getDraftByTitleUseCase: GetDraftByTitleUseCase,
     private val saveSheetUseCase: SaveSheetUseCase,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val poemUtils: PoemUtils,
+    private val utilitySyllables: UtilitySyllables
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MonitoringState())
     val state: State<MonitoringState> = _state
-
-    private val poemUtils = PoemUtils()
-    private val utilitySyllables = UtilitySyllables()
 
     init {
         viewModelScope.launch {

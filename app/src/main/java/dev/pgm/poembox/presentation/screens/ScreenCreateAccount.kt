@@ -94,7 +94,7 @@ fun CreateAccount(
     }
 }
 
-fun verifyEmail(mail: String): Boolean {
+private fun verifyEmail(mail: String): Boolean {
     val pattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex()
     return pattern.matches(mail)
 }

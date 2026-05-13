@@ -2,13 +2,9 @@ package dev.pgm.poembox.domain
 
 import java.util.*
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-/**
- * Utility syllables
- * @author Pedro Gallego Morales
- * @constructor Create empty Utility syllables
- */
-class UtilitySyllables {
+class UtilitySyllables @Inject constructor() {
     private val conversions = arrayOf(
         arrayOf("ch", "@"),
         arrayOf("ll", "#"),

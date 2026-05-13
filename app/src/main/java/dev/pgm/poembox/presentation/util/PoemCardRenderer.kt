@@ -97,26 +97,10 @@ object PoemCardRenderer {
         lineHeight: Float
     ): Float {
         var y = startY
-        text.split("\n").forEach { paragraph ->
-            if (paragraph.isBlank()) {
+        wrapTextIntoLines(text, paint, maxWidth).forEach { line ->
+            if (line.isEmpty()) {
                 y += lineHeight * 0.5f
-                return@forEach
-            }
-            val words = paragraph.split(" ")
-            var line = ""
-            for (word in words) {
-                val candidate = if (line.isEmpty()) word else "$line $word"
-                if (paint.measureText(candidate) <= maxWidth) {
-                    line = candidate
-                } else {
-                    if (line.isNotEmpty()) {
-                        canvas.drawText(line, cx, y, paint)
-                        y += lineHeight
-                    }
-                    line = word
-                }
-            }
-            if (line.isNotEmpty()) {
+            } else {
                 canvas.drawText(line, cx, y, paint)
                 y += lineHeight
             }
