@@ -19,16 +19,27 @@ class UserSessionManager @Inject constructor(
     companion object {
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_EMAIL = stringPreferencesKey("user_email")
+        val CURRENT_POEM_TITLE = stringPreferencesKey("current_poem_title")
     }
 
     val userName: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[USER_NAME]
     }
 
+    val currentPoemTitle: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[CURRENT_POEM_TITLE] ?: ""
+    }
+
     suspend fun saveUser(name: String, email: String) {
         context.dataStore.edit { prefs ->
             prefs[USER_NAME] = name
             prefs[USER_EMAIL] = email
+        }
+    }
+
+    suspend fun setCurrentPoemTitle(title: String) {
+        context.dataStore.edit { prefs ->
+            prefs[CURRENT_POEM_TITLE] = title
         }
     }
 
