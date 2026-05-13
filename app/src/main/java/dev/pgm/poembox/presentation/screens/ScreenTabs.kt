@@ -17,18 +17,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.components.Tabs
 import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
 
 @Composable
-fun ScreenTabs() {
+fun ScreenTabs(navController: NavController) {
     val tabs: List<TabItem> = listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager)
     val pagerState = rememberPagerState { tabs.size }
 
     Scaffold(
-        topBar = { TopBar() },
+        topBar = {
+            TopBar(onLogout = {
+                navController.navigate(ScreensRouteList.RouteScreenCreateAccount.route) {
+                    popUpTo(0) { inclusive = true }
+                }
+            })
+        },
         bottomBar = {
             Row(
                 modifier = Modifier

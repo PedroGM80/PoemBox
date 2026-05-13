@@ -27,4 +27,11 @@ class AuthViewModel @Inject constructor(
             onComplete()
         }
     }
+
+    fun logout(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            sessionManager.clearSession()
+            onComplete()
+        }
+    }
 }

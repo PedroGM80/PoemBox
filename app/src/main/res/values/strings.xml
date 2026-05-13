@@ -17,6 +17,10 @@
     <string name="login_logged_as">Conectado como: %1$s</string>
     <string name="login_enter_button">Entrar a PoemBox</string>
 
+    <!-- TopBar / User menu -->
+    <string name="user_menu_description">Menú de usuario</string>
+    <string name="logout">Cerrar sesión</string>
+
     <!-- Editor Tab -->
     <string name="editor_title_label">Título del poema</string>
     <string name="editor_content_placeholder">Escribe aquí tu poema…</string>
