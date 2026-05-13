@@ -33,6 +33,7 @@ fun EditScreen(
     val content by viewModel.content
     val analysisResult by viewModel.analysisResult
     val isSaved by viewModel.isSaved
+    val wordCount by viewModel.wordCount
     val userName by authViewModel.userName.collectAsState()
     val context = LocalContext.current
 
@@ -125,6 +126,17 @@ fun EditScreen(
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
+            }
+
+            if (wordCount > 0) {
+                Text(
+                    text = "$wordCount palabras",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(end = 4.dp, top = 2.dp)
+                )
             }
 
             Button(

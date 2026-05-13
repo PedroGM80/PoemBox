@@ -41,6 +41,9 @@ class EditViewModel @Inject constructor(
     private val _isSaved = mutableStateOf(false)
     val isSaved: State<Boolean> = _isSaved
 
+    private val _wordCount = mutableStateOf(0)
+    val wordCount: State<Int> = _wordCount
+
     private val poemUtils = PoemUtils()
     private val utilitySyllables = UtilitySyllables()
 
@@ -69,6 +72,7 @@ class EditViewModel @Inject constructor(
     fun onContentChange(newContent: String) {
         _content.value = newContent
         _isSaved.value = false
+        _wordCount.value = if (newContent.isBlank()) 0 else newContent.trim().split(Regex("\\s+")).size
         if (newContent.isBlank()) {
             _analysisResult.value = ""
         } else {
@@ -81,6 +85,7 @@ class EditViewModel @Inject constructor(
         _content.value = ""
         _analysisResult.value = ""
         _isSaved.value = false
+        _wordCount.value = 0
         _analysisInput.value = ""
     }
 
