@@ -226,7 +226,7 @@ class UtilitySyllables @Inject constructor() {
             word = word!!.replace(conversions[i][0], conversions[i][1])
         }
         // case h interleaved
-        if (word!!.startsWith("cacah")) word = word.replace("h", "¬")
+        if (word.startsWith("cacah")) word = word.replace("h", "¬")
         return word
     }
 
@@ -243,7 +243,7 @@ class UtilitySyllables @Inject constructor() {
 
             word = word!!.replace(conversions[index][1], conversions[index][0])
         }
-        word = word!!.replace("¬", "h")
+        word = word.replace("¬", "h")
         return word
     }
 
