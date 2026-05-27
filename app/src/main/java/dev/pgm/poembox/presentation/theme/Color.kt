@@ -33,3 +33,9 @@ val InkText = Color(0xFF2C2421)
 val MidnightBackground = Color(0xFF121212)
 val StarlightText = Color(0xFFE0E0E0)
 
+// Colores para el modo de lectura inmersiva
+val ImmersiveDarkBackground = Color(0xFF121212)
+val ImmersiveDarkText = Color(0xFFE0E0E0)
+val ImmersiveWarmBackground = Color(0xFFFAF3E0)
+val ImmersiveWarmText = Color(0xFF2C2421)
+
