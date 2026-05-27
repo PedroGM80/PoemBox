@@ -56,7 +56,8 @@ fun ScreenTabs(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp, top = 4.dp),
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(bottom = 16.dp, top = 8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -65,12 +66,13 @@ fun ScreenTabs(
                     Box(
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
-                            .size(if (selected) 8.dp else 6.dp)
+                            .size(if (selected) 10.dp else 6.dp)
                             .clip(CircleShape)
                             .background(
                                 if (selected) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                             )
+                            .animateContentSize()
                     )
                 }
             }
