@@ -41,11 +41,11 @@ private fun LineValidationRow(v: LineValidation) {
     val expected = v.expectedSyllables
     val syllableColor = when {
         expected == null -> MaterialTheme.colorScheme.primary
-        v.syllableOk -> MaterialTheme.colorScheme.tertiary
+        v.syllableOk -> MaterialTheme.colorScheme.secondary
         else -> MaterialTheme.colorScheme.error
     }
     val rhymeBadgeColor: Color = when (v.rhymesOk) {
-        true -> MaterialTheme.colorScheme.tertiary
+        true -> MaterialTheme.colorScheme.secondary
         false -> MaterialTheme.colorScheme.error
         null -> MaterialTheme.colorScheme.outline
     }
@@ -57,49 +57,38 @@ private fun LineValidationRow(v: LineValidation) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 3.dp),
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Rhyme letter badge
+        // Rhyme letter annotation
         val rhymeLetter = v.rhymeLetter
         if (rhymeLetter != null) {
-            Surface(
-                shape = RoundedCornerShape(4.dp),
-                color = rhymeBadgeColor.copy(alpha = 0.15f),
-                modifier = Modifier.padding(end = 6.dp)
-            ) {
-                Text(
-                    text = rhymeLetter.uppercase(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = rhymeBadgeColor,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
-                )
-            }
+            Text(
+                text = rhymeLetter.uppercase(),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                ),
+                color = rhymeBadgeColor,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.width(28.dp),
+                textAlign = TextAlign.Center
+            )
         } else {
-            Spacer(Modifier.width(24.dp))
+            Spacer(Modifier.width(28.dp))
         }
         Text(
-            text = "${v.index + 1}. ${v.lineText.take(26)}${if (v.lineText.length > 26) "…" else ""}",
+            text = "${v.index + 1}. ${v.lineText}",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+            modifier = Modifier.weight(1f),
+            maxLines = 1
         )
-        // Rhyme hint if needed
-        val rhymeHint = v.rhymeHint
-        if (rhymeHint != null && v.rhymesOk == false) {
-            Text(
-                text = rhymeHint,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
-                modifier = Modifier.padding(end = 6.dp)
-            )
-        }
+        
         Text(
             text = syllableLabel,
             style = MaterialTheme.typography.labelSmall,
             color = syllableColor,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Medium
         )
     }
 }
