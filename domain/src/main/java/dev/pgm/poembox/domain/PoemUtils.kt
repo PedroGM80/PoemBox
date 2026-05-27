@@ -89,10 +89,13 @@ class PoemUtils @Inject constructor(private val syllables: UtilitySyllables) {
     }
 
     fun getEnjambment(verse: String): String {
-        val syls = syllables.getSyllables(verse)
-        for (index in syls.indices) {
-            if (syls[index].contains(",") || syls[index].contains(".")) {
-                return if (index < 5)
+        // getSyllables strips punctuation before parsing, so we must check each original word
+        // for punctuation BEFORE passing it to getSyllables, then accumulate syllable count.
+        var cumulativeSyllables = 0
+        for (word in verse.split(" ").filter { it.isNotEmpty() }) {
+            cumulativeSyllables += syllables.getSyllables(word).size
+            if (word.contains(",") || word.contains(".")) {
+                return if (cumulativeSyllables < 5)
                     "Encabalgamiento abrupto: crea un ritmo sincopado, rápido e intenso."
                 else
                     "Encabalgamiento suave: aporta gran fluidez al poema, que puede leerse " +
