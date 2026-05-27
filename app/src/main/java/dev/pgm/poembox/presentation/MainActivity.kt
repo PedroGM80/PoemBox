@@ -9,8 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.presentation.screens.SetUpNavController
 import dev.pgm.poembox.presentation.theme.PoemBoxTheme
+import dev.pgm.poembox.presentation.viewmodels.ThemeViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -22,7 +26,9 @@ class MainActivity : ComponentActivity() {
             window.isNavigationBarContrastEnforced = false
         }
         setContent {
-            PoemBoxTheme {
+            val themeViewModel: ThemeViewModel = hiltViewModel()
+            val themeMode by themeViewModel.themeMode.collectAsState()
+            PoemBoxTheme(themeMode = themeMode) {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     SetUpNavController(rememberNavController())
                 }
