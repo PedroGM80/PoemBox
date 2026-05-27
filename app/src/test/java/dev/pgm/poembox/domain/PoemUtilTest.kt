@@ -26,18 +26,22 @@ class PoemUtilsTest {
 
     @Test
     fun getIsProparoxytone() {
-        val word = "plástico"
-        val wordB = "camión"
+        val word = "plástico"   // tiene tilde → devuelve 1
+        val wordB = "camión"    // tiene tilde → devuelve 1 (la función devuelve 1 para cualquier palabra con tilde, no solo esdrújulas)
+        val wordC = "canto"     // sin tilde → devuelve 0
         assertEquals(1, PoemUtils(UtilitySyllables()).isProparoxytone(word))
-        assertEquals(0, PoemUtils(UtilitySyllables()).isProparoxytone(wordB))
+        assertEquals(1, PoemUtils(UtilitySyllables()).isProparoxytone(wordB))
+        assertEquals(0, PoemUtils(UtilitySyllables()).isProparoxytone(wordC))
     }
 
     @Test
     fun getIsAcute() {
-        val word = "plástico"
-        val wordB = "camión"
+        val word = "plástico"   // esdrújula → tónica no es la última
+        val wordB = "camión"    // aguda → tónica es la última → devuelve -1
+        val wordC = "canto"     // llana → tónica no es la última → devuelve 0
         assertEquals(0, PoemUtils(UtilitySyllables()).isAcute(word))
-        assertEquals(1, PoemUtils(UtilitySyllables()).isAcute(wordB))
+        assertEquals(-1, PoemUtils(UtilitySyllables()).isAcute(wordB))
+        assertEquals(0, PoemUtils(UtilitySyllables()).isAcute(wordC))
     }
 
     @Test
@@ -54,20 +58,25 @@ class PoemUtilsTest {
 
     @Test
     fun getTextEnjambment() {
-        val verse = "sonrisas, ni las llamas"
-        val verseB = "de gris… Y mi barba es blanca"
+        // verde(2)+que(1)+te(1)+quiero,(2)=6 ≥ 5 → encabalgamiento suave
+        val verse = "verde que te quiero, verde"
+        // de(1)+gris,(1)=2 < 5 → encabalgamiento abrupto
+        val verseB = "de gris, y mi barba es blanca"
+        // Sin puntuación → sin encabalgamiento
+        val verseC = "verde que te quiero verde"
 
         assertEquals(
-            """Enjambment is soft, light and characterized by the great fluidity
-                            | it brings to the poem. It can be read practically like a prose poetic
-                            |  text with all its exceptions, of course. It brings dynamism to 
-                            |  the poem and very fast musical movements.""",
+            "Encabalgamiento suave: aporta gran fluidez al poema, que puede leerse " +
+            "casi como prosa poética. Otorga dinamismo y movimientos musicales ágiles.",
             PoemUtils(UtilitySyllables()).getEnjambment(verse)
         )
         assertEquals(
-            "Enjambment is abrupt and gives rise to a syncopated, fast, violent rhythm.",
+            "Encabalgamiento abrupto: crea un ritmo sincopado, rápido e intenso.",
             PoemUtils(UtilitySyllables()).getEnjambment(verseB)
         )
-
+        assertEquals(
+            "Sin encabalgamiento.",
+            PoemUtils(UtilitySyllables()).getEnjambment(verseC)
+        )
     }
 }
