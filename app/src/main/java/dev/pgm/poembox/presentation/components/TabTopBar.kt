@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,8 +38,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.presentation.theme.PoemBoxThemeMode
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.StatsViewModel
+import dev.pgm.poembox.presentation.viewmodels.ThemeViewModel
 
 @Composable
 private fun StatItem(label: String, value: String) {
@@ -119,11 +122,14 @@ private fun StatsBottomSheet(
 fun TopBar(
     modifier: Modifier = Modifier,
     onLogout: (() -> Unit)? = null,
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val userName by authViewModel.userName.collectAsState()
+    val themeMode by themeViewModel.themeMode.collectAsState()
     var showMenu by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
+    var showThemeMenu by remember { mutableStateOf(false) }
 
     if (showStats) {
         StatsBottomSheet(onDismiss = { showStats = false })
@@ -146,6 +152,54 @@ fun TopBar(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 8.dp)
                 )
+                
+                Box {
+                    IconButton(onClick = { showThemeMenu = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Palette,
+                            contentDescription = stringResource(R.string.theme_menu_label),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showThemeMenu,
+                        onDismissRequest = { showThemeMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_light)) },
+                            onClick = {
+                                themeViewModel.setThemeMode(PoemBoxThemeMode.LIGHT)
+                                showThemeMenu = false
+                            },
+                            trailingIcon = { if (themeMode == PoemBoxThemeMode.LIGHT) Text("✓") }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_dark)) },
+                            onClick = {
+                                themeViewModel.setThemeMode(PoemBoxThemeMode.DARK)
+                                showThemeMenu = false
+                            },
+                            trailingIcon = { if (themeMode == PoemBoxThemeMode.DARK) Text("✓") }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_sepia)) },
+                            onClick = {
+                                themeViewModel.setThemeMode(PoemBoxThemeMode.SEPIA)
+                                showThemeMenu = false
+                            },
+                            trailingIcon = { if (themeMode == PoemBoxThemeMode.SEPIA) Text("✓") }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_midnight)) },
+                            onClick = {
+                                themeViewModel.setThemeMode(PoemBoxThemeMode.MIDNIGHT)
+                                showThemeMenu = false
+                            },
+                            trailingIcon = { if (themeMode == PoemBoxThemeMode.MIDNIGHT) Text("✓") }
+                        )
+                    }
+                }
+
                 IconButton(onClick = { showStats = true }) {
                     Icon(
                         imageVector = Icons.Default.BarChart,
