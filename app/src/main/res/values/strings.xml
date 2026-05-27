@@ -100,6 +100,13 @@
     <string name="monitor_immersive_bg_dark">Oscuro</string>
     <string name="monitor_immersive_bg_warm">Cálido</string>
 
+    <!-- Themes -->
+    <string name="theme_menu_label">Cambiar atmósfera</string>
+    <string name="theme_light">Luz del día</string>
+    <string name="theme_dark">Medianoche</string>
+    <string name="theme_sepia">Papel viejo</string>
+    <string name="theme_midnight">Tinta profunda</string>
+
     <!-- Daily inspiration -->
     <string name="editor_inspiration_title">Inspiración de hoy</string>
     <string name="editor_inspiration_use_title">Usar como título</string>
