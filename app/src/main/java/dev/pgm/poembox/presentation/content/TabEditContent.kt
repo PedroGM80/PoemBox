@@ -250,32 +250,40 @@ fun EditScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 6.dp),
+                        .padding(bottom = 12.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                    ),
+                    shape = Shapes.medium,
+                    border = CardDefaults.outlinedCardBorder()
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .padding(16.dp)
+                            .fillMaxWidth()
                     ) {
                         Text(
-                            text = "\"$todayPrompt\"",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.weight(1f)
+                            text = stringResource(R.string.editor_inspiration_title),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        Spacer(Modifier.width(8.dp))
-                        TextButton(
-                            onClick = { viewModel.onTitleChange(todayPrompt) }
-                        ) {
-                            Text(
-                                stringResource(R.string.editor_inspiration_use_title),
-                                style = MaterialTheme.typography.labelSmall
-                            )
+                        Text(
+                            text = "\"$todayPrompt\"",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                            ),
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                            TextButton(
+                                onClick = { viewModel.onTitleChange(todayPrompt) }
+                            ) {
+                                Text(
+                                    stringResource(R.string.editor_inspiration_use_title),
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            }
                         }
                     }
                 }
