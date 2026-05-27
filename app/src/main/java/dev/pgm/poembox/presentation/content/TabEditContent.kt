@@ -147,10 +147,9 @@ fun EditScreen(
                     onValueChange = { viewModel.onTitleChange(it) },
                     label = { Text(text = stringResource(R.string.editor_title_label)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    textStyle = TextStyle(
+                    textStyle = MaterialTheme.typography.headlineSmall.copy(
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontWeight = FontWeight.Bold
                     ),
                     supportingText = {
                         Text(
@@ -158,7 +157,8 @@ fun EditScreen(
                             color = if (title.length >= 55)
                                 MaterialTheme.colorScheme.error
                             else
-                                MaterialTheme.colorScheme.outline
+                                MaterialTheme.colorScheme.outline,
+                            style = MaterialTheme.typography.labelSmall
                         )
                     },
                     modifier = Modifier
@@ -291,10 +291,7 @@ fun EditScreen(
                     onValueChange = { viewModel.onContentChange(it) },
                     placeholder = { Text(text = stringResource(R.string.editor_content_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    textStyle = TextStyle(
-                        fontSize = Typography.bodyLarge.fontSize,
-                        lineHeight = 28.sp
-                    ),
+                    textStyle = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.fillMaxSize(),
                     shape = Shapes.medium,
                     colors = TextFieldDefaults.colors(
