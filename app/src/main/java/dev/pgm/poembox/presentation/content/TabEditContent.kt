@@ -24,13 +24,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.Constants
 import dev.pgm.poembox.domain.WritingPrompts
 import dev.pgm.poembox.domain.model.LineValidation
 import dev.pgm.poembox.domain.model.PoeticForms
+import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
@@ -57,7 +57,7 @@ private fun LineValidationRow(v: LineValidation) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = Dimens.SpacingSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Rhyme letter annotation
@@ -70,11 +70,11 @@ private fun LineValidationRow(v: LineValidation) {
                 ),
                 color = rhymeBadgeColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.width(28.dp),
+                modifier = Modifier.width(Dimens.RhymeAnnotationWidth),
                 textAlign = TextAlign.Center
             )
         } else {
-            Spacer(Modifier.width(28.dp))
+            Spacer(Modifier.width(Dimens.RhymeAnnotationWidth))
         }
         Text(
             text = "${v.index + 1}. ${v.lineText}",
@@ -123,7 +123,7 @@ fun EditScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(Dimens.PaddingLarge)
                 .imePadding()
                 .animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -143,8 +143,8 @@ fun EditScreen(
                     ),
                     supportingText = {
                         Text(
-                            text = "${title.length}/60",
-                            color = if (title.length >= 55)
+                            text = "${title.length}/${Constants.MAX_TITLE_LENGTH}",
+                            color = if (title.length >= Constants.TITLE_LENGTH_WARNING_THRESHOLD)
                                 MaterialTheme.colorScheme.error
                             else
                                 MaterialTheme.colorScheme.outline,
@@ -153,7 +153,7 @@ fun EditScreen(
                     },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 8.dp),
+                        .padding(end = Dimens.PaddingMedium),
                     shape = Shapes.medium,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -174,8 +174,8 @@ fun EditScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    .padding(vertical = Dimens.SpacingSmall),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
             ) {
                 PoeticForms.ALL.forEach { form ->
                     FilterChip(
@@ -199,7 +199,7 @@ fun EditScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 4.dp),
+                        .padding(bottom = Dimens.SpacingSmall),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -207,16 +207,16 @@ fun EditScreen(
                         progress = { (current.toFloat() / total).coerceIn(0f, 1f) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(4.dp),
-                        color = if (complete) MaterialTheme.colorScheme.tertiary
+                            .height(Dimens.ProgressBarHeight),
+                        color = if (complete) MaterialTheme.colorScheme.secondary
                                 else MaterialTheme.colorScheme.primary
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(Dimens.SpacingMedium))
                     Text(
                         text = if (complete) stringResource(R.string.form_complete)
                                else stringResource(R.string.form_progress, current, total),
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (complete) MaterialTheme.colorScheme.tertiary
+                        color = if (complete) MaterialTheme.colorScheme.secondary
                                 else MaterialTheme.colorScheme.outline
                     )
                 }
@@ -230,16 +230,16 @@ fun EditScreen(
                 Icon(
                     imageVector = if (showInspiration) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(Dimens.IconSmall)
                 )
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.width(Dimens.SpacingSmall))
                 Text(stringResource(R.string.editor_inspiration_title), style = MaterialTheme.typography.labelMedium)
             }
             AnimatedVisibility(visible = showInspiration) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 12.dp),
+                        .padding(bottom = Dimens.PaddingNormal),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                     ),
@@ -248,14 +248,14 @@ fun EditScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(Dimens.PaddingLarge)
                             .fillMaxWidth()
                     ) {
                         Text(
                             text = stringResource(R.string.editor_inspiration_title),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.padding(bottom = 4.dp)
+                            modifier = Modifier.padding(bottom = Dimens.PaddingSmall)
                         )
                         Text(
                             text = "\"$todayPrompt\"",
@@ -282,7 +282,7 @@ fun EditScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = Dimens.SpacingMedium)
             ) {
                 TextField(
                     value = content,
@@ -303,12 +303,12 @@ fun EditScreen(
                         text = analysisResult,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .padding(16.dp)
+                            .padding(Dimens.PaddingLarge)
                             .background(
                                 MaterialTheme.colorScheme.secondaryContainer,
                                 MaterialTheme.shapes.small
                             )
-                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                            .padding(horizontal = Dimens.PaddingNormal, vertical = Dimens.PaddingSmall),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -322,7 +322,7 @@ fun EditScreen(
                     color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(end = 4.dp, top = 2.dp)
+                        .padding(end = Dimens.PaddingSmall, top = Dimens.SpacingTiny)
                 )
             }
 
@@ -334,19 +334,19 @@ fun EditScreen(
                     Icon(
                         imageVector = if (showValidation) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(Dimens.IconSmall)
                     )
-                    Spacer(Modifier.width(4.dp))
+                    Spacer(Modifier.width(Dimens.SpacingSmall))
                     Text(stringResource(R.string.editor_syllables_per_verse), style = MaterialTheme.typography.labelMedium)
                 }
                 AnimatedVisibility(visible = showValidation) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 4.dp),
+                            .padding(bottom = Dimens.PaddingSmall),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
-                        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                        Column(modifier = Modifier.padding(horizontal = Dimens.PaddingNormal, vertical = Dimens.PaddingMedium)) {
                             lineValidations.forEach { v ->
                                 LineValidationRow(v)
                             }
@@ -362,9 +362,9 @@ fun EditScreen(
                 Icon(
                     imageVector = if (showNotes) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(Dimens.IconSmall)
                 )
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.width(Dimens.SpacingSmall))
                 Text(stringResource(R.string.editor_notes_section), style = MaterialTheme.typography.labelMedium)
             }
             AnimatedVisibility(visible = showNotes) {
@@ -374,7 +374,7 @@ fun EditScreen(
                     placeholder = { Text(stringResource(R.string.editor_notes_placeholder)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
+                        .padding(bottom = Dimens.PaddingMedium),
                     shape = Shapes.medium,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -387,7 +387,7 @@ fun EditScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = Dimens.SpacingSmall),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -416,8 +416,8 @@ fun EditScreen(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-                    .height(56.dp)
+                    .padding(vertical = Dimens.PaddingLarge)
+                    .height(Dimens.ButtonHeight)
             ) {
                 Text(
                     text = stringResource(if (isSaved) R.string.editor_saved_button else R.string.editor_save_button),

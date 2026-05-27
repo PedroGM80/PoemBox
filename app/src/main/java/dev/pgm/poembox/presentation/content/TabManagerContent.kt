@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.viewmodels.ManagerViewModel
 import dev.pgm.poembox.presentation.viewmodels.SortOrder
@@ -45,13 +45,13 @@ fun PoemCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .padding(horizontal = Dimens.PaddingLarge, vertical = Dimens.SpacingSmall)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = MaterialTheme.shapes.medium
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(Dimens.PaddingLarge),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -152,12 +152,12 @@ fun ManagerScreen(
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = Dimens.PaddingLarge, vertical = Dimens.PaddingMedium),
                 shape = MaterialTheme.shapes.medium
             )
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.padding(horizontal = Dimens.PaddingLarge),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
             ) {
                 SortOrder.entries.forEach { order ->
                     val label = when (order) {
@@ -186,7 +186,7 @@ fun ManagerScreen(
                                 modifier = Modifier.size(72.dp),
                                 tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                             )
-                            Spacer(Modifier.height(12.dp))
+                            Spacer(Modifier.height(Dimens.PaddingNormal))
                             Text(
                                 text = stringResource(R.string.manager_empty_title),
                                 style = MaterialTheme.typography.bodyLarge
@@ -201,7 +201,7 @@ fun ManagerScreen(
                     else -> {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(vertical = 12.dp)
+                            contentPadding = PaddingValues(vertical = Dimens.PaddingNormal)
                         ) {
                             items(poems) { poem ->
                                 PoemCard(

@@ -3,6 +3,7 @@ package dev.pgm.poembox.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pgm.poembox.domain.Constants
 import dev.pgm.poembox.domain.usecase.GetAllDraftsUseCase
 import dev.pgm.poembox.domain.usecase.GetAllSheetsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +34,7 @@ class StatsViewModel @Inject constructor(
             val drafts = getAllDraftsUseCase()
             val sheets = getAllSheetsUseCase()
             val wordCounts = drafts.map { d ->
-                if (d.content.isBlank()) 0 else d.content.trim().split(Regex("\\s+")).size
+                if (d.content.isBlank()) 0 else d.content.trim().split(Regex(Constants.REGEX_WHITESPACE)).size
             }
             val longestIndex = wordCounts.indices.maxByOrNull { wordCounts[it] }
             _stats.value = PoetStats(

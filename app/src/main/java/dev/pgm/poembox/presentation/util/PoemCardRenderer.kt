@@ -10,12 +10,17 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import java.io.File
 
+import dev.pgm.poembox.domain.Constants
+
 object PoemCardRenderer {
 
     private const val WIDTH = 1080
     private const val MARGIN = 80f
     private const val LINE_HEIGHT_TITLE = 72f
     private const val LINE_HEIGHT_BODY = 52f
+    private const val OVERLAY_ALPHA = 150
+    private const val WATERMARK_ALPHA = 60
+    private const val DIVIDER_ALPHA = 120
 
     fun createAndShare(
         context: Context,
@@ -34,15 +39,15 @@ object PoemCardRenderer {
         if (backgroundImageUri != null) {
             drawBackgroundImage(context, canvas, backgroundImageUri, WIDTH, height)
             // Semi-transparent dark overlay so text is readable over any photo
-            val overlayPaint = Paint().apply { color = Color.argb(150, 0, 0, 0) }
+            val overlayPaint = Paint().apply { color = Color.argb(OVERLAY_ALPHA, 0, 0, 0) }
             canvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), overlayPaint)
-            textColor = Color.parseColor("#F5F0E8")
-            accentColor = Color.parseColor("#C9A8E8")
+            textColor = Color.parseColor(Constants.COLOR_STARLIGHT_LIGHT)
+            accentColor = Color.parseColor(Constants.COLOR_ACCENT_OVERLAY)
         } else {
-            val bgColor = if (darkMode) Color.parseColor("#1A1A2E") else Color.parseColor("#FAF3E0")
+            val bgColor = if (darkMode) Color.parseColor(Constants.COLOR_MIDNIGHT_DEEP) else Color.parseColor(Constants.COLOR_PAPER_LIGHT)
             canvas.drawColor(bgColor)
-            textColor = if (darkMode) Color.parseColor("#F5F0E8") else Color.parseColor("#3E2723")
-            accentColor = if (darkMode) Color.parseColor("#9E77D0") else Color.parseColor("#8B6347")
+            textColor = if (darkMode) Color.parseColor(Constants.COLOR_STARLIGHT_LIGHT) else Color.parseColor(Constants.COLOR_INK_DARK)
+            accentColor = if (darkMode) Color.parseColor(Constants.COLOR_ACCENT_DARK) else Color.parseColor(Constants.COLOR_ACCENT_LIGHT)
         }
 
         // Top accent bar
@@ -52,7 +57,7 @@ object PoemCardRenderer {
         // Watermark
         val watermarkPaint = Paint().apply {
             color = textColor
-            alpha = 60
+            alpha = WATERMARK_ALPHA
             textSize = 28f
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
@@ -76,7 +81,7 @@ object PoemCardRenderer {
         }
         val dividerPaint = Paint().apply {
             color = accentColor
-            alpha = 120
+            alpha = DIVIDER_ALPHA
             strokeWidth = 2f
             isAntiAlias = true
         }
@@ -126,7 +131,7 @@ object PoemCardRenderer {
             canvas.drawBitmap(cropped, 0f, 0f, null)
             cropped.recycle()
         } catch (_: Exception) {
-            canvas.drawColor(Color.parseColor("#1A1A2E"))
+            canvas.drawColor(Color.parseColor(Constants.COLOR_MIDNIGHT_DEEP))
         }
     }
 

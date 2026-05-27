@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.Constants
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
@@ -105,7 +106,7 @@ class EditViewModel @Inject constructor(
                         _annotation.value = it.annotation
                         _isSaved.value = true
                         _wordCount.value = if (it.content.isBlank()) 0
-                                           else it.content.trim().split(Regex("\\s+")).size
+                                           else it.content.trim().split(Regex(Constants.REGEX_WHITESPACE)).size
                         _analysisInput.value = it.content
                     }
                 } finally {
@@ -116,7 +117,7 @@ class EditViewModel @Inject constructor(
     }
 
     fun onTitleChange(newTitle: String) {
-        if (newTitle.length <= 60) {
+        if (newTitle.length <= Constants.MAX_TITLE_LENGTH) {
             _title.value = newTitle
             _isSaved.value = false
         }
@@ -125,7 +126,7 @@ class EditViewModel @Inject constructor(
     fun onContentChange(newContent: String) {
         _content.value = newContent
         _isSaved.value = false
-        _wordCount.value = if (newContent.isBlank()) 0 else newContent.trim().split(Regex("\\s+")).size
+        _wordCount.value = if (newContent.isBlank()) 0 else newContent.trim().split(Regex(Constants.REGEX_WHITESPACE)).size
         if (newContent.isBlank()) {
             _analysisResult.value = ""
         } else {
@@ -239,7 +240,7 @@ class EditViewModel @Inject constructor(
     }
 
     private fun getDate(): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat(Constants.DATE_FORMAT_FULL, Locale.getDefault())
         return formatter.format(Date())
     }
 }

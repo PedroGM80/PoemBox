@@ -8,11 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
+
+import dev.pgm.poembox.presentation.theme.Dimens
 
 @Composable
 fun UserLogin(
@@ -29,7 +30,7 @@ fun UserLogin(
             modifier = Modifier
                 .fillMaxSize()
                 .safeDrawingPadding()
-                .padding(32.dp),
+                .padding(Dimens.PaddingExtraLarge),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -40,14 +41,14 @@ fun UserLogin(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
 
             HorizontalDivider(
-                modifier = Modifier.width(64.dp),
+                modifier = Modifier.width(Dimens.DividerWidthSmall),
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge))
 
             Text(
                 text = stringResource(R.string.login_title),
@@ -55,7 +56,7 @@ fun UserLogin(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingNormal))
 
             Text(
                 text = stringResource(R.string.login_logged_as, userName ?: ""),
@@ -65,7 +66,7 @@ fun UserLogin(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(Dimens.ButtonHeight))
 
             Button(
                 onClick = {
@@ -76,7 +77,7 @@ fun UserLogin(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(Dimens.ButtonHeight)
             ) {
                 Text(
                     text = stringResource(R.string.login_enter_button),

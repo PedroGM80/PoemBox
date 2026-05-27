@@ -30,12 +30,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
+import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.util.PdfExporter
 import dev.pgm.poembox.presentation.util.PoemCardRenderer
 import dev.pgm.poembox.presentation.theme.ImmersiveDarkBackground
@@ -67,7 +66,7 @@ private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 32.dp)
+                    .padding(horizontal = Dimens.PaddingExtraLarge)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -80,7 +79,7 @@ private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () ->
                     color = textColor,
                     textAlign = TextAlign.Center
                 )
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(Dimens.PaddingExtraLarge))
                 Text(
                     text = body,
                     fontFamily = PoeticFont,
@@ -95,7 +94,7 @@ private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () ->
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
-                    .padding(4.dp),
+                    .padding(Dimens.PaddingSmall),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -112,7 +111,7 @@ private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () ->
                     Switch(
                         checked = warmBackground,
                         onCheckedChange = { warmBackground = it },
-                        modifier = Modifier.padding(start = 8.dp, end = 4.dp)
+                        modifier = Modifier.padding(start = Dimens.PaddingMedium, end = Dimens.PaddingSmall)
                     )
                 }
             }
@@ -204,7 +203,7 @@ fun MonitoringScreen(
                         modifier = Modifier.size(72.dp),
                         tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                     )
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(Dimens.PaddingLarge))
                     Text(
                         stringResource(R.string.monitor_no_poem_title),
                         style = MaterialTheme.typography.bodyLarge,
@@ -313,13 +312,13 @@ fun MonitoringScreen(
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Dimens.PaddingMedium))
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 260.dp)
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = Dimens.PaddingMedium),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
@@ -328,7 +327,7 @@ fun MonitoringScreen(
                     text = state.body,
                     modifier = Modifier
                         .verticalScroll(rememberScrollState())
-                        .padding(16.dp),
+                        .padding(Dimens.PaddingLarge),
                     style = MaterialTheme.typography.bodyLarge,
                     lineHeight = 28.sp
                 )
@@ -355,13 +354,13 @@ fun MonitoringScreen(
                 icon = Icons.Default.Brush
             )
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Dimens.PaddingMedium))
 
             Button(
                 onClick = { viewModel.validatePoem() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(Dimens.ButtonHeight),
                 enabled = !state.isValidated,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (state.isValidated)
@@ -377,7 +376,7 @@ fun MonitoringScreen(
                 )
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Dimens.PaddingLarge))
         }
     }
 }
@@ -387,12 +386,12 @@ fun AnalysisCard(title: String, content: String, icon: ImageVector) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = Dimens.SpacingSmall),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(Dimens.PaddingLarge)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.Top
         ) {
@@ -401,17 +400,17 @@ fun AnalysisCard(title: String, content: String, icon: ImageVector) {
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .size(28.dp)
-                    .padding(top = 2.dp)
+                    .size(Dimens.RhymeAnnotationWidth)
+                    .padding(top = Dimens.SpacingTiny)
             )
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(Dimens.PaddingLarge))
             Column {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(Dimens.PaddingSmall))
                 if (content.isNotBlank()) {
                     Text(text = content, style = MaterialTheme.typography.bodyMedium)
                 } else {

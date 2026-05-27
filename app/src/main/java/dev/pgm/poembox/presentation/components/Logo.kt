@@ -20,13 +20,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.pgm.poembox.R
 
+import dev.pgm.poembox.domain.Constants
+import dev.pgm.poembox.presentation.theme.Dimens
+
 @Composable
 fun Logo() {
     val animateAlpha = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         animateAlpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 1200, easing = FastOutSlowInEasing)
+            animationSpec = tween(
+                durationMillis = Constants.ANIMATION_DURATION_LONG,
+                easing = FastOutSlowInEasing
+            )
         )
     }
 
@@ -43,9 +49,9 @@ fun Logo() {
             Image(
                 painter = painterResource(id = R.drawable.splash),
                 contentDescription = stringResource(R.string.logo_content_description),
-                modifier = Modifier.size(260.dp)
+                modifier = Modifier.size(Dimens.LogoSize)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
             Text(
                 text = stringResource(R.string.brand_name),
                 style = MaterialTheme.typography.headlineLarge,
@@ -53,7 +59,7 @@ fun Logo() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = Dimens.PaddingLarge)
             )
         }
     }

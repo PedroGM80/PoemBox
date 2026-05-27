@@ -12,10 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.Constants
+import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 
 @Composable
@@ -36,7 +37,7 @@ fun CreateAccount(
                 .fillMaxSize()
                 .safeDrawingPadding()
                 .imePadding()
-                .padding(32.dp),
+                .padding(Dimens.PaddingExtraLarge),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -47,14 +48,14 @@ fun CreateAccount(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
 
             HorizontalDivider(
-                modifier = Modifier.width(64.dp),
+                modifier = Modifier.width(Dimens.DividerWidthSmall),
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge))
 
             Text(
                 text = stringResource(R.string.create_account_title),
@@ -62,7 +63,7 @@ fun CreateAccount(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge))
 
             OutlinedTextField(
                 label = { Text(stringResource(R.string.create_account_username_label)) },
@@ -76,7 +77,7 @@ fun CreateAccount(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
 
             OutlinedTextField(
                 label = { Text(stringResource(R.string.create_account_email_label)) },
@@ -104,7 +105,7 @@ fun CreateAccount(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingExtraLarge))
 
             Button(
                 onClick = {
@@ -124,7 +125,7 @@ fun CreateAccount(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(Dimens.ButtonHeight)
             ) {
                 Text(
                     text = stringResource(R.string.create_account_button),
@@ -136,6 +137,6 @@ fun CreateAccount(
 }
 
 private fun verifyEmail(mail: String): Boolean {
-    val pattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,18}".toRegex()
+    val pattern = Constants.REGEX_EMAIL.toRegex()
     return pattern.matches(mail)
 }

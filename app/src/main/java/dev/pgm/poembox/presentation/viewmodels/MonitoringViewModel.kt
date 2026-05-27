@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.pgm.poembox.R
+import dev.pgm.poembox.domain.Constants
 import dev.pgm.poembox.domain.PoemUtils
 import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.domain.UtilitySyllables
@@ -96,7 +97,7 @@ class MonitoringViewModel @Inject constructor(
     }
 
     private fun getDate(): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat(Constants.DATE_FORMAT_FULL, Locale.getDefault())
         return formatter.format(Date())
     }
 
@@ -150,7 +151,7 @@ class MonitoringViewModel @Inject constructor(
     private fun getPredominateNumberSyllables(content: String): String {
         val lines = content.split("\n").filter { it.isNotBlank() }
         val counts = lines.map { line ->
-            val clean = line.replace(Regex("[.,;:]"), "")
+            val clean = line.replace(Regex(Constants.REGEX_PUNCTUATION), "")
             val syllables = utilitySyllables.getSyllables(clean)
             val lastWord = clean.trim().split(" ").last()
             val isAcute = poemUtils.isAcute(lastWord)
@@ -158,6 +159,6 @@ class MonitoringViewModel @Inject constructor(
             val countSinhalese = poemUtils.hasSinhalese(clean)
             syllables.size + isAcute + isProparoxytone + countSinhalese
         }
-        return counts.groupBy { it }.maxByOrNull { it.value.size }?.key?.toString() ?: "0"
+        return counts.groupBy { it }.maxByOrNull { it.value.size }?.key?.toString() ?: Constants.SYLLABLES_DEFAULT
     }
 }

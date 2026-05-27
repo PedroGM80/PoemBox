@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.theme.PoemBoxThemeMode
@@ -48,7 +47,7 @@ private fun StatItem(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 24.dp),
+            .padding(vertical = Dimens.SpacingSmall, horizontal = Dimens.SpacingExtraLarge),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -84,17 +83,17 @@ private fun StatsBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp),
+                .padding(bottom = Dimens.PaddingExtraLarge),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = stringResource(R.string.stats_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 16.dp)
+                modifier = Modifier.padding(vertical = Dimens.PaddingLarge)
             )
             HorizontalDivider()
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Dimens.SpacingMedium))
             StatItem(stringResource(R.string.stats_total_drafts), stats.totalDrafts.toString())
             StatItem(stringResource(R.string.stats_validated), stats.validatedPoems.toString())
             StatItem(stringResource(R.string.stats_total_words), "${stats.totalWords} ${stringResource(R.string.stats_words_unit)}")
@@ -103,7 +102,7 @@ private fun StatsBottomSheet(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 4.dp)
+                        .padding(horizontal = Dimens.SpacingExtraLarge, vertical = Dimens.SpacingSmall)
                 ) {
                     Text(
                         text = "\"${stats.longestPoemTitle}\"",
@@ -112,7 +111,7 @@ private fun StatsBottomSheet(
                     )
                 }
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Dimens.PaddingLarge))
         }
     }
 }
@@ -150,7 +149,7 @@ fun TopBar(
                     text = userName ?: "",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = Dimens.PaddingMedium)
                 )
                 
                 Box {

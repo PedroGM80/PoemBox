@@ -29,6 +29,8 @@ import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
 import dev.pgm.poembox.presentation.viewmodels.ScreenTabsViewModel
 
+import dev.pgm.poembox.presentation.theme.Dimens
+
 @Composable
 fun ScreenTabs(
     navController: NavController,
@@ -57,7 +59,7 @@ fun ScreenTabs(
                 modifier = Modifier
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(bottom = 16.dp, top = 8.dp),
+                    .padding(bottom = Dimens.PaddingLarge, top = Dimens.PaddingMedium),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -65,8 +67,8 @@ fun ScreenTabs(
                     val selected = pagerState.currentPage == index
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .size(if (selected) 10.dp else 6.dp)
+                            .padding(horizontal = Dimens.PaddingSmall)
+                            .size(if (selected) Dimens.PagerIndicatorSizeSelected else Dimens.PagerIndicatorSizeUnselected)
                             .clip(CircleShape)
                             .background(
                                 if (selected) MaterialTheme.colorScheme.primary
