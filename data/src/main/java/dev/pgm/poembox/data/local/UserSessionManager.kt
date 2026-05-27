@@ -26,6 +26,7 @@ class UserSessionManager @Inject constructor(
         val USER_EMAIL = stringPreferencesKey("user_email")
         val CURRENT_POEM_TITLE = stringPreferencesKey("current_poem_title")
         val DAILY_REMINDER_ENABLED = booleanPreferencesKey("daily_reminder_enabled")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
     }
 
     override val userName: Flow<String?> = context.dataStore.data.map { prefs ->
@@ -38,6 +39,14 @@ class UserSessionManager @Inject constructor(
 
     override val dailyReminderEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[DAILY_REMINDER_ENABLED] ?: false
+    }
+
+    override val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[THEME_MODE] ?: "LIGHT"
+    }
+
+    override suspend fun setThemeMode(mode: String) {
+        context.dataStore.edit { prefs -> prefs[THEME_MODE] = mode }
     }
 
     override suspend fun setDailyReminderEnabled(enabled: Boolean) {

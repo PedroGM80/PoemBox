@@ -7,8 +7,10 @@ interface SessionManager {
     val userName: Flow<String?>
     val currentPoemTitle: Flow<String>
     val dailyReminderEnabled: Flow<Boolean>
+    val themeMode: Flow<String>
     val pendingEditTitle: StateFlow<String>
 
+    suspend fun setThemeMode(mode: String)
     suspend fun setDailyReminderEnabled(enabled: Boolean)
     suspend fun saveUser(name: String, email: String)
     suspend fun setCurrentPoemTitle(title: String)
