@@ -135,7 +135,8 @@ fun EditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .imePadding(),
+                .imePadding()
+                .animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
