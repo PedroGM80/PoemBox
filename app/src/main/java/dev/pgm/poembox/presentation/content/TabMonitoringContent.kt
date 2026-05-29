@@ -1,10 +1,12 @@
 package dev.pgm.poembox.presentation.content
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -25,7 +27,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Brush as GradientBrush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,14 +46,20 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
 import dev.pgm.poembox.presentation.theme.Dimens
-import dev.pgm.poembox.presentation.util.PdfExporter
-import dev.pgm.poembox.presentation.util.PoemCardRenderer
 import dev.pgm.poembox.presentation.theme.ImmersiveDarkBackground
 import dev.pgm.poembox.presentation.theme.ImmersiveDarkText
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmBackground
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmText
 import dev.pgm.poembox.presentation.theme.PoeticFont
+import dev.pgm.poembox.presentation.util.PdfExporter
+import dev.pgm.poembox.presentation.util.PoemCardRenderer
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Immersive reading dialog
+// ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () -> Unit) {
@@ -121,6 +136,238 @@ private fun ImmersiveReadingDialog(title: String, body: String, onDismiss: () ->
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Poem body card — shows the poem over an optional background image
+// ─────────────────────────────────────────────────────────────────────────────
+
+@Composable
+private fun PoemBodyCard(
+    body: String,
+    bgImageUri: Uri?,
+    onPickImage: () -> Unit,
+    onClearImage: () -> Unit
+) {
+    val context = LocalContext.current
+    val shape = MaterialTheme.shapes.large
+
+    val loadedBitmap by produceState<android.graphics.Bitmap?>(
+        initialValue = null,
+        key1 = bgImageUri
+    ) {
+        val bmp = if (bgImageUri != null) {
+            withContext(Dispatchers.IO) {
+                try {
+                    context.contentResolver.openInputStream(bgImageUri)
+                        ?.use { BitmapFactory.decodeStream(it) }
+                } catch (e: Exception) { null }
+            }
+        } else null
+        value = bmp
+        awaitDispose { bmp?.recycle() }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .clip(shape)
+            .then(
+                if (loadedBitmap != null) {
+                    Modifier.paint(
+                        painter = BitmapPainter(loadedBitmap!!.asImageBitmap()),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
+                }
+            )
+    ) {
+        // Gradient overlay — stronger when a photo is present
+        val overlayAlpha = if (loadedBitmap != null) 0.60f else 0f
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    GradientBrush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = overlayAlpha * 0.5f),
+                            Color.Black.copy(alpha = overlayAlpha),
+                            Color.Black.copy(alpha = overlayAlpha * 0.8f)
+                        )
+                    )
+                )
+        )
+
+        val textColor = if (loadedBitmap != null) Color.White
+                        else MaterialTheme.colorScheme.onSurfaceVariant
+
+        // Poem text — scrollable within the fixed-height card
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = Dimens.PaddingLarge)
+                .padding(top = Dimens.PaddingLarge, bottom = 56.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            HorizontalDivider(
+                modifier = Modifier.width(Dimens.DividerWidthSmall),
+                color = textColor.copy(alpha = 0.45f),
+                thickness = 1.dp
+            )
+            Spacer(Modifier.height(Dimens.PaddingMedium))
+            Text(
+                text = body,
+                fontFamily = PoeticFont,
+                fontSize = 19.sp,
+                lineHeight = 32.sp,
+                color = textColor,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(Dimens.PaddingMedium))
+            HorizontalDivider(
+                modifier = Modifier.width(Dimens.DividerWidthSmall),
+                color = textColor.copy(alpha = 0.45f),
+                thickness = 1.dp
+            )
+        }
+
+        // Bottom-right controls: clear + pick-image button
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(Dimens.PaddingSmall),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (bgImageUri != null) {
+                TextButton(
+                    onClick = onClearImage,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Color.White.copy(alpha = 0.85f)
+                    )
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.monitor_body_card_bg_clear),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            }
+            FilledIconButton(
+                onClick = onPickImage,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (bgImageUri != null)
+                        MaterialTheme.colorScheme.secondary
+                    else
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
+                    contentColor = if (bgImageUri != null)
+                        MaterialTheme.colorScheme.onSecondary
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    Icons.Default.Wallpaper,
+                    contentDescription = stringResource(R.string.monitor_bg_image_description),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Share section — prominent row of labeled share actions
+// ─────────────────────────────────────────────────────────────────────────────
+
+@Composable
+private fun ShareRow(
+    onShareText: () -> Unit,
+    onShareCard: () -> Unit,
+    onSharePdf: () -> Unit,
+    onShareTxt: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.SpacingSmall),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        shape = MaterialTheme.shapes.large
+    ) {
+        Column(modifier = Modifier.padding(Dimens.PaddingLarge)) {
+            Text(
+                text = stringResource(R.string.monitor_share_section_title),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Spacer(Modifier.height(Dimens.PaddingMedium))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                ShareAction(
+                    icon = Icons.Default.Share,
+                    label = stringResource(R.string.monitor_share_action_text),
+                    onClick = onShareText
+                )
+                ShareAction(
+                    icon = Icons.Default.Image,
+                    label = stringResource(R.string.monitor_share_action_card),
+                    onClick = onShareCard
+                )
+                ShareAction(
+                    icon = Icons.Default.PictureAsPdf,
+                    label = stringResource(R.string.monitor_share_action_pdf),
+                    onClick = onSharePdf
+                )
+                ShareAction(
+                    icon = Icons.Default.Download,
+                    label = stringResource(R.string.monitor_share_action_txt),
+                    onClick = onShareTxt
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShareAction(icon: ImageVector, label: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick)
+            .padding(horizontal = Dimens.PaddingMedium, vertical = Dimens.PaddingSmall)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.size(Dimens.IconLarge)
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main monitoring screen
+// ─────────────────────────────────────────────────────────────────────────────
+
 @Composable
 fun MonitoringScreen(
     viewModel: MonitoringViewModel = hiltViewModel()
@@ -155,7 +402,7 @@ fun MonitoringScreen(
         }
     }
 
-    val exportLauncher = rememberLauncherForActivityResult(
+    val exportTxtLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/plain")
     ) { uri ->
         uri?.let {
@@ -183,12 +430,15 @@ fun MonitoringScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = Dimens.PaddingLarge, vertical = Dimens.PaddingMedium)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (state.isLoading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxWidth().height(200.dp),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         } else if (state.title.isBlank()) {
@@ -219,6 +469,7 @@ fun MonitoringScreen(
                 }
             }
         } else {
+            // Title row: poem title + immersive reading + refresh
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -230,111 +481,75 @@ fun MonitoringScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                Row {
-                    IconButton(onClick = { showImmersive = true }) {
-                        Icon(
-                            Icons.Default.MenuBook,
-                            contentDescription = stringResource(R.string.monitor_read_description),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = { viewModel.loadPoem() }) {
-                        Icon(
-                            Icons.Default.Refresh,
-                            contentDescription = stringResource(R.string.monitor_refresh_description),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = {
-                        val shareText = buildString {
-                            appendLine(state.title)
-                            appendLine()
-                            append(state.body)
-                        }
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, shareText)
-                            putExtra(Intent.EXTRA_SUBJECT, state.title)
-                        }
-                        context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
-                    }) {
-                        Icon(
-                            Icons.Default.Share,
-                            contentDescription = stringResource(R.string.monitor_share_description),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = {
-                        val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
-                        exportLauncher.launch("$safeName.txt")
-                    }) {
-                        Icon(
-                            Icons.Default.Download,
-                            contentDescription = stringResource(R.string.monitor_export_description),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = {
-                        val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
-                        exportPdfLauncher.launch("$safeName.pdf")
-                    }) {
-                        Icon(
-                            Icons.Default.PictureAsPdf,
-                            contentDescription = stringResource(R.string.monitor_export_pdf_description),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = { bgImagePickerLauncher.launch("image/*") }) {
-                        Icon(
-                            Icons.Default.Wallpaper,
-                            contentDescription = stringResource(R.string.monitor_bg_image_description),
-                            tint = if (bgImageUri != null) MaterialTheme.colorScheme.secondary
-                                   else MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = {
-                        val uri = PoemCardRenderer.createAndShare(
-                            context, state.title, state.body,
-                            darkMode = true,
-                            backgroundImageUri = bgImageUri
-                        )
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "image/png"
-                            putExtra(Intent.EXTRA_STREAM, uri)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        }
-                        context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
-                    }) {
-                        Icon(
-                            Icons.Default.Image,
-                            contentDescription = stringResource(R.string.monitor_share_image_description),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                IconButton(onClick = { showImmersive = true }) {
+                    Icon(
+                        Icons.Default.MenuBook,
+                        contentDescription = stringResource(R.string.monitor_read_description),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                IconButton(onClick = { viewModel.loadPoem() }) {
+                    Icon(
+                        Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.monitor_refresh_description),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
 
             Spacer(Modifier.height(Dimens.PaddingMedium))
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 260.dp)
-                    .padding(vertical = Dimens.PaddingMedium),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Text(
-                    text = state.body,
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .padding(Dimens.PaddingLarge),
-                    style = MaterialTheme.typography.bodyLarge,
-                    lineHeight = 28.sp
-                )
-            }
+            // Poem body card with optional background image
+            PoemBodyCard(
+                body = state.body,
+                bgImageUri = bgImageUri,
+                onPickImage = { bgImagePickerLauncher.launch("image/*") },
+                onClearImage = { bgImageUri = null }
+            )
 
+            Spacer(Modifier.height(Dimens.PaddingMedium))
+
+            // Prominent share section
+            ShareRow(
+                onShareText = {
+                    val shareText = buildString {
+                        appendLine(state.title)
+                        appendLine()
+                        append(state.body)
+                    }
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                        putExtra(Intent.EXTRA_SUBJECT, state.title)
+                    }
+                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
+                },
+                onShareCard = {
+                    val uri = PoemCardRenderer.createAndShare(
+                        context, state.title, state.body,
+                        darkMode = true,
+                        backgroundImageUri = bgImageUri
+                    )
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "image/png"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
+                },
+                onSharePdf = {
+                    val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
+                    exportPdfLauncher.launch("$safeName.pdf")
+                },
+                onShareTxt = {
+                    val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
+                    exportTxtLauncher.launch("$safeName.txt")
+                }
+            )
+
+            Spacer(Modifier.height(Dimens.PaddingMedium))
+
+            // Analysis cards
             AnalysisCard(
                 title = stringResource(R.string.monitor_card_metrical),
                 content = state.syllablesAnalysis,
@@ -358,6 +573,7 @@ fun MonitoringScreen(
 
             Spacer(Modifier.height(Dimens.PaddingMedium))
 
+            // Validate button
             Button(
                 onClick = { viewModel.validatePoem() },
                 modifier = Modifier
@@ -382,6 +598,10 @@ fun MonitoringScreen(
         }
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Analysis card
+// ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 fun AnalysisCard(title: String, content: String, icon: ImageVector) {
