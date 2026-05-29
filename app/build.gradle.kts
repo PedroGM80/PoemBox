@@ -105,4 +105,11 @@ dependencies {
 
     // Play
     implementation(libs.play.review)
+
+    // Glance (widgets)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+
+    // Billing
+    implementation(libs.android.billing)
 }

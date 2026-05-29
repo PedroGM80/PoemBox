@@ -28,7 +28,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import dev.pgm.poembox.presentation.widget.PoemBoxWidgetUpdater
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -236,6 +238,8 @@ class EditViewModel @Inject constructor(
             saveDraftUseCase(draft)
             sessionManager.setCurrentPoemTitle(_title.value)
             sessionManager.recordWriteToday()
+            val streak = sessionManager.streak.first()
+            PoemBoxWidgetUpdater.update(context, _title.value, streak)
             _isSaved.value = true
             onSuccess()
         }
