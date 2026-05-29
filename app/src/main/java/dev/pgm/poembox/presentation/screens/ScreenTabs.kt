@@ -1,7 +1,8 @@
 package dev.pgm.poembox.presentation.screens
-
+ 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +34,8 @@ import dev.pgm.poembox.presentation.components.Tabs
 import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
 import dev.pgm.poembox.presentation.viewmodels.ScreenTabsViewModel
-
 import dev.pgm.poembox.presentation.theme.Dimens
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScreenTabs(
@@ -43,6 +45,7 @@ fun ScreenTabs(
     val tabs = remember { listOf(TabItem.Editor, TabItem.Monitor, TabItem.Manager) }
     val pagerState = rememberPagerState { tabs.size }
     val pendingEditTitle by viewModel.pendingEditTitle.collectAsState()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(pendingEditTitle) {
         if (pendingEditTitle.isNotBlank()) {
@@ -79,6 +82,9 @@ fun ScreenTabs(
                                 else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                             )
                             .animateContentSize()
+                            .clickable {
+                                scope.launch { pagerState.animateScrollToPage(index) }
+                            }
                     )
                 }
             }
