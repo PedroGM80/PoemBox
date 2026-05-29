@@ -2,21 +2,22 @@ package dev.pgm.poembox.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import dev.pgm.poembox.R
 
-val provider = GoogleFont.Provider(
-    providerAuthority = "com.google.android.gms.fonts",
-    providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
-)
-
+/**
+ * PoeticFont usa Cormorant Garamond desde los assets locales (res/font/).
+ * Esto garantiza que la fuente carga aunque no haya conexión a internet,
+ * evitando el uso del sistema en el primer arranque sin red.
+ */
 val PoeticFont = FontFamily(
-    Font(googleFont = GoogleFont("Cormorant Garamond"), fontProvider = provider)
+    Font(R.font.cormorant_garamond_regular, weight = FontWeight.Normal),
+    Font(R.font.cormorant_garamond_bold,    weight = FontWeight.Bold),
+    Font(R.font.cormorant_garamond_italic,  weight = FontWeight.Normal, style = FontStyle.Italic)
 )
 
 val Typography = Typography(
