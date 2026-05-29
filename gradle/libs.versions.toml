@@ -24,6 +24,7 @@ playReview = "2.0.2"
 glance = "1.1.1"
 billing = "7.1.1"
 mediapipe = "0.10.22"
+mockk = "1.13.10"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,6 +74,10 @@ mediapipe-tasks-genai = { group = "com.google.mediapipe", name = "tasks-genai", 
 
 # Billing
 android-billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
+
+# Testing extras
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.7.3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
