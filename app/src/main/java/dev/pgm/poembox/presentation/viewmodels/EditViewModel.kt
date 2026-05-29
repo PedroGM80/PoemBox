@@ -235,6 +235,7 @@ class EditViewModel @Inject constructor(
             )
             saveDraftUseCase(draft)
             sessionManager.setCurrentPoemTitle(_title.value)
+            sessionManager.recordWriteToday()
             _isSaved.value = true
             onSuccess()
         }

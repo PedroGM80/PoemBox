@@ -9,6 +9,10 @@ interface SessionManager {
     val dailyReminderEnabled: Flow<Boolean>
     val themeMode: Flow<String>
     val pendingEditTitle: StateFlow<String>
+    /** Días consecutivos en que el usuario ha guardado al menos un borrador. */
+    val streak: Flow<Int>
+    /** Mejor racha histórica. */
+    val maxStreak: Flow<Int>
 
     suspend fun setThemeMode(mode: String)
     suspend fun setDailyReminderEnabled(enabled: Boolean)
@@ -17,4 +21,6 @@ interface SessionManager {
     suspend fun clearSession()
     fun requestEditPoem(title: String)
     fun consumeEditRequest()
+    /** Registra que el usuario ha escrito hoy y actualiza la racha. */
+    suspend fun recordWriteToday()
 }

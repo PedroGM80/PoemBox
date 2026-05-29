@@ -95,6 +95,19 @@ private fun StatsBottomSheet(
             )
             HorizontalDivider()
             Spacer(Modifier.height(Dimens.SpacingMedium))
+            // Racha
+            StatItem(
+                stringResource(R.string.stats_streak_current),
+                if (stats.currentStreak > 0)
+                    stringResource(R.string.stats_streak_days, stats.currentStreak)
+                else
+                    stringResource(R.string.stats_streak_zero)
+            )
+            StatItem(
+                stringResource(R.string.stats_streak_max),
+                stringResource(R.string.stats_streak_days, stats.maxStreak)
+            )
+            HorizontalDivider(modifier = Modifier.padding(vertical = Dimens.SpacingMedium))
             StatItem(stringResource(R.string.stats_total_drafts), stats.totalDrafts.toString())
             StatItem(stringResource(R.string.stats_validated), stats.validatedPoems.toString())
             StatItem(stringResource(R.string.stats_total_words), "${stats.totalWords} ${stringResource(R.string.stats_words_unit)}")

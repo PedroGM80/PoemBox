@@ -119,6 +119,10 @@
     <string name="stats_longest_poem">Poema más largo</string>
     <string name="stats_words_unit">palabras</string>
     <string name="topbar_stats_description">Ver estadísticas</string>
+    <string name="stats_streak_current">🔥 Racha actual</string>
+    <string name="stats_streak_max">⭐ Mejor racha</string>
+    <string name="stats_streak_days">%1$d días</string>
+    <string name="stats_streak_zero">¡Escribe hoy para empezar!</string>
 
     <!-- Daily reminder notification -->
     <string name="notif_channel_name">Escritura diaria</string>

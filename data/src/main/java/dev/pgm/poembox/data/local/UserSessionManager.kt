@@ -3,8 +3,13 @@ package dev.pgm.poembox.data.local
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +32,10 @@ class UserSessionManager @Inject constructor(
         val CURRENT_POEM_TITLE = stringPreferencesKey("current_poem_title")
         val DAILY_REMINDER_ENABLED = booleanPreferencesKey("daily_reminder_enabled")
         val THEME_MODE = stringPreferencesKey("theme_mode")
+        val STREAK_CURRENT = intPreferencesKey("streak_current")
+        val STREAK_MAX = intPreferencesKey("streak_max")
+        val STREAK_LAST_DATE = stringPreferencesKey("streak_last_date")
+        private val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     }
 
     override val userName: Flow<String?> = context.dataStore.data.map { prefs ->
@@ -68,6 +77,28 @@ class UserSessionManager @Inject constructor(
 
     override suspend fun clearSession() {
         context.dataStore.edit { it.clear() }
+    }
+
+    override val streak: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[STREAK_CURRENT] ?: 0
+    }
+
+    override val maxStreak: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[STREAK_MAX] ?: 0
+    }
+
+    override suspend fun recordWriteToday() {
+        val today = fmt.format(Date())
+        context.dataStore.edit { prefs ->
+            if (prefs[STREAK_LAST_DATE] == today) return@edit  // ya contado hoy
+            val cal = Calendar.getInstance().also { it.add(Calendar.DAY_OF_YEAR, -1) }
+            val yesterday = fmt.format(cal.time)
+            val current = prefs[STREAK_CURRENT] ?: 0
+            val newStreak = if (prefs[STREAK_LAST_DATE] == yesterday) current + 1 else 1
+            prefs[STREAK_CURRENT] = newStreak
+            prefs[STREAK_MAX] = maxOf(prefs[STREAK_MAX] ?: 0, newStreak)
+            prefs[STREAK_LAST_DATE] = today
+        }
     }
 
     private val _pendingEditTitle = MutableStateFlow("")
