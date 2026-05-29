@@ -112,4 +112,7 @@ dependencies {
 
     // Billing
     implementation(libs.android.billing)
+
+    // MediaPipe LLM — IA on-device (Gemini Nano / LLM Inference)
+    implementation(libs.mediapipe.tasks.genai)
 }

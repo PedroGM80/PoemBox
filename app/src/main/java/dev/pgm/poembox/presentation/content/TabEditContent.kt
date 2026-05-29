@@ -34,6 +34,7 @@ import dev.pgm.poembox.domain.model.PoeticForms
 import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
+import dev.pgm.poembox.presentation.ai.PoetryAssistantPanel
 import dev.pgm.poembox.presentation.screens.FormsLibraryDialog
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.EditViewModel
@@ -346,6 +347,18 @@ fun EditScreen(
                         .padding(end = Dimens.PaddingSmall, top = Dimens.SpacingTiny)
                 )
             }
+
+            // Asistente poético IA — el verso activo es la última línea no vacía del contenido
+            val activeVerse = remember(content) {
+                content.trimEnd().lines().lastOrNull { it.isNotBlank() } ?: ""
+            }
+            PoetryAssistantPanel(
+                currentVerse = activeVerse,
+                onInsertWord = { word ->
+                    val cursor = if (content.endsWith(" ") || content.isEmpty()) word else " $word"
+                    viewModel.onContentChange(content + cursor)
+                }
+            )
 
             if (lineValidations.isNotEmpty()) {
                 TextButton(
