@@ -29,9 +29,19 @@ class AuthViewModel @Inject constructor(
         .map { true }
         .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = false)
 
+    val onboardingCompleted: StateFlow<Boolean> = sessionManager.onboardingCompleted
+        .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = true)
+
     fun registerUser(name: String, email: String, onComplete: () -> Unit) {
         viewModelScope.launch {
             sessionManager.saveUser(name, email)
+            onComplete()
+        }
+    }
+
+    fun completeOnboarding(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            sessionManager.setOnboardingCompleted()
             onComplete()
         }
     }

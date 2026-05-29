@@ -18,19 +18,18 @@ fun ScreenSplash(
 ) {
     LaunchedEffect(Unit) {
         delay(SPLASH_DELAY_MS)
-        // Wait until DataStore has emitted its first value.
-        // With Eagerly this is nearly instant, but this guards against slow devices
-        // and correctly distinguishes "loading null" from "user not registered null".
+        // Wait until DataStore has emitted its first value
         viewModel.isLoaded.first { it }
-        if (viewModel.userName.value != null) {
-            navController.navigate(ScreensRouteList.RouteScreenLogin.route) {
-                popUpTo(0)
-            }
-        } else {
-            navController.navigate(ScreensRouteList.RouteScreenCreateAccount.route) {
-                popUpTo(0)
-            }
+
+        val destination = when {
+            !viewModel.onboardingCompleted.value ->
+                ScreensRouteList.RouteScreenOnboarding.route
+            viewModel.userName.value != null ->
+                ScreensRouteList.RouteScreenLogin.route
+            else ->
+                ScreensRouteList.RouteScreenCreateAccount.route
         }
+        navController.navigate(destination) { popUpTo(0) }
     }
     Logo()
 }

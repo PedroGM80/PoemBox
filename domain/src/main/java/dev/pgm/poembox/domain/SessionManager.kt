@@ -9,6 +9,8 @@ interface SessionManager {
     val dailyReminderEnabled: Flow<Boolean>
     val themeMode: Flow<String>
     val pendingEditTitle: StateFlow<String>
+    /** True si el usuario ya ha visto el onboarding al menos una vez. */
+    val onboardingCompleted: Flow<Boolean>
     /** Días consecutivos en que el usuario ha guardado al menos un borrador. */
     val streak: Flow<Int>
     /** Mejor racha histórica. */
@@ -21,6 +23,8 @@ interface SessionManager {
     suspend fun clearSession()
     fun requestEditPoem(title: String)
     fun consumeEditRequest()
+    /** Marca el onboarding como completado para no mostrarlo de nuevo. */
+    suspend fun setOnboardingCompleted()
     /** Registra que el usuario ha escrito hoy y actualiza la racha. */
     suspend fun recordWriteToday()
 }

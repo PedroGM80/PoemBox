@@ -19,6 +19,9 @@ fun SetUpNavController(controller: NavHostController) {
         composable(ScreensRouteList.RouteScreenSplash.route) {
             ScreenSplash(navController = controller)
         }
+        composable(ScreensRouteList.RouteScreenOnboarding.route) {
+            ScreenOnboarding(navController = controller)
+        }
         composable(ScreensRouteList.RouteScreenTabs.route) {
             ScreenTabs(navController = controller)
         }

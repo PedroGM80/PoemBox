@@ -35,6 +35,7 @@ class UserSessionManager @Inject constructor(
         val STREAK_CURRENT = intPreferencesKey("streak_current")
         val STREAK_MAX = intPreferencesKey("streak_max")
         val STREAK_LAST_DATE = stringPreferencesKey("streak_last_date")
+        val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
         private val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     }
 
@@ -77,6 +78,14 @@ class UserSessionManager @Inject constructor(
 
     override suspend fun clearSession() {
         context.dataStore.edit { it.clear() }
+    }
+
+    override val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[ONBOARDING_COMPLETED] ?: false
+    }
+
+    override suspend fun setOnboardingCompleted() {
+        context.dataStore.edit { prefs -> prefs[ONBOARDING_COMPLETED] = true }
     }
 
     override val streak: Flow<Int> = context.dataStore.data.map { prefs ->

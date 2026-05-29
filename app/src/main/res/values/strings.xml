@@ -5,6 +5,17 @@
     <!-- Splash / Logo -->
     <string name="logo_content_description">Logo de PoemBox</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_slide1_title">Escribe con alma</string>
+    <string name="onboarding_slide1_body">El editor inteligente cuenta sílabas en tiempo real y te guía para dominar el haiku, el soneto, la décima y más formas poéticas.</string>
+    <string name="onboarding_slide2_title">Analiza tu poesía</string>
+    <string name="onboarding_slide2_body">Descubre la métrica, la rima y el encabalgamiento de cada verso. Convierte la intuición poética en conocimiento.</string>
+    <string name="onboarding_slide3_title">Comparte tu voz</string>
+    <string name="onboarding_slide3_body">Exporta tus poemas como tarjetas con imagen de fondo, PDF o texto. Haz que el mundo lea lo que sientes.</string>
+    <string name="onboarding_next">Siguiente</string>
+    <string name="onboarding_start">Comenzar →</string>
+    <string name="onboarding_skip">Saltar</string>
+
     <!-- Create Account -->
     <string name="create_account_title">Crear cuenta</string>
     <string name="create_account_username_label">Nombre de usuario</string>
