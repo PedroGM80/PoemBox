@@ -51,6 +51,7 @@ import dev.pgm.poembox.presentation.theme.ImmersiveDarkText
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmBackground
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmText
 import dev.pgm.poembox.presentation.theme.PoeticFont
+import dev.pgm.poembox.presentation.util.InAppReviewHelper
 import dev.pgm.poembox.presentation.util.PdfExporter
 import dev.pgm.poembox.presentation.util.PoemCardRenderer
 import dev.pgm.poembox.presentation.viewmodels.MonitoringViewModel
@@ -376,6 +377,13 @@ fun MonitoringScreen(
     val context = LocalContext.current
     var showImmersive by remember { mutableStateOf(false) }
     var bgImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Solicitar valoración en Play Store la primera vez que el usuario valida un poema
+    LaunchedEffect(state.isValidated) {
+        if (state.isValidated) {
+            InAppReviewHelper.requestReview(context)
+        }
+    }
 
     val bgImagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()

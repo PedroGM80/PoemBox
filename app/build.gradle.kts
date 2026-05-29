@@ -98,7 +98,11 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
 
-    // Firebase & Crashlytics
+    // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+
+    // Play
+    implementation(libs.play.review)
 }
