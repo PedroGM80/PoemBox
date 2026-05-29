@@ -5,6 +5,14 @@
     <!-- Splash / Logo -->
     <string name="logo_content_description">Logo de PoemBox</string>
 
+    <!-- Premium / Billing -->
+    <string name="premium_support_button">⭐ Pro</string>
+    <string name="premium_already_pro">¡Ya eres Pro! ⭐</string>
+    <string name="premium_dialog_title">Apoya PoemBox ⭐</string>
+    <string name="premium_dialog_body">Desbloquea el badge Pro y apoya el desarrollo de PoemBox. Pago único, sin suscripciones.</string>
+    <string name="premium_dialog_buy">Comprar</string>
+    <string name="premium_dialog_cancel">Ahora no</string>
+
     <!-- Widget -->
     <string name="widget_description">Accede rápidamente al editor y ve tu poema actual</string>
 

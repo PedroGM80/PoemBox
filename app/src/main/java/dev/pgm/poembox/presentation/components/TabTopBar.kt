@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -36,9 +38,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.compose.ui.platform.LocalContext
 import dev.pgm.poembox.R
+import dev.pgm.poembox.presentation.billing.BillingViewModel
 import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.PoemBoxThemeMode
+import dev.pgm.poembox.presentation.util.InAppReviewHelper
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.StatsViewModel
 import dev.pgm.poembox.presentation.viewmodels.ThemeViewModel
@@ -136,13 +144,37 @@ fun TopBar(
     modifier: Modifier = Modifier,
     onLogout: (() -> Unit)? = null,
     authViewModel: AuthViewModel = hiltViewModel(),
-    themeViewModel: ThemeViewModel = hiltViewModel()
+    themeViewModel: ThemeViewModel = hiltViewModel(),
+    billingViewModel: BillingViewModel = hiltViewModel()
 ) {
     val userName by authViewModel.userName.collectAsState()
     val themeMode by themeViewModel.themeMode.collectAsState()
+    val isPro by billingViewModel.isPro.collectAsState()
+    val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
     var showThemeMenu by remember { mutableStateOf(false) }
+    var showProDialog by remember { mutableStateOf(false) }
+
+    if (showProDialog) {
+        AlertDialog(
+            onDismissRequest = { showProDialog = false },
+            title = { Text(stringResource(R.string.premium_dialog_title)) },
+            text = { Text(stringResource(R.string.premium_dialog_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showProDialog = false
+                    InAppReviewHelper.requestReview(context)  // también pedimos review
+                    billingViewModel.purchase(context.findActivity() ?: return@TextButton)
+                }) { Text(stringResource(R.string.premium_dialog_buy)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showProDialog = false }) {
+                    Text(stringResource(R.string.premium_dialog_cancel))
+                }
+            }
+        )
+    }
 
     if (showStats) {
         StatsBottomSheet(onDismiss = { showStats = false })
@@ -159,6 +191,16 @@ fun TopBar(
         },
         actions = {
             if (!userName.isNullOrBlank()) {
+                // Pro badge / buy button
+                TextButton(onClick = { if (!isPro) showProDialog = true }) {
+                    Text(
+                        text = if (isPro) stringResource(R.string.premium_already_pro)
+                               else stringResource(R.string.premium_support_button),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (isPro) MaterialTheme.colorScheme.tertiary
+                                else MaterialTheme.colorScheme.primary
+                    )
+                }
                 Text(
                     text = userName ?: "",
                     style = MaterialTheme.typography.labelMedium,
@@ -249,4 +291,13 @@ fun TopBar(
             titleContentColor = MaterialTheme.colorScheme.onSurface
         )
     )
+}
+
+private fun Context.findActivity(): Activity? {
+    var ctx = this
+    while (ctx is ContextWrapper) {
+        if (ctx is Activity) return ctx
+        ctx = ctx.baseContext
+    }
+    return null
 }
