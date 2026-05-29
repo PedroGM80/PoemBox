@@ -5,6 +5,14 @@
     <!-- Splash / Logo -->
     <string name="logo_content_description">Logo de PoemBox</string>
 
+    <!-- Biblioteca de formas -->
+    <string name="forms_library_title">Biblioteca poética</string>
+    <string name="forms_library_subtitle">Aprende y practica formas clásicas</string>
+    <string name="forms_library_use_example">Usar como ejemplo</string>
+    <string name="forms_library_structure">Estructura</string>
+    <string name="forms_library_example_poem">Ejemplo</string>
+    <string name="forms_library_button">📚 Formas</string>
+
     <!-- Premium / Billing -->
     <string name="premium_support_button">⭐ Pro</string>
     <string name="premium_already_pro">¡Ya eres Pro! ⭐</string>

@@ -34,6 +34,7 @@ import dev.pgm.poembox.domain.model.PoeticForms
 import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
+import dev.pgm.poembox.presentation.screens.FormsLibraryDialog
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 
@@ -110,6 +111,17 @@ fun EditScreen(
     var showNotes by remember { mutableStateOf(false) }
     var showValidation by remember { mutableStateOf(false) }
     var showInspiration by remember { mutableStateOf(false) }
+    var showFormsLibrary by remember { mutableStateOf(false) }
+
+    if (showFormsLibrary) {
+        FormsLibraryDialog(
+            onDismiss = { showFormsLibrary = false },
+            onUseExample = { exampleTitle, examplePoem ->
+                viewModel.onTitleChange(exampleTitle)
+                viewModel.onContentChange(examplePoem)
+            }
+        )
+    }
     val todayPrompt = remember { WritingPrompts.todayPrompt() }
     val userName by authViewModel.userName.collectAsState()
     val dailyReminderEnabled by viewModel.dailyReminderEnabled.collectAsState()
@@ -221,6 +233,14 @@ fun EditScreen(
                                 else MaterialTheme.colorScheme.outline
                     )
                 }
+            }
+
+            // Botón biblioteca de formas + inspiración en la misma fila
+            Row(modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = { showFormsLibrary = true }) {
+                    Text(stringResource(R.string.forms_library_button), style = MaterialTheme.typography.labelMedium)
+                }
+                Spacer(Modifier.weight(1f))
             }
 
             // Daily inspiration card
