@@ -26,35 +26,13 @@ class UtilitySyllables @Inject constructor() {
     val patternAccent: Pattern = Pattern.compile(".*([áéíóú]).*")
     private val patternVowelsCaseNCaseS: Pattern = Pattern.compile(".*([áéíóúaeiouns])")
     private val enye = 'ñ'
-    private val vowels: CharArray
-        get() {
-            val size = openVowels.size + closeVowels.size + closeVowelsAccent.size
-            val vowels = CharArray(size)
-            var commonIndex = 0
-            for (indexOpenVowels in openVowels.indices) {
-                vowels[commonIndex] = openVowels[indexOpenVowels]
-                commonIndex++
-            }
-            for (indexCloseVowels in closeVowels.indices) {
-                vowels[commonIndex] = closeVowels[indexCloseVowels]
-                commonIndex++
-            }
-            for (indexCloseVowelsAccent in closeVowelsAccent.indices) {
-                vowels[commonIndex] = closeVowelsAccent[indexCloseVowelsAccent]
-                commonIndex++
-            }
-            return vowels
-        }
-    private val otherCase: CharArray
-        get() {
-            val size = vowels.size + 1
-            val otherCase = CharArray(size)
-            for (index in vowels.indices) {
-                otherCase[index] = vowels[index]
-            }
-            otherCase[size - 1] = enye
-            return otherCase
-        }
+    // Optimized: vowels is pre-initialized once to avoid allocating/copying arrays inside tight loops!
+    private val vowels: CharArray = openVowels + closeVowels + closeVowelsAccent
+
+    // Optimized: Precompiled regex patterns for getStressedVowelIndex to avoid rebuilding them on every call!
+    private val patternVowels = Pattern.compile("[aeiouáéíóú]")
+    private val patternVowelsAccent = Pattern.compile("[áéíóú]")
+    private val patternOpenVowels = Pattern.compile("[aáeéoó]")
 
 
     /**
@@ -91,7 +69,7 @@ class UtilitySyllables @Inject constructor() {
         var hInterleaved = 0
         val charsWord = word!!.toCharArray()
 
-        if (charsWord[0] == 's' && charsWord[1] == 'u' && charsWord[2] == 'b' && charsWord[3] == 'r') return 2
+        if (charsWord.size >= 4 && charsWord[0] == 's' && charsWord[1] == 'u' && charsWord[2] == 'b' && charsWord[3] == 'r') return 2
         var vowel = 0
         var found = false
         while (vowel < charsWord.size && !found) {
@@ -280,15 +258,9 @@ class UtilitySyllables @Inject constructor() {
         val letters = syllable.lowercase(Locale.getDefault()).toCharArray()
         var check = -1
         var onlyOneVowel = false
-        val patternVowels = Pattern.compile("[aeiouáéíóú]")
-        val patternVowelsAccent = Pattern.compile("[áéíóú]")
-        val patternOpenVowels = Pattern.compile("[aáeéoó]")
-
 
         for (index in letters.indices) {
-            val stringBuffer = StringBuffer()
-            stringBuffer.append(letters[index])
-            if (patternVowels.matcher(stringBuffer).matches()) {
+            if (patternVowels.matcher(letters[index].toString()).matches()) {
                 onlyOneVowel = true
                 check = index
             }
@@ -298,9 +270,7 @@ class UtilitySyllables @Inject constructor() {
         // if this has interleaved
         check = -1
         for (index in letters.indices) {
-            val stringBuffer = StringBuffer()
-            stringBuffer.append(letters[index])
-            if (patternVowelsAccent.matcher(stringBuffer).matches()) {
+            if (patternVowelsAccent.matcher(letters[index].toString()).matches()) {
                 check = index
             }
         }
@@ -308,9 +278,7 @@ class UtilitySyllables @Inject constructor() {
 
         check = -1
         for (index in letters.indices) {
-            val stringBuffer = StringBuffer()
-            stringBuffer.append(letters[index])
-            if (patternOpenVowels.matcher(stringBuffer).matches()) {
+            if (patternOpenVowels.matcher(letters[index].toString()).matches()) {
                 check = index
             }
         }

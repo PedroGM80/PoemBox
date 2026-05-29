@@ -6,6 +6,9 @@ import javax.inject.Inject
 
 class PoemUtils @Inject constructor(private val syllables: UtilitySyllables) {
 
+    private val patternVowelsAccent = Pattern.compile("[áéíóú]")
+    private val patternVowelsCaseNCaseS = Pattern.compile("[aeiouns]")
+
     fun getNumberOfVerse(text: String): Int {
         var lines = 0
         text.forEach { if (it == '\n') lines++ }
@@ -38,17 +41,14 @@ class PoemUtils @Inject constructor(private val syllables: UtilitySyllables) {
     private fun getTonicVowel(word: String): Int {
         var check = -1
         val letters = word.lowercase(Locale.getDefault()).toCharArray()
-        val patternVowelsAccent = Pattern.compile("[áéíóú]")
+        if (letters.isEmpty()) return -1
 
         for (index in letters.indices) {
-            val buf = StringBuffer().append(letters[index])
-            if (patternVowelsAccent.matcher(buf).matches()) check = index
+            if (patternVowelsAccent.matcher(letters[index].toString()).matches()) check = index
         }
         if (check != -1) return check
 
-        val patternVowelsCaseNCaseS = Pattern.compile("[aeiouns]")
-        val buf = StringBuffer().append(letters[letters.size - 1])
-        if (patternVowelsCaseNCaseS.matcher(buf).matches()) {
+        if (patternVowelsCaseNCaseS.matcher(letters[letters.size - 1].toString()).matches()) {
             val vowels = word.indices.filter { syllables.isVowel(word[it]) }.toMutableList()
             if (vowels.size > 1) {
                 vowels.removeAt(vowels.size - 1)
