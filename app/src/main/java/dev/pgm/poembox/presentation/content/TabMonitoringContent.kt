@@ -51,6 +51,7 @@ import dev.pgm.poembox.presentation.theme.ImmersiveDarkText
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmBackground
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmText
 import dev.pgm.poembox.presentation.theme.PoeticFont
+import dev.pgm.poembox.presentation.util.Analytics
 import dev.pgm.poembox.presentation.util.InAppReviewHelper
 import dev.pgm.poembox.presentation.util.PdfExporter
 import dev.pgm.poembox.presentation.util.PoemCardRenderer
@@ -378,9 +379,10 @@ fun MonitoringScreen(
     var showImmersive by remember { mutableStateOf(false) }
     var bgImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Solicitar valoración en Play Store la primera vez que el usuario valida un poema
+    // Solicitar valoración + analytics cuando el usuario valida un poema
     LaunchedEffect(state.isValidated) {
         if (state.isValidated) {
+            Analytics.poemValidated(state.title, syllables = 0)
             InAppReviewHelper.requestReview(context)
         }
     }
@@ -489,7 +491,7 @@ fun MonitoringScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = { showImmersive = true }) {
+                IconButton(onClick = { Analytics.immersiveOpened(); showImmersive = true }) {
                     Icon(
                         Icons.Default.MenuBook,
                         contentDescription = stringResource(R.string.monitor_read_description),
@@ -511,7 +513,7 @@ fun MonitoringScreen(
             PoemBodyCard(
                 body = state.body,
                 bgImageUri = bgImageUri,
-                onPickImage = { bgImagePickerLauncher.launch("image/*") },
+                onPickImage = { Analytics.bgImagePicked(); bgImagePickerLauncher.launch("image/*") },
                 onClearImage = { bgImageUri = null }
             )
 
@@ -520,6 +522,7 @@ fun MonitoringScreen(
             // Prominent share section
             ShareRow(
                 onShareText = {
+                    Analytics.sharedAsText()
                     val shareText = buildString {
                         appendLine(state.title)
                         appendLine()
@@ -533,6 +536,7 @@ fun MonitoringScreen(
                     context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
                 },
                 onShareCard = {
+                    Analytics.sharedAsCard(hasBgImage = bgImageUri != null)
                     val uri = PoemCardRenderer.createAndShare(
                         context, state.title, state.body,
                         darkMode = true,
@@ -546,10 +550,12 @@ fun MonitoringScreen(
                     context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
                 },
                 onSharePdf = {
+                    Analytics.sharedAsPdf()
                     val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
                     exportPdfLauncher.launch("$safeName.pdf")
                 },
                 onShareTxt = {
+                    Analytics.sharedAsTxt()
                     val safeName = state.title.replace(Regex("[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]"), "_")
                     exportTxtLauncher.launch("$safeName.txt")
                 }

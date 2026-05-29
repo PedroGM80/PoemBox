@@ -47,6 +47,7 @@ import dev.pgm.poembox.presentation.theme.ImmersiveWarmBackground
 import dev.pgm.poembox.presentation.theme.ImmersiveWarmText
 import dev.pgm.poembox.presentation.theme.PoeticFont
 import dev.pgm.poembox.presentation.util.PoemCardRenderer
+import dev.pgm.poembox.presentation.util.Analytics
 import dev.pgm.poembox.presentation.components.TabItem
 import dev.pgm.poembox.presentation.viewmodels.ManagerViewModel
 import dev.pgm.poembox.presentation.viewmodels.SortOrder
@@ -476,6 +477,7 @@ fun ManagerScreen(
                 confirmButton = {
                     TextButton(
                         onClick = {
+                            Analytics.poemDeleted()
                             viewModel.deletePoem(poem)
                             showDeleteDialog = false
                             poemToDelete = null
