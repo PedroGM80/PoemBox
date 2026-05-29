@@ -2,6 +2,7 @@ package dev.pgm.poembox.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.presentation.theme.PoemBoxThemeMode
@@ -22,6 +23,7 @@ class ThemeViewModel @Inject constructor(
             try {
                 PoemBoxThemeMode.valueOf(mode)
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 PoemBoxThemeMode.LIGHT
             }
         }

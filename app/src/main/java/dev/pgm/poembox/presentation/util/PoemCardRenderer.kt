@@ -9,6 +9,7 @@ import android.graphics.Paint
 import android.net.Uri
 import androidx.core.content.FileProvider
 import java.io.File
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 import dev.pgm.poembox.domain.Constants
 
@@ -130,7 +131,8 @@ object PoemCardRenderer {
 
             canvas.drawBitmap(cropped, 0f, 0f, null)
             cropped.recycle()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             canvas.drawColor(Color.parseColor(Constants.COLOR_MIDNIGHT_DEEP))
         }
     }

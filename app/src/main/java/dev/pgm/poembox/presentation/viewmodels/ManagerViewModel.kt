@@ -10,6 +10,7 @@ import dev.pgm.poembox.domain.usecase.DeletePoemUseCase
 import dev.pgm.poembox.domain.usecase.GetAllSheetsUseCase
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.presentation.content.PoemDetails
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -69,7 +70,9 @@ class ManagerViewModel @Inject constructor(
                 val sheets = getAllSheetsUseCase()
                 val detailsList = sheets.map { sheet ->
                     async {
-                        runCatching { getDraftByTitleUseCase(sheet.draftTitle) }.getOrNull()
+                        runCatching { getDraftByTitleUseCase(sheet.draftTitle) }
+                            .onFailure { FirebaseCrashlytics.getInstance().recordException(it) }
+                            .getOrNull()
                             ?.let { draft ->
                                 PoemDetails(
                                     title = draft.title,

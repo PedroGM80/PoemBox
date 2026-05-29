@@ -129,6 +129,7 @@ class EditViewModel @Inject constructor(
         _wordCount.value = if (newContent.isBlank()) 0 else newContent.trim().split(Regex(Constants.REGEX_WHITESPACE)).size
         if (newContent.isBlank()) {
             _analysisResult.value = ""
+            _lineValidations.value = emptyList()
         } else {
             _analysisInput.value = newContent
         }
