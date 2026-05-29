@@ -1,5 +1,5 @@
 package dev.pgm.poembox.presentation.screens
- 
+
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +26,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -35,6 +39,7 @@ import dev.pgm.poembox.presentation.components.TopBar
 import dev.pgm.poembox.presentation.content.TabsContent
 import dev.pgm.poembox.presentation.viewmodels.ScreenTabsViewModel
 import dev.pgm.poembox.presentation.theme.Dimens
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
 @Composable
@@ -72,20 +77,32 @@ fun ScreenTabs(
             ) {
                 tabs.indices.forEach { index ->
                     val selected = pagerState.currentPage == index
+                    val tabName = stringResource(tabs[index].title)
+                    // Outer Box: 48dp touch target for accessibility
                     Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .padding(horizontal = Dimens.PaddingSmall)
-                            .size(if (selected) Dimens.PagerIndicatorSizeSelected else Dimens.PagerIndicatorSizeUnselected)
-                            .clip(CircleShape)
-                            .background(
-                                if (selected) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-                            )
-                            .animateContentSize()
+                            .size(48.dp)
+                            .semantics {
+                                role = Role.Tab
+                                contentDescription = tabName
+                            }
                             .clickable {
                                 scope.launch { pagerState.animateScrollToPage(index) }
                             }
-                    )
+                    ) {
+                        // Inner Box: visual dot indicator
+                        Box(
+                            modifier = Modifier
+                                .size(if (selected) Dimens.PagerIndicatorSizeSelected else Dimens.PagerIndicatorSizeUnselected)
+                                .clip(CircleShape)
+                                .background(
+                                    if (selected) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                                )
+                                .animateContentSize()
+                        )
+                    }
                 }
             }
         }
