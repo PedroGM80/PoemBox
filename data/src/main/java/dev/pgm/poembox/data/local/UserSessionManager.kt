@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import dev.pgm.poembox.domain.SessionManager
+import dev.pgm.poembox.domain.StreakCalculator
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -98,14 +99,14 @@ class UserSessionManager @Inject constructor(
 
     override suspend fun recordWriteToday() {
         val today = fmt.format(Date())
+        val cal = Calendar.getInstance().also { it.add(Calendar.DAY_OF_YEAR, -1) }
+        val yesterday = fmt.format(cal.time)
         context.dataStore.edit { prefs ->
-            if (prefs[STREAK_LAST_DATE] == today) return@edit  // ya contado hoy
-            val cal = Calendar.getInstance().also { it.add(Calendar.DAY_OF_YEAR, -1) }
-            val yesterday = fmt.format(cal.time)
             val current = prefs[STREAK_CURRENT] ?: 0
-            val newStreak = if (prefs[STREAK_LAST_DATE] == yesterday) current + 1 else 1
+            val newStreak = StreakCalculator.compute(prefs[STREAK_LAST_DATE], today, yesterday, current)
+            if (newStreak == current && prefs[STREAK_LAST_DATE] == today) return@edit  // ya contado hoy
             prefs[STREAK_CURRENT] = newStreak
-            prefs[STREAK_MAX] = maxOf(prefs[STREAK_MAX] ?: 0, newStreak)
+            prefs[STREAK_MAX] = StreakCalculator.computeMaxStreak(prefs[STREAK_MAX] ?: 0, newStreak)
             prefs[STREAK_LAST_DATE] = today
         }
     }
