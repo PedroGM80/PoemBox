@@ -36,4 +36,10 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.datastore)
     implementation("javax.inject:javax.inject:1")
+
+    androidTestImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.room:room-testing:2.8.4")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }

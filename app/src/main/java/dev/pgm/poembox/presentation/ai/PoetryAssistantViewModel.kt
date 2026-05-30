@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +32,9 @@ class PoetryAssistantViewModel @Inject constructor(
     private val rhymeSuggester: RhymeSuggester
 ) : ViewModel() {
 
+    /** Sobrescribible en tests: viewModel.computeDispatcher = UnconfinedTestDispatcher() */
+    internal var computeDispatcher: CoroutineDispatcher = Dispatchers.Default
+
     private val _state = MutableStateFlow(AssistantState())
     val state: StateFlow<AssistantState> = _state.asStateFlow()
 
@@ -46,7 +50,7 @@ class PoetryAssistantViewModel @Inject constructor(
     // ── Nivel 1: sugerencias de rima (siempre disponible) ─────────────────
 
     fun analyzeRhyme(verse: String) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(computeDispatcher) {
             val analysis = runCatching { rhymeSuggester.analyze(verse) }.getOrNull()
             _state.value = _state.value.copy(rhymeAnalysis = analysis)
         }

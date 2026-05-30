@@ -92,6 +92,7 @@ class EditViewModel @Inject constructor(
                 .filter { it.isNotBlank() }
                 .collect { text ->
                     val (result, validations) = withContext(Dispatchers.Default) {
+                        utilitySyllables.detectAndSetLanguage(text)
                         computeAnalysis(text) to computeLineValidations(text, _selectedForm.value)
                     }
                     _analysisResult.value = result

@@ -22,6 +22,8 @@ object PoemBoxWidgetUpdater {
                 }
                 PoemBoxWidget().update(context, id)
             }
-        }.onFailure { FirebaseCrashlytics.getInstance().recordException(it) }
+        }.onFailure { e ->
+            runCatching { FirebaseCrashlytics.getInstance().recordException(e) }
+        }
     }
 }

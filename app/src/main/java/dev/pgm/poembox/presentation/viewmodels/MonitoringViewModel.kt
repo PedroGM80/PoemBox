@@ -15,6 +15,7 @@ import dev.pgm.poembox.domain.UtilitySyllables
 import dev.pgm.poembox.domain.model.Sheet
 import dev.pgm.poembox.domain.usecase.GetDraftByTitleUseCase
 import dev.pgm.poembox.domain.usecase.SaveSheetUseCase
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -45,6 +46,13 @@ class MonitoringViewModel @Inject constructor(
     private val utilitySyllables: UtilitySyllables
 ) : ViewModel() {
 
+    /**
+     * Dispatcher para análisis CPU-intensivo.
+     * Se puede sobrescribir en tests antes de invocar loadPoem():
+     *   viewModel.computeDispatcher = UnconfinedTestDispatcher()
+     */
+    internal var computeDispatcher: CoroutineDispatcher = Dispatchers.Default
+
     private val _state = mutableStateOf(MonitoringState())
     val state: State<MonitoringState> = _state
 
@@ -68,7 +76,7 @@ class MonitoringViewModel @Inject constructor(
         val draft = getDraftByTitleUseCase(title)
         if (draft != null) {
             // Análisis pesado en hilo CPU, no en Main
-            val analysis = withContext(Dispatchers.Default) {
+            val analysis = withContext(computeDispatcher) {
                 computeAnalysis(draft.content)
             }
             _state.value = _state.value.copy(
