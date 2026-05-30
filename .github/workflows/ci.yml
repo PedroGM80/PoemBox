@@ -1,0 +1,235 @@
+name: PoemBox CI & Quality Pipeline
+
+on:
+  push:
+    branches: [ master, develop ]
+    tags: ['v*']
+  pull_request:
+    branches: [ master, develop ]
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # google-services.json mínimo para compilar en CI sin credenciales reales
+  MOCK_GOOGLE_SERVICES: >-
+    {"project_info":{"project_number":"0","project_id":"poembox-mock",
+    "storage_bucket":"dummy.appspot.com"},"client":[{"client_info":
+    {"mobilesdk_app_id":"1:0:android:0","android_client_info":
+    {"package_name":"dev.pgm.poembox"}},"api_key":[{"current_key":"dummy"}]}]}
+
+jobs:
+
+  # ── 1. Lint & Análisis estático ─────────────────────────────────────────
+  lint:
+    name: Lint & Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Codacy Analysis
+        uses: codacy/codacy-analysis-cli-action@v4
+        continue-on-error: true
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          verbose: true
+          output: ${{ runner.temp }}/results.sarif
+          format: sarif
+          upload: true
+          directory: ${{ github.workspace }}
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: ${{ runner.temp }}/results.sarif
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Create Mock Google Services
+        run: echo "$MOCK_GOOGLE_SERVICES" > app/google-services.json
+
+      - name: Run Android Lint
+        run: bash gradlew lintDebug -Pandroid.lint.abortOnError=false
+
+      - name: Upload Lint Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
+
+  # ── 2. Tests unitarios ──────────────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Create Mock Google Services
+        run: echo "$MOCK_GOOGLE_SERVICES" > app/google-services.json
+
+      - name: Run Unit Tests
+        run: bash gradlew :domain:test :app:testDebugUnitTest
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            **/build/test-results/**/*.xml
+            **/build/reports/tests/**
+
+  # ── 3. Build Release ────────────────────────────────────────────────────
+  build-release:
+    name: Build Release Bundle & APK
+    needs: [ lint, unit-tests ]
+    if: |
+      always() &&
+      (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
+      needs.unit-tests.result == 'success' &&
+      (
+        github.ref == 'refs/heads/master' ||
+        github.ref == 'refs/heads/develop' ||
+        startsWith(github.ref, 'refs/tags/v')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Create Google Services
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          else
+            echo "$MOCK_GOOGLE_SERVICES" > app/google-services.json
+          fi
+
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.RELEASE_KEYSTORE }}
+        run: |
+          if [ -z "$ENCODED_STRING" ]; then
+            echo "::error::Secret RELEASE_KEYSTORE is missing."
+            exit 1
+          fi
+          echo "$ENCODED_STRING" | base64 --decode > app/release.jks
+
+      - name: Build Release Bundle & APK
+        env:
+          RELEASE_KEYSTORE_PATH: release.jks
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: bash gradlew bundleRelease assembleRelease
+
+      - name: Upload Release Bundle (AAB)
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bundle
+          path: app/build/outputs/bundle/release/*.aab
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/*.apk
+
+  # ── 4. Tag semántico en master ──────────────────────────────────────────
+  create-tag:
+    name: Create Version Tag
+    needs: build-release
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.read_version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read versionName
+        id: read_version
+        run: |
+          VERSION=$(grep '^versionName=' version.properties | cut -d'=' -f2)
+          echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Push tag if not exists
+        run: |
+          TAG="${{ steps.read_version.outputs.tag }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists — skipping."
+          else
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "Tag $TAG created and pushed."
+          fi
+
+  # ── 5. GitHub Release (solo en tags v*) ────────────────────────────────
+  github-release:
+    name: Publish GitHub Release
+    needs: build-release
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Release Bundle (AAB)
+        uses: actions/download-artifact@v4
+        with:
+          name: release-bundle
+          path: release-artifacts
+
+      - name: Download Release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: release-apk
+          path: release-artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: PoemBox ${{ github.ref_name }}
+          generate_release_notes: true
+          files: release-artifacts/*

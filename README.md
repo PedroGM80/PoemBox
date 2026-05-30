@@ -1,86 +1,103 @@
-# PoemBox
+# PoemBox ✍️
 
-**PoemBox** es una aplicación Android para poetas y escritores. Permite crear, analizar y gestionar poemas con herramientas de análisis métrico en tiempo real, asistencia por IA y exportación a múltiples formatos.
+[![CI](https://github.com/PedroGM80/PoemBox/actions/workflows/ci.yml/badge.svg)](https://github.com/PedroGM80/PoemBox/actions/workflows/ci.yml)
+[![License: Personal](https://img.shields.io/badge/license-personal-blue.svg)](#licencia)
 
-![Diagrama de arquitectura](./DiagramPoemBox.png)
-
----
-
-## Características
-
-| Categoría | Funcionalidad |
-|-----------|---------------|
-| **Editor** | Escritura con contador de palabras, notas por poema y selector de forma poética |
-| **Validación de forma** | Verificación en tiempo real de sílabas y esquema de rima (Haiku, Soneto, Redondilla, Décima…) |
-| **Análisis métrico** | Conteo de sílabas por verso, rima consonante/asonante, encabalgamiento y esticomitia |
-| **IA Gemini** | Sugerencia del siguiente verso respetando ritmo y forma (requiere API key) |
-| **Exportación** | PDF con análisis completo · Tarjeta visual PNG para compartir en redes |
-| **Gestor de poemas** | Búsqueda, ordenación y eliminación de poemas guardados |
-| **Monitor** | Vista de análisis completo con modo lectura inmersiva |
-| **Recordatorio diario** | Notificación periódica configurable mediante WorkManager |
-| **Estadísticas** | Borradores, poemas validados, palabras escritas y poema más largo |
+**PoemBox** es una app Android para poetas que quieren escribir, analizar y compartir su obra. Combina un motor métrico propio con IA on-device para ofrecer sugerencias de rima y continuación de versos sin depender de servicios en la nube.
 
 ---
 
-## Stack tecnológico
+## ✨ Características
 
-- **Lenguaje:** Kotlin
-- **UI:** Jetpack Compose + Material Design 3
-- **Arquitectura:** Clean Architecture + MVVM
-- **DI:** Hilt
-- **Base de datos:** Room (local, sin servidor)
-- **Preferencias:** DataStore
-- **Asincronía:** Corrutinas + Flow
-- **Background work:** WorkManager
-- **IA:** Google Gemini (`generativeai`)
-- **Build:** Gradle con Version Catalog (`libs.versions.toml`) + KSP
+| Módulo | Qué hace |
+|--------|----------|
+| **Editor** | Contador de sílabas en tiempo real, validación de formas (haiku, soneto, décima…), notas del poema |
+| **Análisis** | Métrica predominante, estructura de estrofas, tipo de rima, encabalgamiento |
+| **Biblioteca** | 7 formas poéticas con ejemplos de Lorca, Neruda, Machado, Sor Juana… cargables en el editor |
+| **Asistente IA** | Sugerencias de rima (siempre) + continuación de verso via LLM on-device (≥4 GB RAM) o Gemini Nano (Pixel 8+) |
+| **Compartir** | Tarjeta visual con imagen de fondo, PDF con análisis, texto plano |
+| **Widget** | Muestra el último poema y la racha de escritura en la pantalla de inicio |
+| **Racha diaria** | Registra los días consecutivos escribiendo; visible en el perfil |
+| **Onboarding** | 3 slides la primera vez; evita mostrarlos de nuevo |
+| **Premium** | Botón "Apoya PoemBox ⭐" via Play Billing (pago único) |
 
 ---
 
-## Arquitectura
-
-El proyecto se divide en tres módulos Gradle:
+## 🏗️ Arquitectura
 
 ```
-:domain   —  Modelos, interfaces de repositorio y casos de uso (Kotlin puro, sin Android)
-:data     —  Room, DAOs, DataStore, mappers e implementaciones de repositorio
-:app      —  UI (Compose), ViewModels, DI y workers WorkManager
+PoemBox/
+├── app/        # UI (Compose + Material 3), ViewModels, DI, Workers, Widgets
+├── domain/     # Lógica pura: motor de sílabas, casos de uso, interfaces
+└── data/       # Room, DataStore, repositorios
 ```
 
-Flujo de dependencias: `:app` → `:domain` ← `:data`
+**Stack:** Kotlin · Jetpack Compose · Material 3 · Hilt · Room · DataStore · WorkManager · Firebase (Analytics + Crashlytics) · MediaPipe LLM · Jetpack Glance · Play Billing
 
 ---
 
-## Requisitos
-
-- Android Studio Ladybug o superior
-- JDK 17
-- API 24+ (minSdk 24, targetSdk 37)
-
----
-
-## Instalación
+## 🚀 Primeros pasos
 
 ```bash
 git clone https://github.com/PedroGM80/PoemBox.git
 ```
 
-1. Abrir en Android Studio
-2. Sincronizar Gradle (`Sync Project with Gradle Files`)
-3. Ejecutar en dispositivo o emulador con API 24+
+Abre el proyecto en **Android Studio Meerkat** o superior y pulsa Run.
 
-> Para usar la sugerencia de verso con IA, introduce tu [Google Gemini API key](https://aistudio.google.com/app/apikey) desde la pantalla de edición → botón IA.
+Para release local crea `keystore.properties` (ver `keystore.properties.template`).
 
 ---
 
-## Licencia
+## 🔄 CI/CD
 
-Uso personal / educativo. Contactar al autor para distribución.
+El pipeline de GitHub Actions (`.github/workflows/ci.yml`) ejecuta:
+
+1. **Lint** — `lintDebug` + análisis Codacy
+2. **Tests** — `:domain:test` + `:app:testDebugUnitTest` (214 tests)
+3. **Build Release** — `bundleRelease` + `assembleRelease` firmado con el keystore guardado como secret
+4. **Tag automático** — lee `version.properties` y crea el tag `v{versionName}` en master
+5. **GitHub Release** — sube el AAB y el APK al release cuando se push un tag `v*`
+
+Para publicar una nueva versión:
+
+```
+GitHub Actions → Trigger New Release → elegir patch / minor / major
+```
+
+### Secrets necesarios en GitHub
+
+| Secret | Descripción |
+|--------|-------------|
+| `RELEASE_KEYSTORE` | Keystore en Base64: `base64 -i poembox.jks` |
+| `RELEASE_KEYSTORE_PASSWORD` | Contraseña del keystore |
+| `RELEASE_KEY_ALIAS` | Alias de la clave |
+| `RELEASE_KEY_PASSWORD` | Contraseña de la clave |
+| `GOOGLE_SERVICES_JSON` | Contenido de `google-services.json` de Firebase |
+| `CODACY_PROJECT_TOKEN` | Token del proyecto en Codacy (opcional) |
 
 ---
 
-## Autor
+## 🧪 Tests
 
-**Pedro Gallego Morales** · [@PedroGM80](https://github.com/PedroGM80)
+```bash
+./gradlew :domain:test :app:testDebugUnitTest
+```
 
-[Descargar APK](https://github.com/PedroGM80/PoemBox/releases/download/PoemBox/PoemBox.apk)
+214 tests — 0 fallos. Cobertura por módulo:
+
+| Módulo | Tests | Qué cubre |
+|--------|-------|-----------|
+| `:domain` | 109 | UtilitySyllables, PoemUtils, PoemMetric, StreakCalculator |
+| `:app` | 105 | RhymeSuggester, DeviceAICapability, FormsLibrary, ViewModels (Edit, Monitoring, Auth, Stats, PoetryAssistant) |
+
+---
+
+## 📄 Licencia
+
+**Autor:** Pedro Gallego Morales ([@PedroGM80](https://github.com/PedroGM80))
+
+Distribuido para uso personal y educativo. Para uso comercial o derivados, contacta al autor.
+
+---
+
+*Desarrollado con alma por TeckelSoft 🐾*
