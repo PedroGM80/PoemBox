@@ -47,8 +47,9 @@ class UtilitySyllablesTest {
     }
 
     @Test
-    fun `getStressedVowelIndex single vowel syllable`() {
-        assertEquals(1, sut.getStressedVowelIndex("bor"))
+    fun `stressed monosílabo agudo devuelve índice 0`() {
+        // "bor" → 1 sílaba → única sílaba es la tónica (índice 0)
+        assertEquals(0, sut.stressed(listOf("bor")))
     }
 
     // ── Palabras con diptongo (deben ser 1 sílaba juntas) ────────────────────

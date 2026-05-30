@@ -27,8 +27,9 @@ class UtilitySyllablesTest {
     }
 
     @Test
-    fun getStressedVowelIndex() {
-        assertEquals(1, UtilitySyllables().getStressedVowelIndex("bor"))
+    fun `stressed para monosílabo agudo devuelve índice 0`() {
+        // "bor" = 1 sílaba → stressed devuelve 0 (única sílaba)
+        assertEquals(0, UtilitySyllables().stressed(listOf("bor")))
     }
 
 
