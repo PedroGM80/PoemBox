@@ -20,6 +20,11 @@ local.properties
 *.jks
 *.keystore
 keystore.properties
+release.jks
+
+# Herramientas locales
+.mobiai/
+.kotlin/
 
 # ============================================================
 # IntelliJ / Android Studio — estado personal del IDE

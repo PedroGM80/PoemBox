@@ -1,21 +1,33 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# --- Configuración Base ---
+-keepattributes *Annotation*, Signature, EnclosingMethod, InnerClasses
+-dontwarn javax.annotation.**
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# --- Hilt / Dagger ---
+-keep class dagger.hilt.android.internal.** { *; }
+-keep class * extends androidx.lifecycle.ViewModel
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# --- Room ---
+-keep class * extends androidx.room.RoomDatabase
+-dontwarn androidx.room.paging.**
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# --- MediaPipe LLM (IA On-Device) ---
+# Muy importante para que no se rompa el motor de IA al ofuscar
+-keep class com.google.mediapipe.tasks.genai.** { *; }
+-keep class com.google.mediapipe.framework.image.** { *; }
+-dontwarn com.google.mediapipe.**
+
+# --- Firebase / Crashlytics ---
+-keepattributes SourceFile,LineNumberTable
+-keep public class com.google.firebase.** { *; }
+
+# --- Billing (Compras In-App) ---
+-keep class com.android.billingclient.api.** { *; }
+
+# --- Modelos de Dominio (Serialización) ---
+# Evitamos que se ofusquen los nombres de campos en la DB y JSON
+-keepclassmembers class dev.pgm.poembox.domain.model.** { *; }
+-keepclassmembers class dev.pgm.poembox.data.local.entities.** { *; }
+
+# --- Jetpack Compose ---
+-keep class androidx.compose.material3.** { *; }
+-dontwarn androidx.compose.**
