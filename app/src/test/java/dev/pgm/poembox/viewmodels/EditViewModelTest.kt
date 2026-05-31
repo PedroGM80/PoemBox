@@ -17,9 +17,12 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.Runs
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -64,6 +67,14 @@ class EditViewModelTest {
             poemUtils = poemUtils,
             utilitySyllables = utilitySyllables
         )
+    }
+
+    @After
+    fun tearDown() {
+        // Cancel viewModelScope before MainDispatcherRule resets Dispatchers.Main.
+        // Prevents the withContext(Dispatchers.Default) analysis coroutine from
+        // trying to resume on a Main dispatcher that no longer exists.
+        viewModel.viewModelScope.cancel()
     }
 
     // ── initial state ─────────────────────────────────────────────────────────
