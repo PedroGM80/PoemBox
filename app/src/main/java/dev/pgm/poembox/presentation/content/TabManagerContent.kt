@@ -319,8 +319,6 @@ fun ManagerScreen(
     val isLoading by viewModel.isLoading
     val searchQuery by viewModel.searchQuery
     val sortOrder by viewModel.sortOrder
-    val context = LocalContext.current
-
     var showContentDialog by remember { mutableStateOf(false) }
     var showPoemViewerDialog by remember { mutableStateOf(false) }
     var dialogTitle by remember { mutableStateOf("") }
@@ -412,6 +410,8 @@ fun ManagerScreen(
                             contentPadding = PaddingValues(vertical = Dimens.PaddingNormal)
                         ) {
                             items(poems) { poem ->
+                                val notesPrefixText = stringResource(R.string.manager_notes_prefix, poem.title)
+                                val noNotesText = stringResource(R.string.manager_no_notes)
                                 PoemCard(
                                     poem = poem,
                                     onEdit = { viewModel.requestEditPoem(poem.title) },
@@ -425,8 +425,8 @@ fun ManagerScreen(
                                         showPoemViewerDialog = true
                                     },
                                     onViewNotes = {
-                                        dialogTitle = context.getString(R.string.manager_notes_prefix, poem.title)
-                                        dialogBody = poem.annotations.ifBlank { context.getString(R.string.manager_no_notes) }
+                                        dialogTitle = notesPrefixText
+                                        dialogBody = poem.annotations.ifBlank { noNotesText }
                                         showContentDialog = true
                                     }
                                 )
@@ -473,7 +473,7 @@ fun ManagerScreen(
                     poemToDelete = null
                 },
                 title = { Text(stringResource(R.string.manager_delete_dialog_title)) },
-                text = { Text(context.getString(R.string.manager_delete_dialog_text, poem.title)) },
+                text = { Text(stringResource(R.string.manager_delete_dialog_text, poem.title)) },
                 confirmButton = {
                     TextButton(
                         onClick = {

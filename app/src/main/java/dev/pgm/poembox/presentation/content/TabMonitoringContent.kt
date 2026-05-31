@@ -376,6 +376,9 @@ fun MonitoringScreen(
 ) {
     val state by viewModel.state
     val context = LocalContext.current
+    val metricalSectionText = stringResource(R.string.monitor_export_section_metrical)
+    val structureSectionText = stringResource(R.string.monitor_export_section_structure)
+    val shareChooserText = stringResource(R.string.monitor_share_chooser)
     var showImmersive by remember { mutableStateOf(false) }
     var bgImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -422,12 +425,12 @@ fun MonitoringScreen(
                 appendLine(state.body)
                 if (state.syllablesAnalysis.isNotBlank()) {
                     appendLine()
-                    appendLine(context.getString(R.string.monitor_export_section_metrical))
+                    appendLine(metricalSectionText)
                     appendLine(state.syllablesAnalysis)
                 }
                 if (state.versesAnalysis.isNotBlank()) {
                     appendLine()
-                    appendLine(context.getString(R.string.monitor_export_section_structure))
+                    appendLine(structureSectionText)
                     appendLine(state.versesAnalysis)
                 }
             }
@@ -533,7 +536,7 @@ fun MonitoringScreen(
                         putExtra(Intent.EXTRA_TEXT, shareText)
                         putExtra(Intent.EXTRA_SUBJECT, state.title)
                     }
-                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
+                    context.startActivity(Intent.createChooser(intent, shareChooserText))
                 },
                 onShareCard = {
                     Analytics.sharedAsCard(hasBgImage = bgImageUri != null)
@@ -547,7 +550,7 @@ fun MonitoringScreen(
                         putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.monitor_share_chooser)))
+                    context.startActivity(Intent.createChooser(intent, shareChooserText))
                 },
                 onSharePdf = {
                     Analytics.sharedAsPdf()

@@ -129,6 +129,7 @@ fun EditScreen(
     val context = LocalContext.current
 
     val unknownAuthor = stringResource(R.string.editor_unknown_author)
+    val savedToastText = stringResource(R.string.editor_saved_toast)
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -439,7 +440,7 @@ fun EditScreen(
             Button(
                 onClick = {
                     viewModel.saveDraft(userName ?: unknownAuthor) {
-                        Toast.makeText(context, context.getString(R.string.editor_saved_toast), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, savedToastText, Toast.LENGTH_SHORT).show()
                     }
                 },
                 enabled = title.isNotBlank() && content.isNotBlank(),
