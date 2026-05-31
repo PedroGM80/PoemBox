@@ -1,0 +1,16 @@
+Eleva tu arte poético con PoemBox. ✍️
+
+PoemBox es la herramienta definitiva para poetas, desde aficionados hasta expertos. Diseñada para acompañarte en el proceso creativo, combina la tradición métrica con la potencia de la Inteligencia Artificial moderna, todo funcionando de forma privada en tu dispositivo.
+
+Características principales:
+
+• Editor Métrico Inteligente: Cuenta sílabas en tiempo real y valida estructuras clásicas como Haikus, Sonetos, Décimas y más.
+• Asistente de IA On-Device: ¿Bloqueado? Obtén sugerencias de rimas y continuación de versos mediante modelos de lenguaje que funcionan 100% offline.
+• Biblioteca de Formas: Explora estructuras poéticas con ejemplos de grandes maestros como Lorca, Neruda y Machado.
+• Análisis Detallado: Descubre la métrica predominante, rimas y encabalgamientos de tus poemas automáticamente.
+• Comparte tu Obra: Exporta tus poemas en elegantes tarjetas visuales, PDF con análisis técnico o texto plano.
+• Racha de Escritura: Mantén tu hábito vivo con el contador de días consecutivos y el widget para tu pantalla de inicio.
+
+Sin suscripciones invasivas, sin datos en la nube. Solo tú y tu poesía.
+
+¡Descarga PoemBox y deja que tus versos fluyan!

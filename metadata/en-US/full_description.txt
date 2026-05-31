@@ -1,0 +1,16 @@
+Elevate your poetic art with PoemBox. ✍️
+
+PoemBox is the ultimate tool for poets, from hobbyists to experts. Designed to accompany you in the creative process, it combines metric tradition with the power of modern Artificial Intelligence, all running privately on your device.
+
+Main features:
+
+• Intelligent Metric Editor: Count syllables in real-time and validate classic structures such as Haikus, Sonnets, Decimas, and more.
+• On-Device AI Assistant: Stuck? Get rhyme suggestions and verse continuations through language models that work 100% offline.
+• Library of Forms: Explore poetic structures with examples from great masters like Lorca, Neruda, and Machado.
+• Detailed Analysis: Discover the predominant meter, rhymes, and enjambments of your poems automatically.
+• Share Your Work: Export your poems in elegant visual cards, PDF with technical analysis, or plain text.
+• Writing Streak: Keep your habit alive with the consecutive days counter and the widget for your home screen.
+
+No invasive subscriptions, no data in the cloud. Just you and your poetry.
+
+Download PoemBox and let your verses flow!
