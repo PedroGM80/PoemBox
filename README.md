@@ -63,20 +63,6 @@ Para publicar una nueva versión:
 ```
 GitHub Actions → Trigger New Release → elegir patch / minor / major
 ```
-
-### Secrets necesarios en GitHub
-
-| Secret | Descripción |
-|--------|-------------|
-| `RELEASE_KEYSTORE` | Keystore en Base64: `base64 -i poembox.jks` |
-| `RELEASE_KEYSTORE_PASSWORD` | Contraseña del keystore |
-| `RELEASE_KEY_ALIAS` | Alias de la clave |
-| `RELEASE_KEY_PASSWORD` | Contraseña de la clave |
-| `GOOGLE_SERVICES_JSON` | Contenido de `google-services.json` de Firebase |
-| `CODACY_PROJECT_TOKEN` | Token del proyecto en Codacy (opcional) |
-
----
-
 ## 🧪 Tests
 
 ```bash
