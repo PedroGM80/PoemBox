@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -155,6 +156,31 @@ fun TopBar(
     var showStats by remember { mutableStateOf(false) }
     var showThemeMenu by remember { mutableStateOf(false) }
     var showProDialog by remember { mutableStateOf(false) }
+    var showDeleteConfirm by remember { mutableStateOf(false) }
+
+    if (showDeleteConfirm) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirm = false },
+            title = { Text(stringResource(R.string.delete_account_dialog_title)) },
+            text = { Text(stringResource(R.string.delete_account_dialog_body)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteConfirm = false
+                        authViewModel.logout { onLogout?.invoke() }
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(stringResource(R.string.delete_account_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirm = false }) {
+                    Text(stringResource(R.string.manager_cancel_button))
+                }
+            }
+        )
+    }
 
     if (showProDialog) {
         AlertDialog(
@@ -279,6 +305,19 @@ fun TopBar(
                             onClick = {
                                 showMenu = false
                                 authViewModel.logout { onLogout?.invoke() }
+                            }
+                        )
+                        HorizontalDivider()
+                        DropdownMenuItem(
+                            text = { 
+                                Text(
+                                    stringResource(R.string.delete_account),
+                                    color = MaterialTheme.colorScheme.error
+                                ) 
+                            },
+                            onClick = {
+                                showMenu = false
+                                showDeleteConfirm = true
                             }
                         )
                     }

@@ -40,7 +40,9 @@
     <string name="create_account_username_label">Nombre de usuario</string>
     <string name="create_account_email_label">Correo electrónico</string>
     <string name="create_account_button">Registrarse</string>
+    <string name="create_account_guest_button">Continuar como invitado</string>
     <string name="create_account_invalid_email">Correo electrónico no válido</string>
+    <string name="create_account_guest_name">Invitado</string>
 
     <!-- Login -->
     <string name="login_title">¡Bienvenido de nuevo!</string>
@@ -70,6 +72,10 @@
     <!-- TopBar / User menu -->
     <string name="user_menu_description">Menú de usuario</string>
     <string name="logout">Cerrar sesión</string>
+    <string name="delete_account">Eliminar cuenta y datos</string>
+    <string name="delete_account_dialog_title">¿Eliminar cuenta?</string>
+    <string name="delete_account_dialog_body">Se eliminarán todos tus poemas, borradores y preferencias de este dispositivo. Esta acción no se puede deshacer.</string>
+    <string name="delete_account_confirm">Eliminar todo</string>
 
     <!-- Editor Tab -->
     <string name="editor_title_label">Título del poema</string>

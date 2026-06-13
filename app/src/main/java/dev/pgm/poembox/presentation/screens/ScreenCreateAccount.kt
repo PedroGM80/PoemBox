@@ -132,6 +132,26 @@ fun CreateAccount(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+
+            Spacer(modifier = Modifier.height(Dimens.PaddingNormal))
+
+            val guestName = stringResource(R.string.create_account_guest_name)
+            TextButton(
+                onClick = {
+                    viewModel.registerUser(guestName, "") {
+                        navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
+                            popUpTo(0)
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.create_account_guest_button),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
         }
     }
 }

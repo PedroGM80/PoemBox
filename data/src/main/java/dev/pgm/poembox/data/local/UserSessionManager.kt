@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import dev.pgm.poembox.data.PoemBoxDatabase
 import dev.pgm.poembox.domain.SessionManager
 import dev.pgm.poembox.domain.StreakCalculator
 import javax.inject.Inject
@@ -25,7 +26,8 @@ private val Context.dataStore by preferencesDataStore(name = "user_prefs")
 
 @Singleton
 class UserSessionManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val database: PoemBoxDatabase
 ) : SessionManager {
     private companion object {
         val USER_NAME = stringPreferencesKey("user_name")
@@ -79,6 +81,7 @@ class UserSessionManager @Inject constructor(
 
     override suspend fun clearSession() {
         context.dataStore.edit { it.clear() }
+        database.clearAllTables()
     }
 
     override val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { prefs ->
