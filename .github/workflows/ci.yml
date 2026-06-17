@@ -200,11 +200,24 @@ jobs:
             echo "Tag $TAG created and pushed."
           fi
 
-  # ── 5. GitHub Release (solo en tags v*) ────────────────────────────────
+  # ── 5. GitHub Release ───────────────────────────────────────────────────
+  # Corre en master (tras create-tag) O en tags v* pusheados manualmente.
+  # El GITHUB_TOKEN no re-dispara workflows al pushear tags desde CI,
+  # por eso la lógica principal vive aquí en el push de master.
   github-release:
     name: Publish GitHub Release
-    needs: build-release
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-release, create-tag]
+    if: |
+      always() &&
+      needs.build-release.result == 'success' &&
+      (
+        needs.create-tag.result == 'success' ||
+        startsWith(github.ref, 'refs/tags/v')
+      ) &&
+      (
+        github.ref == 'refs/heads/master' ||
+        startsWith(github.ref, 'refs/tags/v')
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -215,10 +228,19 @@ jobs:
           name: release-bundle
           path: release-artifacts
 
+      - name: Resolve tag name
+        id: tag
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${{ needs.create-tag.outputs.tag }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: PoemBox ${{ github.ref_name }}
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: PoemBox ${{ steps.tag.outputs.name }}
           generate_release_notes: true
           files: release-artifacts/*.aab
