@@ -181,10 +181,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read versionName
+      - name: Read versionName from Gradle
         id: read_version
         run: |
-          VERSION=$(grep '^versionName=' version.properties | cut -d'=' -f2)
+          VERSION=$(bash gradlew -q :app:printVersionName)
           echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Push tag if not exists

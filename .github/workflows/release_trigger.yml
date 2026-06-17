@@ -33,13 +33,13 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          VERSION_NAME=$(grep 'versionName=' version.properties | cut -d'=' -f2)
+          VERSION_NAME=$(bash gradlew -q :app:printVersionName)
           git add version.properties
           git commit -m "chore: bump version to v$VERSION_NAME"
           git push origin master
 
       - name: Create and Push Tag
         run: |
-          VERSION_NAME=$(grep 'versionName=' version.properties | cut -d'=' -f2)
+          VERSION_NAME=$(bash gradlew -q :app:printVersionName)
           git tag "v$VERSION_NAME"
           git push origin "v$VERSION_NAME"
