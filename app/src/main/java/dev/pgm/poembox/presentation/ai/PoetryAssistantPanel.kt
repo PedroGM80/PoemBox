@@ -125,30 +125,11 @@ fun PoetryAssistantPanel(
                         )
                     }
 
-                    // ── Nivel 2/3: LLM (si está disponible) ───────────────
-                    Spacer(Modifier.height(Dimens.PaddingMedium))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                    Spacer(Modifier.height(Dimens.PaddingMedium))
-
-                    when (state.aiLevel) {
-                        DeviceAILevel.LEVEL_GEMINI_NANO,
-                        DeviceAILevel.LEVEL_LLM_INFERENCE -> {
-                            LlmSection(
-                                state = state,
-                                currentVerse = currentVerse,
-                                onAsk = { prompt -> viewModel.askLlm(prompt) { } }
-                            )
-                        }
-                        DeviceAILevel.LEVEL_RULES -> {
-                            state.upgradeHint?.let { hint ->
-                                Text(
-                                    text = "ℹ️ $hint",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
-                                )
-                            }
-                        }
-                    }
+                    // La continuación de verso por LLM se ofrecerá cuando la
+                    // app incluya un modelo on-device descargable. Por ahora el
+                    // asistente se limita a las sugerencias de rima (arriba),
+                    // que funcionan en todos los dispositivos y sin conexión.
+                    // LlmSection() se conserva más abajo para esa futura versión.
                 }
             }
         }
