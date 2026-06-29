@@ -24,10 +24,8 @@ fun ScreenSplash(
         val destination = when {
             !viewModel.onboardingCompleted.value ->
                 ScreensRouteList.RouteScreenOnboarding.route
-            viewModel.userName.value != null ->
-                ScreensRouteList.RouteScreenLogin.route
             else ->
-                ScreensRouteList.RouteScreenCreateAccount.route
+                ScreensRouteList.RouteScreenTabs.route
         }
         navController.navigate(destination) { popUpTo(0) }
     }

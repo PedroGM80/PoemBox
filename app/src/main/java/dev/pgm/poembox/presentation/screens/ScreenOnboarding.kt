@@ -54,7 +54,7 @@ fun ScreenOnboarding(
 
     fun finish() {
         viewModel.completeOnboarding {
-            navController.navigate(ScreensRouteList.RouteScreenCreateAccount.route) {
+            navController.navigate(ScreensRouteList.RouteScreenTabs.route) {
                 popUpTo(0) { inclusive = true }
             }
         }
