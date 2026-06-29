@@ -316,6 +316,7 @@ private fun StepContent(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = stringResource(R.string.editor_step_poem),
@@ -336,7 +337,8 @@ private fun StepContent(
                 capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Default
             ),
-            // Un poema tiene varios versos: campo multilínea, texto alineado arriba.
+            // Un poema tiene varios versos: campo multilínea con altura mínima
+            // fija (no weight) para que el teclado no lo aplaste ni recorte el texto.
             singleLine = false,
             minLines = 6,
             textStyle = MaterialTheme.typography.bodyLarge.copy(
@@ -344,7 +346,7 @@ private fun StepContent(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .heightIn(min = 220.dp)
                 .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
