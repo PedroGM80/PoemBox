@@ -161,3 +161,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+tasks.register("printVersionName") {
+    doLast { println(vName) }
+}
+
+tasks.register("printVersionCode") {
+    doLast { println(vCode) }
+}

@@ -37,11 +37,13 @@ object DeviceAICapability {
      * Siempre devuelve al menos [DeviceAILevel.LEVEL_RULES].
      */
     fun maxLevel(context: Context): DeviceAILevel {
-        return when {
-            isGeminiNanoAvailable(context) -> DeviceAILevel.LEVEL_GEMINI_NANO
-            isLlmInferenceCapable(context) -> DeviceAILevel.LEVEL_LLM_INFERENCE
-            else                           -> DeviceAILevel.LEVEL_RULES
-        }
+        // La inferencia LLM on-device todavía no se distribuye con la app
+        // (no hay modelo empaquetado ni flujo de descarga), así que solo
+        // exponemos el asistente de rima por reglas, disponible en todos los
+        // dispositivos y sin conexión. Restaurar la detección de
+        // LEVEL_LLM_INFERENCE / LEVEL_GEMINI_NANO cuando exista una descarga
+        // real del modelo.
+        return DeviceAILevel.LEVEL_RULES
     }
 
     /** Devuelve true si el dispositivo tiene suficiente RAM y Android 10+ */
@@ -59,15 +61,10 @@ object DeviceAICapability {
      * Se intenta via reflexión para no romper en dispositivos sin AICore.
      */
     fun isGeminiNanoAvailable(context: Context): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return false
-        return try {
-            // Intenta cargar la clase AICore en tiempo de ejecución.
-            // Si no está presente, lanza ClassNotFoundException y devuelve false.
-            Class.forName("android.app.ai.AIManager")
-            true
-        } catch (_: ClassNotFoundException) {
-            false
-        }
+        // Gemini Nano (Android AICore) no está implementado en esta versión,
+        // así que no se ofrece. Devolvemos false sin usar reflexión sobre APIs
+        // internas (evita el aviso PrivateApi del lint).
+        return false
     }
 
     /** Nombre del nivel para mostrar al usuario */
