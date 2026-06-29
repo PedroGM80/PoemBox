@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -262,7 +263,10 @@ private fun StepTitle(
             value = title,
             onValueChange = { viewModel.onTitleChange(it) },
             label = { Text(text = stringResource(R.string.editor_title_label)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
             textStyle = MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.Center),
             supportingText = {
                 Text(
@@ -337,6 +341,10 @@ private fun StepContent(
             value = content,
             onValueChange = { viewModel.onContentChange(it) },
             label = { Text(stringResource(R.string.editor_content_label)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Default
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -377,6 +385,10 @@ private fun StepAnnotations(
             value = annotation,
             onValueChange = { viewModel.onAnnotationChange(it) },
             placeholder = { Text(stringResource(R.string.editor_notes_placeholder)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Default
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
