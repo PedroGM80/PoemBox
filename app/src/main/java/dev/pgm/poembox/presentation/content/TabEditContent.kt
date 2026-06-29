@@ -39,82 +39,19 @@ import dev.pgm.poembox.domain.model.PoeticForms
 import dev.pgm.poembox.domain.model.PoeticFormDef
 import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.Shapes
-import dev.pgm.poembox.presentation.theme.Typography
-import dev.pgm.poembox.presentation.ai.PoetryAssistantPanel
 import dev.pgm.poembox.presentation.screens.FormsLibraryDialog
-import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.EditViewModel
 
 @Composable
-private fun LineValidationRow(v: LineValidation) {
-    val expected = v.expectedSyllables
-    val syllableColor = when {
-        expected == null -> MaterialTheme.colorScheme.primary
-        v.syllableOk -> MaterialTheme.colorScheme.secondary
-        else -> MaterialTheme.colorScheme.error
-    }
-    val rhymeBadgeColor: Color = when (v.rhymesOk) {
-        true -> MaterialTheme.colorScheme.secondary
-        false -> MaterialTheme.colorScheme.error
-        null -> MaterialTheme.colorScheme.outline
-    }
-    val syllableLabel = when {
-        expected == null -> stringResource(R.string.form_syllable_free, v.actualSyllables)
-        v.syllableOk -> stringResource(R.string.form_syllable_ok, v.actualSyllables)
-        else -> stringResource(R.string.form_syllable_error, v.actualSyllables, expected)
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = Dimens.SpacingSmall),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Rhyme letter annotation
-        val rhymeLetter = v.rhymeLetter
-        if (rhymeLetter != null) {
-            Text(
-                text = rhymeLetter.uppercase(),
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
-                ),
-                color = rhymeBadgeColor,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.width(Dimens.RhymeAnnotationWidth),
-                textAlign = TextAlign.Center
-            )
-        } else {
-            Spacer(Modifier.width(Dimens.RhymeAnnotationWidth))
-        }
-        Text(
-            text = "${v.index + 1}. ${v.lineText}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-            modifier = Modifier.weight(1f),
-            maxLines = 1
-        )
-        
-        Text(
-            text = syllableLabel,
-            style = MaterialTheme.typography.labelSmall,
-            color = syllableColor,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
 fun EditScreen(
-    viewModel: EditViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    viewModel: EditViewModel = hiltViewModel()
 ) {
     val title by viewModel.title
     val content by viewModel.content
-    val analysisResult by viewModel.analysisResult
     val isSaved by viewModel.isSaved
     val wordCount by viewModel.wordCount
     val annotation by viewModel.annotation
     val author by viewModel.author
-    val lineValidations by viewModel.lineValidations
     val selectedForm by viewModel.selectedForm
 
     var currentStep by remember { mutableStateOf(1) }
