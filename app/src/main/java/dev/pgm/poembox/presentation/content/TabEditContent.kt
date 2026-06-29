@@ -199,16 +199,16 @@ fun EditScreen(
                 horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
             ) {
                 if (currentStep > 1) {
-                    Button(
+                    OutlinedButton(
                         onClick = { currentStep-- },
                         modifier = Modifier
                             .weight(1f)
-                            .height(Dimens.ButtonHeight),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                        )
+                            .height(Dimens.ButtonHeight)
                     ) {
-                        Text(stringResource(R.string.editor_previous))
+                        Text(
+                            stringResource(R.string.editor_previous),
+                            style = MaterialTheme.typography.titleSmall
+                        )
                     }
                 }
 
@@ -224,7 +224,10 @@ fun EditScreen(
                             .weight(1f)
                             .height(Dimens.ButtonHeight)
                     ) {
-                        Text(stringResource(R.string.editor_next))
+                        Text(
+                            stringResource(R.string.editor_next),
+                            style = MaterialTheme.typography.titleSmall
+                        )
                     }
                 } else {
                     Button(
@@ -346,7 +349,7 @@ private fun StepTitle(
             }
         }
 
-        Button(
+        FilledTonalButton(
             onClick = onShowFormsLibrary,
             modifier = Modifier
                 .fillMaxWidth()
@@ -354,12 +357,11 @@ private fun StepTitle(
                     horizontal = Dimens.PaddingNormal,
                     vertical = Dimens.PaddingMedium
                 )
-                .height(Dimens.SmallButtonHeight),
-            colors = ButtonDefaults.outlinedButtonColors()
+                .height(Dimens.ButtonHeight)
         ) {
             Text(
                 stringResource(R.string.editor_see_examples),
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.titleSmall
             )
         }
     }

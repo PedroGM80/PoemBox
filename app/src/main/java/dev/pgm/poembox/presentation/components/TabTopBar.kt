@@ -39,15 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import androidx.compose.ui.platform.LocalContext
 import dev.pgm.poembox.R
-import dev.pgm.poembox.presentation.billing.BillingViewModel
 import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.PoemBoxThemeMode
-import dev.pgm.poembox.presentation.util.InAppReviewHelper
 import dev.pgm.poembox.presentation.viewmodels.AuthViewModel
 import dev.pgm.poembox.presentation.viewmodels.StatsViewModel
 import dev.pgm.poembox.presentation.viewmodels.ThemeViewModel
@@ -145,12 +139,10 @@ fun TopBar(
     modifier: Modifier = Modifier,
     onLogout: (() -> Unit)? = null,
     authViewModel: AuthViewModel = hiltViewModel(),
-    themeViewModel: ThemeViewModel = hiltViewModel(),
-    billingViewModel: BillingViewModel = hiltViewModel()
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val userName by authViewModel.userName.collectAsState()
     val themeMode by themeViewModel.themeMode.collectAsState()
-    val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
     var showThemeMenu by remember { mutableStateOf(false) }
@@ -194,14 +186,15 @@ fun TopBar(
             )
         },
         actions = {
-            if (!userName.isNullOrBlank()) {
-                Text(
-                    text = userName ?: "",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = Dimens.PaddingMedium)
-                )
-                
+                if (!userName.isNullOrBlank()) {
+                    Text(
+                        text = userName ?: "",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = Dimens.PaddingMedium)
+                    )
+                }
+
                 Box {
                     IconButton(onClick = { showThemeMenu = true }) {
                         Icon(
@@ -269,19 +262,11 @@ fun TopBar(
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.logout)) },
-                            onClick = {
-                                showMenu = false
-                                authViewModel.logout { onLogout?.invoke() }
-                            }
-                        )
-                        HorizontalDivider()
-                        DropdownMenuItem(
-                            text = { 
+                            text = {
                                 Text(
                                     stringResource(R.string.delete_account),
                                     color = MaterialTheme.colorScheme.error
-                                ) 
+                                )
                             },
                             onClick = {
                                 showMenu = false
@@ -290,7 +275,6 @@ fun TopBar(
                         )
                     }
                 }
-            }
         },
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
@@ -298,13 +282,4 @@ fun TopBar(
             titleContentColor = MaterialTheme.colorScheme.onSurface
         )
     )
-}
-
-private fun Context.findActivity(): Activity? {
-    var ctx = this
-    while (ctx is ContextWrapper) {
-        if (ctx is Activity) return ctx
-        ctx = ctx.baseContext
-    }
-    return null
 }

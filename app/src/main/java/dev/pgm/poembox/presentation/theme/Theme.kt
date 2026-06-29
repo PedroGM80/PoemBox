@@ -16,10 +16,26 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = md_theme_dark_onSecondary,
     secondaryContainer = md_theme_dark_secondaryContainer,
     onSecondaryContainer = md_theme_dark_onSecondaryContainer,
+    tertiary = md_theme_dark_tertiary,
+    onTertiary = md_theme_dark_onTertiary,
+    tertiaryContainer = md_theme_dark_tertiaryContainer,
+    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer,
     background = md_theme_dark_background,
     onBackground = md_theme_dark_onBackground,
     surface = md_theme_dark_surface,
-    onSurface = md_theme_dark_onSurface
+    onSurface = md_theme_dark_onSurface,
+    surfaceVariant = md_theme_dark_surfaceVariant,
+    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
+    surfaceContainer = md_theme_dark_surfaceContainer,
+    surfaceContainerHigh = md_theme_dark_surfaceContainerHigh,
+    outline = md_theme_dark_outline,
+    outlineVariant = md_theme_dark_outlineVariant,
+    inverseSurface = md_theme_dark_inverseSurface,
+    inverseOnSurface = md_theme_dark_inverseOnSurface
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -31,10 +47,26 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = md_theme_light_onSecondary,
     secondaryContainer = md_theme_light_secondaryContainer,
     onSecondaryContainer = md_theme_light_onSecondaryContainer,
+    tertiary = md_theme_light_tertiary,
+    onTertiary = md_theme_light_onTertiary,
+    tertiaryContainer = md_theme_light_tertiaryContainer,
+    onTertiaryContainer = md_theme_light_onTertiaryContainer,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer,
     background = md_theme_light_background,
     onBackground = md_theme_light_onBackground,
     surface = md_theme_light_surface,
-    onSurface = md_theme_light_onSurface
+    onSurface = md_theme_light_onSurface,
+    surfaceVariant = md_theme_light_surfaceVariant,
+    onSurfaceVariant = md_theme_light_onSurfaceVariant,
+    surfaceContainer = md_theme_light_surfaceContainer,
+    surfaceContainerHigh = md_theme_light_surfaceContainerHigh,
+    outline = md_theme_light_outline,
+    outlineVariant = md_theme_light_outlineVariant,
+    inverseSurface = md_theme_light_inverseSurface,
+    inverseOnSurface = md_theme_light_inverseOnSurface
 )
 
 enum class PoemBoxThemeMode {
@@ -42,23 +74,45 @@ enum class PoemBoxThemeMode {
 }
 
 private val SepiaColorScheme = lightColorScheme(
-    primary = Color(0xFF704214), // Sepia Brown
-    onPrimary = Color.White,
-    background = Color(0xFFFAF3E0), // Old Paper
-    surface = Color(0xFFFAF3E0),
-    onBackground = Color(0xFF3E2723),
-    onSurface = Color(0xFF3E2723),
-    secondary = Color(0xFF5D4037)
+    primary = sepia_primary,
+    onPrimary = sepia_onPrimary,
+    primaryContainer = sepia_primaryContainer,
+    onPrimaryContainer = sepia_onPrimaryContainer,
+    secondary = sepia_secondary,
+    onSecondary = sepia_onSecondary,
+    secondaryContainer = sepia_secondaryContainer,
+    onSecondaryContainer = sepia_onSecondaryContainer,
+    error = sepia_error,
+    onError = sepia_onError,
+    background = sepia_background,
+    onBackground = sepia_onBackground,
+    surface = sepia_surface,
+    onSurface = sepia_onSurface,
+    surfaceVariant = sepia_surfaceVariant,
+    onSurfaceVariant = sepia_onSurfaceVariant,
+    surfaceContainer = sepia_surfaceVariant,
+    outline = sepia_outline
 )
 
 private val MidnightColorScheme = darkColorScheme(
-    primary = Color(0xFFBB86FC),
-    onPrimary = Color.Black,
-    background = Color(0xFF121212), // Deep Ink
-    surface = Color(0xFF121212),
-    onBackground = Color(0xFFE0E0E0),
-    onSurface = Color(0xFFE0E0E0),
-    secondary = Color(0xFF03DAC6)
+    primary = midnight_primary,
+    onPrimary = midnight_onPrimary,
+    primaryContainer = midnight_primaryContainer,
+    onPrimaryContainer = midnight_onPrimaryContainer,
+    secondary = midnight_secondary,
+    onSecondary = midnight_onSecondary,
+    secondaryContainer = midnight_secondaryContainer,
+    onSecondaryContainer = midnight_onSecondaryContainer,
+    error = midnight_error,
+    onError = midnight_onError,
+    background = midnight_background,
+    onBackground = midnight_onBackground,
+    surface = midnight_surface,
+    onSurface = midnight_onSurface,
+    surfaceVariant = midnight_surfaceVariant,
+    onSurfaceVariant = midnight_onSurfaceVariant,
+    surfaceContainer = midnight_surfaceVariant,
+    outline = midnight_outline
 )
 
 @Composable

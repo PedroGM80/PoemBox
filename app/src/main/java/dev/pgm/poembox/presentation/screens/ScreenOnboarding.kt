@@ -111,9 +111,7 @@ fun ScreenOnboarding(
                     Spacer(Modifier.height(Dimens.PaddingExtraLarge))
                     Text(
                         text = stringResource(slide.titleRes),
-                        fontFamily = PoeticFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 28.sp,
+                        style = MaterialTheme.typography.displayMedium,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -122,8 +120,7 @@ fun ScreenOnboarding(
                         text = stringResource(slide.bodyRes),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        lineHeight = 26.sp
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
