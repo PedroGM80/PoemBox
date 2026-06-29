@@ -93,6 +93,7 @@
     <string name="editor_step_title">Paso 1: Título y forma</string>
     <string name="editor_step_poem">Paso 2: Escribe tu poema</string>
     <string name="editor_step_notes">Paso 3: Anotaciones</string>
+    <string name="editor_step_number">Paso %1$d de %2$d</string>
     <string name="editor_previous">← Anterior</string>
     <string name="editor_next">Siguiente →</string>
     <string name="editor_form_label">Elige una forma poética</string>

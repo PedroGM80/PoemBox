@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -139,33 +140,44 @@ fun EditScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(Dimens.PaddingLarge)
+                .padding(
+                    horizontal = Dimens.PaddingNormal,
+                    vertical = Dimens.PaddingLarge
+                )
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Step indicator
+            // Step indicator - improved visibility
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = Dimens.PaddingLarge),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium),
+                    .padding(bottom = Dimens.PaddingXLarge),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.PagerIndicatorSpacing),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 repeat(3) { step ->
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(4.dp)
+                            .height(Dimens.ProgressBarHeight)
                             .background(
                                 color = if (step + 1 <= currentStep)
                                     MaterialTheme.colorScheme.primary
                                 else
-                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                shape = RoundedCornerShape(2.dp)
+                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(Dimens.CardCornerRadius)
                             )
                     )
                 }
             }
+
+            // Step number indicator for clarity
+            Text(
+                text = stringResource(R.string.editor_step_number, currentStep, 3),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = Dimens.PaddingSmall)
+            )
 
             // Step content
             Box(
@@ -251,71 +263,97 @@ private fun StepTitle(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.PaddingLarge)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = stringResource(R.string.editor_step_title),
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(bottom = Dimens.PaddingLarge)
         )
 
         TextField(
             value = title,
             onValueChange = { viewModel.onTitleChange(it) },
-            label = { Text(text = stringResource(R.string.editor_title_label)) },
+            label = { Text(stringResource(R.string.editor_title_label)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
-            textStyle = MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.Center),
+            textStyle = MaterialTheme.typography.headlineMedium.copy(textAlign = TextAlign.Center),
             supportingText = {
                 Text(
                     text = "${title.length}/${Constants.MAX_TITLE_LENGTH}",
                     color = if (title.length >= Constants.TITLE_LENGTH_WARNING_THRESHOLD)
                         MaterialTheme.colorScheme.error
                     else
-                        MaterialTheme.colorScheme.outline,
+                        MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.labelSmall
                 )
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = Dimens.PaddingLarge),
+                .padding(
+                    horizontal = Dimens.PaddingNormal,
+                    vertical = Dimens.PaddingLarge
+                ),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface
-            )
+            ),
+            singleLine = true
         )
 
         Text(
             text = stringResource(R.string.editor_form_label),
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(
+                horizontal = Dimens.PaddingNormal,
+                vertical = Dimens.PaddingMedium
+            )
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(bottom = Dimens.PaddingMedium),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
+                .padding(
+                    horizontal = Dimens.PaddingNormal,
+                    vertical = Dimens.PaddingMedium
+                ),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingLarge)
         ) {
             PoeticForms.ALL.forEach { form ->
                 FilterChip(
                     selected = selectedForm.id == form.id,
                     onClick = { viewModel.onFormSelected(form) },
-                    label = { Text(stringResource(form.nameRes)) }
+                    label = {
+                        Text(
+                            stringResource(form.nameRes),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
                 )
             }
         }
 
         Button(
             onClick = onShowFormsLibrary,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = Dimens.PaddingNormal,
+                    vertical = Dimens.PaddingMedium
+                )
+                .height(Dimens.SmallButtonHeight),
             colors = ButtonDefaults.outlinedButtonColors()
         ) {
-            Text(stringResource(R.string.editor_see_examples))
+            Text(
+                stringResource(R.string.editor_see_examples),
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 }
@@ -329,12 +367,16 @@ private fun StepContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.PaddingLarge)
+            .fillMaxHeight()
     ) {
         Text(
             text = stringResource(R.string.editor_step_poem),
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(
+                horizontal = Dimens.PaddingNormal,
+                vertical = Dimens.PaddingLarge
+            )
         )
 
         TextField(
@@ -345,21 +387,26 @@ private fun StepContent(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Default
             ),
+            textStyle = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface
             )
         )
 
         Text(
             text = stringResource(R.string.editor_word_count, wordCount),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.outline,
-            modifier = Modifier.padding(top = Dimens.SpacingSmall)
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                horizontal = Dimens.PaddingNormal,
+                vertical = Dimens.PaddingMedium
+            )
         )
     }
 }
@@ -373,12 +420,16 @@ private fun StepAnnotations(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.PaddingLarge)
+            .fillMaxHeight()
     ) {
         Text(
             text = stringResource(R.string.editor_step_notes),
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(
+                horizontal = Dimens.PaddingNormal,
+                vertical = Dimens.PaddingLarge
+            )
         )
 
         TextField(
@@ -389,27 +440,32 @@ private fun StepAnnotations(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Default
             ),
+            textStyle = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface
             )
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Dimens.PaddingMedium),
+                .padding(
+                    horizontal = Dimens.PaddingNormal,
+                    vertical = Dimens.PaddingLarge
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = stringResource(R.string.settings_daily_reminder),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Switch(
                 checked = dailyReminderEnabled,
