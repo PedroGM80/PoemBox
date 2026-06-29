@@ -280,7 +280,10 @@ private fun StepTitle(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
-            textStyle = MaterialTheme.typography.headlineMedium.copy(textAlign = TextAlign.Center),
+            textStyle = MaterialTheme.typography.headlineMedium.copy(
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
+            ),
             supportingText = {
                 Text(
                     text = "${title.length}/${Constants.MAX_TITLE_LENGTH}",
@@ -299,8 +302,12 @@ private fun StepTitle(
                 ),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary
             ),
             singleLine = true
         )
@@ -446,15 +453,21 @@ private fun StepAnnotations(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Default
             ),
-            textStyle = MaterialTheme.typography.bodyMedium,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary
             )
         )
 
