@@ -258,13 +258,17 @@ fun PoemCard(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(R.string.manager_by_author, poem.author),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(4.dp))
+                // Solo mostramos el autor si existe (la app no obliga a indicarlo).
+                val unknownAuthor = stringResource(R.string.editor_unknown_author)
+                if (poem.author.isNotBlank() && poem.author != unknownAuthor) {
+                    Spacer(Modifier.height(Dimens.SpacingSmall))
+                    Text(
+                        text = stringResource(R.string.manager_by_author, poem.author),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Spacer(Modifier.height(Dimens.SpacingSmall))
                 Text(
                     text = poem.date,
                     style = MaterialTheme.typography.labelSmall,

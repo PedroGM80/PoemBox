@@ -12,6 +12,7 @@ object Constants {
     // Limits
     const val MAX_TITLE_LENGTH = 60
     const val TITLE_LENGTH_WARNING_THRESHOLD = 55
+    const val MAX_AUTHOR_LENGTH = 40
     
     // Animation Durations
     const val ANIMATION_DURATION_DEFAULT = 600

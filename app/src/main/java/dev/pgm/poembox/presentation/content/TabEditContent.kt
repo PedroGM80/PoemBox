@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
@@ -112,6 +113,7 @@ fun EditScreen(
     val isSaved by viewModel.isSaved
     val wordCount by viewModel.wordCount
     val annotation by viewModel.annotation
+    val author by viewModel.author
     val lineValidations by viewModel.lineValidations
     val selectedForm by viewModel.selectedForm
 
@@ -128,10 +130,8 @@ fun EditScreen(
         )
     }
 
-    val userName by authViewModel.userName.collectAsState()
     val dailyReminderEnabled by viewModel.dailyReminderEnabled.collectAsState()
     val context = LocalContext.current
-    val unknownAuthor = stringResource(R.string.editor_unknown_author)
     val savedToastText = stringResource(R.string.editor_saved_toast)
 
     Surface(
@@ -188,7 +188,7 @@ fun EditScreen(
                 when (currentStep) {
                     1 -> StepTitle(title, viewModel, selectedForm, { showFormsLibrary = true })
                     2 -> StepContent(content, viewModel, wordCount)
-                    3 -> StepAnnotations(annotation, viewModel, dailyReminderEnabled)
+                    3 -> StepAnnotations(annotation, author, viewModel, dailyReminderEnabled)
                 }
             }
 
@@ -233,7 +233,7 @@ fun EditScreen(
                 } else {
                     Button(
                         onClick = {
-                            viewModel.saveDraft(userName ?: unknownAuthor) {
+                            viewModel.saveDraft {
                                 Toast.makeText(context, savedToastText, Toast.LENGTH_SHORT).show()
                             }
                         },
@@ -436,6 +436,7 @@ private fun StepContent(
 @Composable
 private fun StepAnnotations(
     annotation: String,
+    author: String,
     viewModel: EditViewModel,
     dailyReminderEnabled: Boolean
 ) {
@@ -443,6 +444,7 @@ private fun StepAnnotations(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = stringResource(R.string.editor_step_notes),
@@ -451,6 +453,43 @@ private fun StepAnnotations(
             modifier = Modifier.padding(
                 horizontal = Dimens.PaddingNormal,
                 vertical = Dimens.PaddingLarge
+            )
+        )
+
+        // Campo de autor (opcional)
+        OutlinedTextField(
+            value = author,
+            onValueChange = { viewModel.onAuthorChange(it) },
+            label = { Text(stringResource(R.string.editor_author_label)) },
+            placeholder = { Text(stringResource(R.string.editor_author_placeholder)) },
+            leadingIcon = {
+                Icon(Icons.Default.Person, contentDescription = null)
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Next
+            ),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.PaddingNormal),
+            shape = Shapes.medium
+        )
+
+        Spacer(Modifier.height(Dimens.PaddingLarge))
+
+        // Notas libres (opcional)
+        Text(
+            text = stringResource(R.string.editor_notes_section),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(
+                horizontal = Dimens.PaddingNormal,
+                vertical = Dimens.PaddingSmall
             )
         )
 
@@ -463,15 +502,14 @@ private fun StepAnnotations(
                 capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Default
             ),
-            // Notas libres: campo multilínea.
             singleLine = false,
-            minLines = 4,
+            minLines = 3,
             textStyle = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.onSurface
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .heightIn(min = 120.dp)
                 .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(

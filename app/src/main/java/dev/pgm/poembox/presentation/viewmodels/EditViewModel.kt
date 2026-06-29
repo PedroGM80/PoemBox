@@ -66,6 +66,9 @@ class EditViewModel @Inject constructor(
     private val _annotation = mutableStateOf("")
     val annotation: State<String> = _annotation
 
+    private val _author = mutableStateOf("")
+    val author: State<String> = _author
+
     private val _selectedForm = mutableStateOf<PoeticFormDef>(PoeticForms.LIBRE)
     val selectedForm: State<PoeticFormDef> = _selectedForm
 
@@ -107,6 +110,7 @@ class EditViewModel @Inject constructor(
                         _title.value = it.title
                         _content.value = it.content
                         _annotation.value = it.annotation
+                        _author.value = it.author
                         _isSaved.value = true
                         _wordCount.value = if (it.content.isBlank()) 0
                                            else it.content.trim().split(Regex(Constants.REGEX_WHITESPACE)).size
@@ -148,11 +152,19 @@ class EditViewModel @Inject constructor(
         _isSaved.value = false
     }
 
+    fun onAuthorChange(newAuthor: String) {
+        if (newAuthor.length <= Constants.MAX_AUTHOR_LENGTH) {
+            _author.value = newAuthor
+            _isSaved.value = false
+        }
+    }
+
     fun clearPoem() {
         _title.value = ""
         _content.value = ""
         _analysisResult.value = ""
         _annotation.value = ""
+        _author.value = ""
         _lineValidations.value = emptyList()
         _isSaved.value = false
         _wordCount.value = 0
@@ -226,13 +238,13 @@ class EditViewModel @Inject constructor(
         }
     }
 
-    fun saveDraft(userName: String, onSuccess: () -> Unit) {
+    fun saveDraft(onSuccess: () -> Unit) {
         if (_title.value.isBlank()) return
         viewModelScope.launch {
             val draft = Draft(
                 title = _title.value,
                 content = _content.value,
-                author = userName,
+                author = _author.value.trim(),
                 annotation = _annotation.value,
                 date = getDate()
             )

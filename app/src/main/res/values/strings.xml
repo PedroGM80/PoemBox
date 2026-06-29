@@ -99,6 +99,8 @@
     <string name="editor_form_label">Elige una forma poética</string>
     <string name="editor_see_examples">📚 Ver ejemplos</string>
     <string name="editor_content_label">Tu poema</string>
+    <string name="editor_author_label">Autor (opcional)</string>
+    <string name="editor_author_placeholder">¿Quién firma este poema?</string>
 
     <!-- Monitor Tab -->
     <string name="monitor_no_poem_title">Guarda un borrador en el Editor</string>
