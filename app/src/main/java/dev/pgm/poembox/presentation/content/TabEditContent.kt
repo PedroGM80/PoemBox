@@ -25,12 +25,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.pgm.poembox.R
 import dev.pgm.poembox.domain.Constants
 import dev.pgm.poembox.domain.WritingPrompts
 import dev.pgm.poembox.domain.model.LineValidation
 import dev.pgm.poembox.domain.model.PoeticForms
+import dev.pgm.poembox.domain.model.PoeticFormDef
 import dev.pgm.poembox.presentation.theme.Dimens
 import dev.pgm.poembox.presentation.theme.Shapes
 import dev.pgm.poembox.presentation.theme.Typography
@@ -109,9 +111,8 @@ fun EditScreen(
     val annotation by viewModel.annotation
     val lineValidations by viewModel.lineValidations
     val selectedForm by viewModel.selectedForm
-    var showNotes by remember { mutableStateOf(false) }
-    var showValidation by remember { mutableStateOf(false) }
-    var showInspiration by remember { mutableStateOf(false) }
+
+    var currentStep by remember { mutableStateOf(1) }
     var showFormsLibrary by remember { mutableStateOf(false) }
 
     if (showFormsLibrary) {
@@ -123,11 +124,10 @@ fun EditScreen(
             }
         )
     }
-    val todayPrompt = remember { WritingPrompts.todayPrompt() }
+
     val userName by authViewModel.userName.collectAsState()
     val dailyReminderEnabled by viewModel.dailyReminderEnabled.collectAsState()
     val context = LocalContext.current
-
     val unknownAuthor = stringResource(R.string.editor_unknown_author)
     val savedToastText = stringResource(R.string.editor_saved_toast)
 
@@ -139,326 +139,270 @@ fun EditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(Dimens.PaddingLarge)
-                .imePadding()
-                .animateContentSize(),
+                .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Step indicator
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = Dimens.PaddingLarge),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
-                    value = title,
-                    onValueChange = { viewModel.onTitleChange(it) },
-                    label = { Text(text = stringResource(R.string.editor_title_label)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    textStyle = MaterialTheme.typography.headlineSmall.copy(
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    supportingText = {
-                        Text(
-                            text = "${title.length}/${Constants.MAX_TITLE_LENGTH}",
-                            color = if (title.length >= Constants.TITLE_LENGTH_WARNING_THRESHOLD)
-                                MaterialTheme.colorScheme.error
-                            else
-                                MaterialTheme.colorScheme.outline,
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = Dimens.PaddingMedium),
-                    shape = Shapes.medium,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface
-                    )
-                )
-                IconButton(onClick = { viewModel.clearPoem() }) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.editor_new_poem_description),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-
-            // Form selector
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(vertical = Dimens.SpacingSmall),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
-            ) {
-                PoeticForms.ALL.forEach { form ->
-                    FilterChip(
-                        selected = selectedForm.id == form.id,
-                        onClick = { viewModel.onFormSelected(form) },
-                        label = {
-                            Text(
-                                stringResource(form.nameRes),
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                    )
-                }
-            }
-
-            // Progress indicator for fixed-length forms
-            if (selectedForm.totalLines > 0) {
-                val current = lineValidations.size
-                val total = selectedForm.totalLines
-                val complete = current >= total
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = Dimens.SpacingSmall),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    LinearProgressIndicator(
-                        progress = { (current.toFloat() / total).coerceIn(0f, 1f) },
+                repeat(3) { step ->
+                    Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(Dimens.ProgressBarHeight),
-                        color = if (complete) MaterialTheme.colorScheme.secondary
-                                else MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(Modifier.width(Dimens.SpacingMedium))
-                    Text(
-                        text = if (complete) stringResource(R.string.form_complete)
-                               else stringResource(R.string.form_progress, current, total),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (complete) MaterialTheme.colorScheme.secondary
-                                else MaterialTheme.colorScheme.outline
-                    )
-                }
-            }
-
-            // Botón biblioteca de formas + inspiración en la misma fila
-            Row(modifier = Modifier.fillMaxWidth()) {
-                TextButton(onClick = { showFormsLibrary = true }) {
-                    Text(stringResource(R.string.forms_library_button), style = MaterialTheme.typography.labelMedium)
-                }
-                Spacer(Modifier.weight(1f))
-            }
-
-            // Daily inspiration card
-            TextButton(
-                onClick = { showInspiration = !showInspiration },
-                modifier = Modifier.align(Alignment.Start)
-            ) {
-                Icon(
-                    imageVector = if (showInspiration) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    modifier = Modifier.size(Dimens.IconSmall)
-                )
-                Spacer(Modifier.width(Dimens.SpacingSmall))
-                Text(stringResource(R.string.editor_inspiration_title), style = MaterialTheme.typography.labelMedium)
-            }
-            AnimatedVisibility(visible = showInspiration) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = Dimens.PaddingNormal),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-                    ),
-                    shape = Shapes.medium,
-                    border = CardDefaults.outlinedCardBorder()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(Dimens.PaddingLarge)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.editor_inspiration_title),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.padding(bottom = Dimens.PaddingSmall)
-                        )
-                        Text(
-                            text = "\"$todayPrompt\"",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
-                            ),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                            TextButton(
-                                onClick = { viewModel.onTitleChange(todayPrompt) }
-                            ) {
-                                Text(
-                                    stringResource(R.string.editor_inspiration_use_title),
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(vertical = Dimens.SpacingMedium)
-            ) {
-                TextField(
-                    value = content,
-                    onValueChange = { viewModel.onContentChange(it) },
-                    placeholder = { Text(text = stringResource(R.string.editor_content_placeholder)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    textStyle = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.fillMaxSize(),
-                    shape = Shapes.medium,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
-                    )
-                )
-
-                if (analysisResult.isNotBlank()) {
-                    Text(
-                        text = analysisResult,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(Dimens.PaddingLarge)
+                            .height(4.dp)
                             .background(
-                                MaterialTheme.colorScheme.secondaryContainer,
-                                MaterialTheme.shapes.small
+                                color = if (step + 1 <= currentStep)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                shape = RoundedCornerShape(2.dp)
                             )
-                            .padding(horizontal = Dimens.PaddingNormal, vertical = Dimens.PaddingSmall),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
 
-            if (wordCount > 0) {
-                Text(
-                    text = stringResource(R.string.editor_word_count, wordCount),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = Dimens.PaddingSmall, top = Dimens.SpacingTiny)
-                )
-            }
-
-            // Asistente poético IA — el verso activo es la última línea no vacía del contenido
-            val activeVerse = remember(content) {
-                content.trimEnd().lines().lastOrNull { it.isNotBlank() } ?: ""
-            }
-            PoetryAssistantPanel(
-                currentVerse = activeVerse,
-                onInsertWord = { word ->
-                    val cursor = if (content.endsWith(" ") || content.isEmpty()) word else " $word"
-                    viewModel.onContentChange(content + cursor)
-                }
-            )
-
-            if (lineValidations.isNotEmpty()) {
-                TextButton(
-                    onClick = { showValidation = !showValidation },
-                    modifier = Modifier.align(Alignment.Start)
-                ) {
-                    Icon(
-                        imageVector = if (showValidation) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = null,
-                        modifier = Modifier.size(Dimens.IconSmall)
-                    )
-                    Spacer(Modifier.width(Dimens.SpacingSmall))
-                    Text(stringResource(R.string.editor_syllables_per_verse), style = MaterialTheme.typography.labelMedium)
-                }
-                AnimatedVisibility(visible = showValidation) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = Dimens.PaddingSmall),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Column(modifier = Modifier.padding(horizontal = Dimens.PaddingNormal, vertical = Dimens.PaddingMedium)) {
-                            lineValidations.forEach { v ->
-                                LineValidationRow(v)
-                            }
-                        }
-                    }
-                }
-            }
-
-            TextButton(
-                onClick = { showNotes = !showNotes },
-                modifier = Modifier.align(Alignment.Start)
+            // Step content
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.TopCenter
             ) {
-                Icon(
-                    imageVector = if (showNotes) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    modifier = Modifier.size(Dimens.IconSmall)
-                )
-                Spacer(Modifier.width(Dimens.SpacingSmall))
-                Text(stringResource(R.string.editor_notes_section), style = MaterialTheme.typography.labelMedium)
-            }
-            AnimatedVisibility(visible = showNotes) {
-                TextField(
-                    value = annotation,
-                    onValueChange = { viewModel.onAnnotationChange(it) },
-                    placeholder = { Text(stringResource(R.string.editor_notes_placeholder)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = Dimens.PaddingMedium),
-                    shape = Shapes.medium,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
-                    ),
-                    maxLines = 4
-                )
+                when (currentStep) {
+                    1 -> StepTitle(title, viewModel, selectedForm, { showFormsLibrary = true })
+                    2 -> StepContent(content, viewModel, wordCount)
+                    3 -> StepAnnotations(annotation, viewModel, dailyReminderEnabled)
+                }
             }
 
+            // Navigation buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = Dimens.SpacingSmall),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(top = Dimens.PaddingLarge),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
             ) {
-                Text(
-                    text = stringResource(R.string.settings_daily_reminder),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Switch(
-                    checked = dailyReminderEnabled,
-                    onCheckedChange = { viewModel.setDailyReminder(it) }
-                )
-            }
-
-            Button(
-                onClick = {
-                    viewModel.saveDraft(userName ?: unknownAuthor) {
-                        Toast.makeText(context, savedToastText, Toast.LENGTH_SHORT).show()
+                if (currentStep > 1) {
+                    Button(
+                        onClick = { currentStep-- },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(Dimens.ButtonHeight),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        )
+                    ) {
+                        Text(stringResource(R.string.editor_previous))
                     }
-                },
-                enabled = title.isNotBlank() && content.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSaved) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.primary
-                ),
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Dimens.PaddingLarge)
-                    .height(Dimens.ButtonHeight)
-            ) {
+                }
+
+                if (currentStep < 3) {
+                    Button(
+                        onClick = { currentStep++ },
+                        enabled = when (currentStep) {
+                            1 -> title.isNotBlank()
+                            2 -> content.isNotBlank()
+                            else -> true
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(Dimens.ButtonHeight)
+                    ) {
+                        Text(stringResource(R.string.editor_next))
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            viewModel.saveDraft(userName ?: unknownAuthor) {
+                                Toast.makeText(context, savedToastText, Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        enabled = title.isNotBlank() && content.isNotBlank(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isSaved) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.primary
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(Dimens.ButtonHeight)
+                    ) {
+                        Text(
+                            text = stringResource(if (isSaved) R.string.editor_saved_button else R.string.editor_save_button),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StepTitle(
+    title: String,
+    viewModel: EditViewModel,
+    selectedForm: PoeticFormDef,
+    onShowFormsLibrary: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.PaddingLarge)
+    ) {
+        Text(
+            text = stringResource(R.string.editor_step_title),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+        )
+
+        TextField(
+            value = title,
+            onValueChange = { viewModel.onTitleChange(it) },
+            label = { Text(text = stringResource(R.string.editor_title_label)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            textStyle = MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.Center),
+            supportingText = {
                 Text(
-                    text = stringResource(if (isSaved) R.string.editor_saved_button else R.string.editor_save_button),
-                    style = MaterialTheme.typography.titleMedium
+                    text = "${title.length}/${Constants.MAX_TITLE_LENGTH}",
+                    color = if (title.length >= Constants.TITLE_LENGTH_WARNING_THRESHOLD)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = Dimens.PaddingLarge),
+            shape = Shapes.medium,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            )
+        )
+
+        Text(
+            text = stringResource(R.string.editor_form_label),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = Dimens.PaddingMedium),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
+        ) {
+            PoeticForms.ALL.forEach { form ->
+                FilterChip(
+                    selected = selectedForm.id == form.id,
+                    onClick = { viewModel.onFormSelected(form) },
+                    label = { Text(stringResource(form.nameRes)) }
                 )
             }
+        }
+
+        Button(
+            onClick = onShowFormsLibrary,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors()
+        ) {
+            Text(stringResource(R.string.editor_see_examples))
+        }
+    }
+}
+
+@Composable
+private fun StepContent(
+    content: String,
+    viewModel: EditViewModel,
+    wordCount: Int
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.PaddingLarge)
+    ) {
+        Text(
+            text = stringResource(R.string.editor_step_poem),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+        )
+
+        TextField(
+            value = content,
+            onValueChange = { viewModel.onContentChange(it) },
+            label = { Text(stringResource(R.string.editor_content_label)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            shape = Shapes.medium,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            )
+        )
+
+        Text(
+            text = stringResource(R.string.editor_word_count, wordCount),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(top = Dimens.SpacingSmall)
+        )
+    }
+}
+
+@Composable
+private fun StepAnnotations(
+    annotation: String,
+    viewModel: EditViewModel,
+    dailyReminderEnabled: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.PaddingLarge)
+    ) {
+        Text(
+            text = stringResource(R.string.editor_step_notes),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = Dimens.PaddingMedium)
+        )
+
+        TextField(
+            value = annotation,
+            onValueChange = { viewModel.onAnnotationChange(it) },
+            placeholder = { Text(stringResource(R.string.editor_notes_placeholder)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            shape = Shapes.medium,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+            )
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Dimens.PaddingMedium),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.settings_daily_reminder),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Switch(
+                checked = dailyReminderEnabled,
+                onCheckedChange = { viewModel.setDailyReminder(it) }
+            )
         }
     }
 }

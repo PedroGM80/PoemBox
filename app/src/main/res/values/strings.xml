@@ -90,6 +90,14 @@
     <string name="editor_syllables_per_verse">Sílabas por verso</string>
     <string name="editor_notes_section">Notas del poema</string>
     <string name="editor_notes_placeholder">Añade notas o contexto del poema…</string>
+    <string name="editor_step_title">Paso 1: Título y forma</string>
+    <string name="editor_step_poem">Paso 2: Escribe tu poema</string>
+    <string name="editor_step_notes">Paso 3: Anotaciones</string>
+    <string name="editor_previous">← Anterior</string>
+    <string name="editor_next">Siguiente →</string>
+    <string name="editor_form_label">Elige una forma poética</string>
+    <string name="editor_see_examples">📚 Ver ejemplos</string>
+    <string name="editor_content_label">Tu poema</string>
 
     <!-- Monitor Tab -->
     <string name="monitor_no_poem_title">Guarda un borrador en el Editor</string>
