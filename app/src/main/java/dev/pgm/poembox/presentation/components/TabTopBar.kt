@@ -150,12 +150,10 @@ fun TopBar(
 ) {
     val userName by authViewModel.userName.collectAsState()
     val themeMode by themeViewModel.themeMode.collectAsState()
-    val isPro by billingViewModel.isPro.collectAsState()
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
     var showThemeMenu by remember { mutableStateOf(false) }
-    var showProDialog by remember { mutableStateOf(false) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
     if (showDeleteConfirm) {
@@ -182,26 +180,6 @@ fun TopBar(
         )
     }
 
-    if (showProDialog) {
-        AlertDialog(
-            onDismissRequest = { showProDialog = false },
-            title = { Text(stringResource(R.string.premium_dialog_title)) },
-            text = { Text(stringResource(R.string.premium_dialog_body)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    showProDialog = false
-                    InAppReviewHelper.requestReview(context)  // también pedimos review
-                    billingViewModel.purchase(context.findActivity() ?: return@TextButton)
-                }) { Text(stringResource(R.string.premium_dialog_buy)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { showProDialog = false }) {
-                    Text(stringResource(R.string.premium_dialog_cancel))
-                }
-            }
-        )
-    }
-
     if (showStats) {
         StatsBottomSheet(onDismiss = { showStats = false })
     }
@@ -217,21 +195,11 @@ fun TopBar(
         },
         actions = {
             if (!userName.isNullOrBlank()) {
-                // Pro badge / buy button
-                TextButton(onClick = { if (!isPro) showProDialog = true }) {
-                    Text(
-                        text = if (isPro) stringResource(R.string.premium_already_pro)
-                               else stringResource(R.string.premium_support_button),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (isPro) MaterialTheme.colorScheme.tertiary
-                                else MaterialTheme.colorScheme.primary
-                    )
-                }
                 Text(
                     text = userName ?: "",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = Dimens.PaddingMedium)
+                    modifier = Modifier.padding(horizontal = Dimens.PaddingMedium)
                 )
                 
                 Box {
