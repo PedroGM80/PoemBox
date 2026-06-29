@@ -513,6 +513,29 @@ fun ManagerScreen(
 @Composable
 internal fun TabsContent(tabs: List<TabItem>, pagerState: PagerState) {
     HorizontalPager(state = pagerState) { page ->
-        tabs[page].screen()
+        ResponsiveContentContainer {
+            tabs[page].screen()
+        }
+    }
+}
+
+/**
+ * Centra el contenido y limita su ancho máximo en pantallas grandes
+ * (tablets, foldables abiertos, desktop). En móviles ocupa todo el ancho.
+ * Mantiene las líneas de texto y los campos en un ancho cómodo de lectura.
+ */
+@Composable
+internal fun ResponsiveContentContainer(content: @Composable () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Box(
+            modifier = Modifier
+                .widthIn(max = 640.dp)
+                .fillMaxSize()
+        ) {
+            content()
+        }
     }
 }
