@@ -382,20 +382,26 @@ private fun StepContent(
         TextField(
             value = content,
             onValueChange = { viewModel.onContentChange(it) },
-            label = { Text(stringResource(R.string.editor_content_label)) },
+            placeholder = { Text(stringResource(R.string.editor_content_placeholder)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Default
             ),
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.onSurface
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary
             )
         )
 
