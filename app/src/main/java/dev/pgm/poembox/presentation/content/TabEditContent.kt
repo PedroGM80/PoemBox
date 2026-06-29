@@ -26,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -281,6 +282,7 @@ private fun StepTitle(
             label = { Text(stringResource(R.string.editor_title_label)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Next
             ),
             textStyle = MaterialTheme.typography.headlineMedium.copy(
@@ -394,8 +396,12 @@ private fun StepContent(
             placeholder = { Text(stringResource(R.string.editor_content_placeholder)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Default
             ),
+            // Un poema tiene varios versos: campo multilínea, texto alineado arriba.
+            singleLine = false,
+            minLines = 6,
             textStyle = MaterialTheme.typography.bodyLarge.copy(
                 color = MaterialTheme.colorScheme.onSurface
             ),
@@ -405,12 +411,13 @@ private fun StepContent(
                 .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 cursorColor = MaterialTheme.colorScheme.primary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent
             )
         )
 
@@ -453,8 +460,12 @@ private fun StepAnnotations(
             placeholder = { Text(stringResource(R.string.editor_notes_placeholder)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Default
             ),
+            // Notas libres: campo multilínea.
+            singleLine = false,
+            minLines = 4,
             textStyle = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.onSurface
             ),
@@ -464,12 +475,13 @@ private fun StepAnnotations(
                 .padding(horizontal = Dimens.PaddingNormal),
             shape = Shapes.medium,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                 cursorColor = MaterialTheme.colorScheme.primary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent
             )
         )
 
