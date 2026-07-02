@@ -106,7 +106,7 @@ class EditViewModelTest {
     @Test
     fun `saveDraft with blank title does nothing`() = runTest {
         // title starts blank — saveDraft should be a no-op
-        viewModel.saveDraft("Pedro") {}
+        viewModel.saveDraft {}
         advanceUntilIdle()
 
         coVerify(exactly = 0) { saveDraftUseCase(any()) }
@@ -116,8 +116,9 @@ class EditViewModelTest {
     fun `saveDraft success sets isSaved true`() = runTest {
         viewModel.onTitleChange("Mi poema")
         viewModel.onContentChange("Verso 1\nVerso 2")
+        viewModel.onAuthorChange("Pedro")
 
-        viewModel.saveDraft("Pedro") {}
+        viewModel.saveDraft {}
         advanceUntilIdle()
 
         assertTrue("isSaved should be true after successful save", viewModel.isSaved.value)
@@ -127,8 +128,9 @@ class EditViewModelTest {
     fun `saveDraft calls saveDraftUseCase once`() = runTest {
         viewModel.onTitleChange("Soneto")
         viewModel.onContentChange("Catorce versos")
+        viewModel.onAuthorChange("Neruda")
 
-        viewModel.saveDraft("Neruda") {}
+        viewModel.saveDraft {}
         advanceUntilIdle()
 
         coVerify(exactly = 1) { saveDraftUseCase(any()) }
@@ -139,7 +141,7 @@ class EditViewModelTest {
         viewModel.onTitleChange("Cancion")
         viewModel.onContentChange("Letra")
 
-        viewModel.saveDraft("Autor") {}
+        viewModel.saveDraft {}
         advanceUntilIdle()
 
         assertEquals("Cancion", fakeSession._currentPoemTitle.value)
@@ -152,7 +154,7 @@ class EditViewModelTest {
         viewModel.onTitleChange("Poema")
         viewModel.onContentChange("Contenido")
 
-        viewModel.saveDraft("Poeta") {}
+        viewModel.saveDraft {}
         advanceUntilIdle()
 
         assertTrue("isSaved should be true after save", viewModel.isSaved.value)
